@@ -240,10 +240,10 @@ def experiments(X_dimred, name, n_seeds=10, **kwargs):
     Ns = [ 100, 500, 1000, 5000, 10000, 20000 ]
 
     sampling_fns = [
+        lshSketch,
         uniform,
         gs_grid,
-        gs_gap,
-        lshSketch
+        gs_gap
     ]
     #     # srs,
     #     # louvain1,
@@ -254,10 +254,10 @@ def experiments(X_dimred, name, n_seeds=10, **kwargs):
     # ]
 
     sampling_fn_names = [
+        'lshSketch',
         'uniform',
         'gs_grid',
-        'gs_gap',
-        'lshSketch'
+        'gs_gap'
     ]
     #     # 'srs',
     #     # 'louvain1',
