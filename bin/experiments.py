@@ -309,7 +309,7 @@ def experiments(X_dimred, name, n_seeds=10, **kwargs):
                         t0 = time()
                         samp_idx = sampling_fn(X_dimred, N, numProj = 100, numBands = 10, bandSize = 10, replace = False)
                         t1 = time()
-                        log('Sampling {} done'.format(samping_fn_names[s_idx]))
+                        log('Sampling {} done'.format(sampling_fn_names[s_idx]))
                     else:
                         log('Sampling {}...'.format(sampling_fn_names[s_idx]))
                         t0 = time()
