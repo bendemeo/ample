@@ -18,6 +18,7 @@ from save_mtx import save_mtx
 from supervised import adjusted_mutual_info_score
 from ample import *
 from utils import *
+from lsh_sketch import *
 
 # Clustering-based downsampling efficiency.
 def cluster_efficiency(cluster_labels, auto_labels):
@@ -51,7 +52,7 @@ def cluster_efficiency(cluster_labels, auto_labels):
             n_auto = sum(table[:, j])
             n_in_auto = table[i, j]
             pct_in_auto = float(n_in_auto) / float(n_auto)
-    
+
             n_cluster_in_auto.append(n_in_auto)
             pct_cluster_in_auto.append(pct_in_auto)
 
@@ -78,7 +79,7 @@ def report_cluster_counts(cluster_labels):
 def experiment_kmeanspp(X_dimred, name, **kwargs):
     kwargs['sample_type'] = 'kmeanspp'
     experiment(kmeanspp, X_dimred, name, **kwargs)
-    
+
 def experiment_srs(X_dimred, name, **kwargs):
     kwargs['sample_type'] = 'srs'
     experiment(srs, X_dimred, name, **kwargs)
@@ -90,7 +91,7 @@ def experiment_gs(X_dimred, name, **kwargs):
 def experiment_uni(X_dimred, name, **kwargs):
     kwargs['sample_type'] = 'uni'
     experiment(uniform, X_dimred, name, **kwargs)
-    
+
 def experiment(sampling_fn, X_dimred, name, cell_labels=None,
                kmeans=True, visualize_orig=True,
                downsample=True, n_downsample=100000,
@@ -118,10 +119,10 @@ def experiment(sampling_fn, X_dimred, name, cell_labels=None,
         cell_types = [ str(ct) for ct in sorted(set(cell_labels)) ]
 
     # Visualize original data.
-    
+
     if visualize_orig:
         log('Visualizing original...')
-     
+
         if downsample and X_dimred.shape[0] > n_downsample:
             log('Visualization will downsample to {}...'
                 .format(n_downsample))
@@ -137,7 +138,7 @@ def experiment(sampling_fn, X_dimred, name, cell_labels=None,
             expr = gene_expr[idx, :]
         else:
             expr = None
-     
+
         embedding = visualize(
             [ X_dimred[idx, :] ], cell_labels[idx],
             name + '_orig{}'.format(len(idx)), cell_types,
@@ -180,31 +181,32 @@ def normalized_entropy(counts):
     k = len(counts)
     if k <= 1:
         return 1
-    
+
     n_samples = sum(counts)
 
     H = -sum([ (counts[i] / n_samples) * np.log(counts[i] / n_samples)
                for i in range(k) if counts[i] > 0 ])
-    
+
     return H / np.log(k)
 
 def err_exit(param_name):
     sys.stderr.write('Needs `{}\' param.\n'.format(param_name))
     exit(1)
-    
+
 def experiments(X_dimred, name, n_seeds=10, **kwargs):
 
     columns = [
         'name', 'sampling_fn', 'replace', 'N', 'seed', 'time'
     ]
-    
+
     if 'rare' in kwargs and kwargs['rare']:
         if not 'cell_labels' in kwargs:
             err_exit('cell_labels')
         if not 'rare_label' in kwargs:
             err_exit('rare_label')
         columns.append('rare')
-            
+
+# deprecated
     if 'entropy' in kwargs and kwargs['entropy']:
         if not 'cell_labels' in kwargs:
             err_exit('cell_labels')
@@ -219,46 +221,48 @@ def experiments(X_dimred, name, n_seeds=10, **kwargs):
 
     if 'max_min_dist' in kwargs and kwargs['max_min_dist']:
         columns.append('max_min_dist')
-        
+
     if 'kmeans_ami' in kwargs and kwargs['kmeans_ami']:
         if not 'cell_labels' in kwargs:
             err_exit('cell_labels')
         columns.append('kmeans_ami')
         columns.append('kmeans_bami')
-        
+
     if 'louvain_ami' in kwargs and kwargs['louvain_ami']:
         if not 'cell_labels' in kwargs:
             err_exit('cell_labels')
         columns.append('louvain_ami')
         columns.append('louvain_bami')
-        
+
     of = open('target/experiments/{}.txt.1'.format(name), 'a')
     of.write('\t'.join(columns) + '\n')
-    
+
     Ns = [ 100, 500, 1000, 5000, 10000, 20000 ]
 
     sampling_fns = [
         uniform,
         gs_grid,
         gs_gap,
-        srs,
-        louvain1,
-        louvain3,
-        kmeans,
-        kmeansppp,
-        kmeanspp,
+        lshSketch
+        # srs,
+        # louvain1,
+        # louvain3,
+        # kmeans,
+        # kmeansppp,
+        # kmeanspp,
     ]
-    
+
     sampling_fn_names = [
         'uniform',
         'gs_grid',
         'gs_gap',
-        'srs',
-        'louvain1',
-        'louvain3',
-        'kmeans',
-        'kmeans+++',
-        'kmeans++',
+        'lshSketch'
+        # 'srs',
+        # 'louvain1',
+        # 'louvain3',
+        # 'kmeans',
+        # 'kmeans+++',
+        # 'kmeans++',
     ]
 
     not_replace = set([ 'kmeans++', 'dropClust' ])
@@ -266,7 +270,7 @@ def experiments(X_dimred, name, n_seeds=10, **kwargs):
     assert(len(sampling_fns) == len(sampling_fn_names))
 
     for s_idx, sampling_fn in enumerate(sampling_fns):
-        
+
         if sampling_fn_names[s_idx] == 'dropClust':
             dropclust_preprocess(X_dimred, name)
 
@@ -280,9 +284,9 @@ def experiments(X_dimred, name, n_seeds=10, **kwargs):
                 if N > X_dimred.shape[0]:
                     continue
                 log('N = {}...'.format(N))
-            
+
                 counts = []
-                
+
                 for seed in range(n_seeds):
 
                     if sampling_fn_names[s_idx] == 'dropClust':
@@ -298,6 +302,10 @@ def experiments(X_dimred, name, n_seeds=10, **kwargs):
                                                replace=replace)
                         t1 = time()
                         log('Sampling gs_gap_N done.')
+                    elif samping_fn_names[s_idx] == 'lshSketch':
+                        log('Sampling {}'.format(sampling_fn_names[s_idx]))
+                        t0 = time()
+                        samp_idx = sampling_fn(X_dimred, N, numProj = 100, numBands = 10, bandSize = 10, replace = False)
                     else:
                         log('Sampling {}...'.format(sampling_fn_names[s_idx]))
                         t0 = time()
@@ -311,7 +319,7 @@ def experiments(X_dimred, name, n_seeds=10, **kwargs):
                     kwargs['N'] = N
                     kwargs['seed'] = seed
                     kwargs['time'] = t1 - t0
-                    
+
                     experiment_stats(of, X_dimred, samp_idx, name, **kwargs)
 
     of.close()
@@ -364,13 +372,13 @@ def experiment_stats(of, X_dimred, samp_idx, name, **kwargs):
 
     if 'kmeans_ami' in kwargs and kwargs['kmeans_ami']:
         cell_labels = kwargs['cell_labels']
-        
+
         k = len(set(cell_labels))
         km = KMeans(n_clusters=k, n_init=1, random_state=kwargs['seed'])
         km.fit(X_dimred[samp_idx, :])
 
         full_labels = label_approx(X_dimred, X_dimred[samp_idx, :], km.labels_)
-                
+
         ami = adjusted_mutual_info_score(cell_labels, full_labels)
         bami = adjusted_mutual_info_score(
             cell_labels, full_labels, dist='balanced'
@@ -380,7 +388,7 @@ def experiment_stats(of, X_dimred, samp_idx, name, **kwargs):
 
     if 'louvain_ami' in kwargs and kwargs['louvain_ami']:
         cell_labels = kwargs['cell_labels']
-        
+
         adata = AnnData(X=X_dimred[samp_idx, :])
         sc.pp.neighbors(adata, use_rep='X')
         sc.tl.louvain(adata, resolution=1., key_added='louvain')
@@ -394,10 +402,10 @@ def experiment_stats(of, X_dimred, samp_idx, name, **kwargs):
         )
         stats.append(ami)
         stats.append(bami)
-        
+
     of.write('\t'.join([ str(stat) for stat in stats ]) + '\n')
     of.flush()
-    
+
 def seurat_cluster(name):
     rcode = Popen('Rscript R/seurat.R {0} > {0}.log 2>&1'
                   .format(name), shell=True).wait()
@@ -421,7 +429,7 @@ def experiment_seurat_ari(data_names, namespace):
 
     name = 'data/{}'.format(namespace)
     Ns = [ 500, 1000, 2000, 5000, 10000 ]
-    
+
     if not os.path.isfile('{}/matrix.mtx'.format(name)):
         save_mtx(name, csr_matrix(X), genes)
     log('Seurat clustering full dataset...')
@@ -441,7 +449,7 @@ def experiment_seurat_ari(data_names, namespace):
         log('N = {}, GS ARI = {}'.format(
             N, adjusted_rand_score(cluster_labels_full, cluster_labels)
         ))
-        
+
         uni_idx = uniform(X_dimred, N)
         save_mtx(name + '/uni{}'.format(N), csr_matrix(X[uni_idx, :]),
                  genes)
@@ -456,7 +464,7 @@ def experiment_seurat_ari(data_names, namespace):
         ))
 
 def experiment_kmeans_ce(X, name, cell_labels, n_seeds=10, N=None):
-    
+
     sampling_fns = [
         uniform,
         gs,
@@ -467,7 +475,7 @@ def experiment_kmeans_ce(X, name, cell_labels, n_seeds=10, N=None):
         kmeanspp,
         kmeansppp,
     ]
-    
+
     sampling_fn_names = [
         'uniform',
         'gs_grid',
@@ -493,27 +501,27 @@ def experiment_kmeans_ce(X, name, cell_labels, n_seeds=10, N=None):
     for s_idx, sampling_fn in enumerate(sampling_fns):
 
         for k in ks:
-            
+
             if k > N:
                 continue
 
             for seed in range(n_seeds):
-                
+
                 samp_idx = sampling_fn(X, N, seed=seed)
-    
+
                 km = KMeans(n_clusters=k, n_init=1, random_state=seed)
                 km.fit(X[samp_idx, :])
 
                 full_labels = label_approx(X, X[samp_idx, :], km.labels_)
-                
+
                 avg_ce = average_cluster_efficiency(
                     cell_labels, full_labels
                 )
-    
+
                 stats = [
                     name, sampling_fn_names[s_idx], False, N, k, seed, avg_ce
                 ]
-                
+
                 of.write('\t'.join([ str(stat) for stat in stats ]) + '\n')
                 of.flush()
 
@@ -530,7 +538,7 @@ def experiment_louvain_ce(X, name, cell_labels, n_seeds=10, N=None):
         kmeanspp,
         kmeansppp,
     ]
-    
+
     sampling_fn_names = [
         'uniform',
         'gs_grid',
@@ -547,7 +555,7 @@ def experiment_louvain_ce(X, name, cell_labels, n_seeds=10, N=None):
     columns = [ 'name', 'sampling_fn', 'replace', 'N', 'resolution', 'seed',
                 'k', 'clust_eff' ]
     of.write('\t'.join(columns) + '\n')
-    
+
     if N is None:
         N = int(X.shape[0] / 100)
 
@@ -556,32 +564,32 @@ def experiment_louvain_ce(X, name, cell_labels, n_seeds=10, N=None):
     for s_idx, sampling_fn in enumerate(sampling_fns):
 
         for seed in range(n_seeds):
-                
+
             samp_idx = sampling_fn(X, N, seed=seed)
-    
+
             for resolution in resolutions:
-            
+
                 adata = AnnData(X=X[samp_idx, :])
                 sc.pp.neighbors(adata, use_rep='X')
                 sc.tl.louvain(adata, resolution=resolution, key_added='louvain')
                 louv_labels = np.array(adata.obs['louvain'].tolist())
 
                 full_labels = label_approx(X, X[samp_idx, :], louv_labels)
-                
+
                 avg_ce = average_cluster_efficiency(
                     cell_labels, full_labels
                 )
-    
+
                 stats = [
                     name, sampling_fn_names[s_idx], False, N, resolution, seed,
                     max(louv_labels), avg_ce
                 ]
-                
+
                 of.write('\t'.join([ str(stat) for stat in stats ]) + '\n')
                 of.flush()
 
     of.close()
-    
+
 def save_sketch(X, samp_idx, genes, namespace):
     name = 'data/{}'.format(namespace)
     mkdir_p(name)
