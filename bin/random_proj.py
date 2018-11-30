@@ -38,8 +38,7 @@ class lsh:
         if not (data is None):
             self.project(data)
         elif not self.hasProjection:
-            print "can't make hashmaps without data!"
-        dicts = []
+            print("can't make hashmaps without data!")
         subsets = []
         for i in range(L):
             inds = numpy.random.choice(self.k, M, replace=False)
@@ -66,7 +65,7 @@ class lsh:
             if L is not None and M is not None:
                 self.makeFinder(L, M)
             else:
-                print "please specify hash size (M) and # of hashes (L)"
+                print("please specify hash size (M) and # of hashes (L)")
                 return(None)
         candidates = []
         for i in range(len(self.bands)):
