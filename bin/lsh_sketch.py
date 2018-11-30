@@ -3,8 +3,10 @@ import sys
 
 
 import random_proj as rp
+from cosineLSH import cosineLSH
+from LSH import *
 
-def lshSketch(X, N, numProj=100, numBands=10, bandSize=10, seed=None, replace=False):
+def lshSketch(X, N, numHashes=100, numBands=10, bandSize=10, seed=None, replace=False):
     n_samples, n_features = X.shape
 
     if not seed is None:
@@ -15,9 +17,10 @@ def lshSketch(X, N, numProj=100, numBands=10, bandSize=10, seed=None, replace=Fa
     if not replace and N == n_samples:
         return range(N)
 
-    if numProj == None:
+    if numHashes == None:
         raise ValueError('Please provide number of random projections')
 
-    sketcher = rp.lsh(numProj=numProj, data=X, numBands=numBands, bandSize=bandSize)
+    sketcher = cosineLSH(data=X, numHashes=numHashes, numBands=numBands, bandSize=bandSize)
+    # sketcher = rp.lsh(numProj=numProj, data=X, numBands=numBands, bandSize=bandSize)
 
     return sorted(sketcher.downSample(sampleSize=N, replace=replace))

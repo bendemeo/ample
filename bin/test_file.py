@@ -1,23 +1,23 @@
 # for testing stuff
 import numpy
-import random_proj as rp
 import timeit
 import time
 import cProfile
 import matplotlib.pyplot as mpl
+from cosineLSH import *
 from lsh_sketch import *
 
 
-def gauss_test(n, d=1, m=1, stdev=[1]):
+def gauss_test(n=[100], d=1, m=1, stdev=[1]):
     'n points, m gaussias, d dimensions, specified sds'
     result = numpy.random.randn(1, d)
     centers = numpy.random.normal(0*d, 10, [m, d])
     for i in range(len(centers)):
-        print(n)
+        print(n[i])
         print(d)
         c = centers[i]
         result = numpy.concatenate((result,
-                                    numpy.random.normal(c, stdev[i], (n, d))),
+                                    numpy.random.normal(c, stdev[i], (n[i], d))),
                                     axis = 0)
     return result
 
@@ -30,10 +30,10 @@ if __name__ == '__main__':
     scheme.makeFinder(5, 3)
     print scheme.findCandidates(1)
 
-    gauss2D = gauss_test(500, 2, 4, [0.1, 1, 0.01, 2])
+    gauss2D = gauss_test([10,20,100,200], 2, 4, [0.1, 1, 0.01, 2])
     mpl.scatter(gauss2D[:, 0], gauss2D[:, 1])
 
-    subInds = lshSketch(X=gauss2D, N=100, numProj=100, numBands=10, bandSize=10)
+    subInds = lshSketch(X=gauss2D, N=100, numHashes=3000, numBands=2, bandSize=500)
 
     # scheme = rp.lsh(200)
     # scheme.makeFinder(1, 100, data=gauss2D)
