@@ -1,5 +1,7 @@
 # for random projection hashing
 import numpy
+import sys
+from utils import *
 
 # adding stuff for git
 # adding more stuff
@@ -123,7 +125,7 @@ class LSH:
 
         while len(available) > 0 or len(sample) < sampleSize:
             if len(available) == 0:  # reset available if not enough
-                print("sampled {} out of {} before reset".format(count, sampleSize))
+                log("sampled {} out of {} before reset".format(count, sampleSize))
                 count = 0
                 if replace:
                     available = range(self.hash.shape[0])
