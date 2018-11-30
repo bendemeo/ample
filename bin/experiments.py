@@ -244,26 +244,28 @@ def experiments(X_dimred, name, n_seeds=10, **kwargs):
         gs_grid,
         gs_gap,
         lshSketch
-        # srs,
-        # louvain1,
-        # louvain3,
-        # kmeans,
-        # kmeansppp,
-        # kmeanspp,
     ]
+    #     # srs,
+    #     # louvain1,
+    #     # louvain3,
+    #     # kmeans,
+    #     # kmeansppp,
+    #     # kmeanspp,
+    # ]
 
     sampling_fn_names = [
         'uniform',
         'gs_grid',
         'gs_gap',
         'lshSketch'
-        # 'srs',
-        # 'louvain1',
-        # 'louvain3',
-        # 'kmeans',
-        # 'kmeans+++',
-        # 'kmeans++',
     ]
+    #     # 'srs',
+    #     # 'louvain1',
+    #     # 'louvain3',
+    #     # 'kmeans',
+    #     # 'kmeans+++',
+    #     # 'kmeans++',
+    # ]
 
     not_replace = set([ 'kmeans++', 'dropClust' ])
 
@@ -302,7 +304,7 @@ def experiments(X_dimred, name, n_seeds=10, **kwargs):
                                                replace=replace)
                         t1 = time()
                         log('Sampling gs_gap_N done.')
-                    elif samping_fn_names[s_idx] == 'lshSketch':
+                    elif sampling_fn_names[s_idx] == 'lshSketch':
                         log('Sampling {}'.format(sampling_fn_names[s_idx]))
                         t0 = time()
                         samp_idx = sampling_fn(X_dimred, N, numProj = 100, numBands = 10, bandSize = 10, replace = False)

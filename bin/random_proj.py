@@ -40,6 +40,7 @@ class lsh:
         elif not self.hasProjection:
             print("can't make hashmaps without data!")
         subsets = []
+        dicts = []
         for i in range(L):
             inds = numpy.random.choice(self.k, M, replace=False)
             subsets.append(inds)
