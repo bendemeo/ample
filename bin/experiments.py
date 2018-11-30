@@ -307,7 +307,7 @@ def experiments(X_dimred, name, n_seeds=10, **kwargs):
                     elif sampling_fn_names[s_idx] == 'lshSketch':
                         log('Sampling {}'.format(sampling_fn_names[s_idx]))
                         t0 = time()
-                        samp_idx = sampling_fn(X_dimred, N, numHashes = 1000, numBands = 100, bandSize = 200, replace = replace)
+                        samp_idx = sampling_fn(X_dimred, N, numHashes = 100, numBands = 1, bandSize = 100, replace = replace)
                         t1 = time()
                         log('Sampling {} done'.format(sampling_fn_names[s_idx]))
                     else:
