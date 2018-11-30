@@ -2,83 +2,47 @@
 import numpy
 
 # adding stuff for git
-# adding more stuff
+
 class lsh:
     '''class to construct a random projection of data'''
 
-    def __init__(self, numProj, data = None, numBands=None, bandSize=None, replace=False):
-        ''' numProj is number of random projections it makes'''
+    def __init__(self, numProj, numBands, bandSize):
+        ''' k is number of random projections it makes'''
         ''' dim is number of dimensions '''
-        self.numProj = numProj
+        self.k = k
         self.hasProjector = False
         self.hasProjection = False
         self.hasFinder = False
-        self.numBands = numBands
-        self.bandSize = bandSize
-        self.data = data
-        self.replace = replace
-
-        self.hasData = (data is not None)
-
 
     def makeProjector(self, dim):
-        self.projector = numpy.random.randn(dim, self.numProj)
+        self.projector = numpy.random.randn(dim, self.k)
         self.hasProjector = True
 
-    def project(self, data = None):  # make a  projection
+    def project(self, data):  # make a  projection
         '''data assumed to have one col per dimension
         and one observation per row'''
-
-        if not self.hasData:
-            if data is None:
-                raise ValueError('need data to project')
-            else:
-                self.data = data
-                self.hasData = True
-
         if not self.hasProjector:
-            self.makeProjector(self.data.shape[1])
-        self.projection = (numpy.sign(numpy.matmul(self.data, self.projector))+1)/2
+            self.makeProjector(data.shape[1])
+        self.projection = (numpy.sign(numpy.matmul(data, self.projector))+1)/2
         self.hasProjection = True
 
-    def getProjection(self, data = None):  # accessor for projection
-        if not self.hasData:
-            if data is None:
-                raise ValueError('need data to make a projector')
-            else:
-                self.data = data
-                self.hasData = True
-
+    def getProjection(self, data):  # accessor for projection
         if not self.hasProjection:
-            self.project(self.data)
-        return (numpy.sign(numpy.matmul(self.data, self.projector))+1)/2
+            self.project(data)
+        return (numpy.sign(numpy.matmul(data, self.projector))+1)/2
 
-    def makeFinder(self, numBands=None, bandSize=None, data=None):
+    def makeFinder(self, numBands=5, bandSize=3, data=None):
         ''' make a list of numBands dictionaries for randomly chosen subsets
         of bits'''
-
-        if numBands is None:
-            if self.numBands is None:
-                raise ValueError('Number of bands not specified')
-        else:
-            self.numBands = numBands
-
-        if bandSize is None:
-            if self.bandSize is None:
-                raise ValueError('band size not specified')
-        else:
-            self.bandSize = bandSize
-
-
 
         if not (data is None):
             self.project(data)
         elif not self.hasProjection:
-            print "can't make hashmaps without data!"
-        dicts = []
+            print("can't make hashmaps without data!")
         subsets = []
-        for i in range(self.numBands):
-            inds = numpy.random.choice(self.numProj, self.bandSize, replace=False)
+        dicts = []
+        for i in range(numBands):
+            inds = numpy.random.choice(self.k, bandSize, replace=False)
             subsets.append(inds)
             keys = ([tuple(self.projection[row, inds]) for row in range(self.projection.shape[0])])
             newDict = {}
@@ -101,8 +65,9 @@ class lsh:
         if not self.hasFinder:
             if numBands is not None and bandSize is not None:
                 self.makeFinder(numBands, bandSize)
-            elif self.numBands is None or self.bandSize is None:
-                raise ValueError("please specify hash size (bandSize) and # of hashes (numBands)")
+            else:
+                print("please specify hash size (bandSize) and # of hashes (numBands)")
+                return(None)
         candidates = []
         for i in range(len(self.bands)):
             band = self.bands[i]
@@ -117,20 +82,14 @@ class lsh:
         #             candidates = candidates + v
         return numpy.unique(candidates)
 
-    def downSample(self, sampleSize=100, replace = True):
-        if not self.hasProjection:
-            self.project()
-
+    def downSample(self, k=100):
         available = range(self.projection.shape[0])
         sample = []
-        while len(available) > 0 or len(sample) < sampleSize:
+        while len(available) > 0 or len(sample) < k:
             if len(available) == 0:  # reset available if not enough
-                if replace:
-                    available = range(self.projection.shape[0])
-                else:
-                    available = [x for x in range(self.projection.shape[0]) if x not in sample]
+                available = range(self.projection.shape[0])
             next = numpy.random.choice(available)
             sample.append(next)
-            toRemove = self.findCandidates(next, numBands=self.numBands, bandSize=self.bandSize)
+            toRemove = self.findCandidates(next)
             available = [x for x in available if x not in toRemove]
         return numpy.unique(sample)
