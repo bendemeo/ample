@@ -5,7 +5,7 @@ import timeit
 import time
 import cProfile
 import matplotlib.pyplot as mpl
-import lsh_sketch
+from lsh_sketch import *
 
 
 def gauss_test(n, d=1, m=1, stdev=[1]):
@@ -25,7 +25,7 @@ def gauss_test(n, d=1, m=1, stdev=[1]):
 if __name__ == '__main__':
     gauss = numpy.random.randn(100, 99)
     print(gauss.ndim)
-    scheme = rp.lsh(20)  # make 20 hash functions
+    scheme = rp.lsh(numProj=100)  # make 20 hash functions
     print scheme.project(gauss)
     scheme.makeFinder(5, 3)
     print scheme.findCandidates(1)
@@ -33,7 +33,7 @@ if __name__ == '__main__':
     gauss2D = gauss_test(500, 2, 4, [0.1, 1, 0.01, 2])
     mpl.scatter(gauss2D[:, 0], gauss2D[:, 1])
 
-    subInds = lsh_sketch.lshSketch(gauss2D, 100, numProj=100, numBands=10, bandSize=10)
+    subInds = lshSketch(X=gauss2D, N=100, numProj=100, numBands=10, bandSize=10)
 
     # scheme = rp.lsh(200)
     # scheme.makeFinder(1, 100, data=gauss2D)
