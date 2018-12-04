@@ -42,7 +42,7 @@ if __name__ == '__main__':
     cell_labels = le.transform(labels)
 
     experiments_modular(
-        X_dimred, sampling_fns=cosineLSH,
+        X_dimred, sampling_fns=[cosineLSH],
         name=NAMESPACE,
         cell_labels = cell_labels,
         kmeans_ami = True,
