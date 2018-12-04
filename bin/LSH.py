@@ -79,6 +79,7 @@ class LSH:
             inds = numpy.random.choice(self.numHashes, self.bandSize, replace=False)
             subsets.append(inds)
 
+            #hash values on newly created band
             keys = ([tuple(self.hash[row, inds]) for row in range(self.hash.shape[0])])
 
             newDict = {}
