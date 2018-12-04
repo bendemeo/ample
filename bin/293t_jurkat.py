@@ -43,7 +43,7 @@ if __name__ == '__main__':
 
     bandSizes=np.arrange(5,200,5)
     hashSizes=1000*len(bandSizes)
-    bandNums=[x/y for x, y in zip(hashSizes,bandSizes)]:
+    bandNums=[x/y for x, y in zip(hashSizes,bandSizes)]
 
     Ns=[500]
     try_lsh_params(
