@@ -358,5 +358,5 @@ def lsh_stats2(of, X_dimred, samp_idx, name, tests, **kwargs):
             )
             stats.append(ami)
             stats.append(bami)
-        of.write('\t'.join([ str(stat) for stat in stats ]) + '\n')
-        of.flush()
+    of.write('\t'.join([ str(stat) for stat in stats ]) + '\n')
+    of.flush()
