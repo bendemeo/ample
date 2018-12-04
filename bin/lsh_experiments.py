@@ -274,7 +274,7 @@ def try_lsh_params(X_dimred, hasher, name, hashSizes, bandSizes, bandNums, tests
                     kwargs['replace'] = replace
                     kwargs['N'] = N
                     kwargs['seed'] = seed
-                    kwargs['time'] = time
+                    kwargs['time'] = t1-t0
                     kwargs['numHashes'] = numHashes
                     kwargs['numBands'] = numBands
                     kwargs['bandSize'] = bandSize

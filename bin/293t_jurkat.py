@@ -43,7 +43,8 @@ if __name__ == '__main__':
 
 
     try_lsh_params(
-        X_dimred, 'cosineLSH', name=NAMESPACE, hashSizes=[100,100,100,100,100], bandSizes=[10,20,30,40,50], bandNums=[10,5,4,2,2], tests=['kmeans_ami','max_min_dist','rare'], cell_labels=cell_labels, rare_label=le.transform(['293t'])[0]
+        X_dimred, 'cosineLSH', name=NAMESPACE, hashSizes=[100,100,100,100,100], bandSizes=[10,20,30,40,50], bandNums=[10,5,4,2,2], tests=['kmeans_ami','max_min_dist','rare'], cell_labels=cell_labels, rare_label=le.transform(['293t'])[0],
+        n_seeds=2, Ns=[100,500,1000]
     )
 
     # experiments_modular(
