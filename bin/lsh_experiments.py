@@ -253,12 +253,13 @@ def try_lsh_params(X_dimred, hasher, name, hashSizes, bandSizes, bandNums, tests
         numBands=bandNums[i]
         bandSize=bandSizes[i]
 
-        if hasher == 'cosineLSH':
-            downsampler=cosineLSH(X_dimred, numHashes, numBands, bandSize, replace)
-        else:
-            err_exit('hasher')
+
 
         for replace in [True, False]:
+            if hasher == 'cosineLSH':
+                downsampler=cosineLSH(X_dimred, numHashes, numBands, bandSize, replace)
+            else:
+                err_exit('hasher')
 
             for N in Ns:
 
