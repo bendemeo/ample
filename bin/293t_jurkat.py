@@ -41,14 +41,14 @@ if __name__ == '__main__':
     le = LabelEncoder().fit(labels)
     cell_labels = le.transform(labels)
 
-    bandSizes=np.arange(5,200,5)
-    hashSizes=[1000]*len(bandSizes)
+    bandSizes=np.arange(10,200,5)
+    hashSizes=[200]*len(bandSizes)
     bandNums=[x//y for x, y in zip(hashSizes,bandSizes)]
 
     Ns=[500]
     try_lsh_params(
         X_dimred, 'cosineLSH', name=NAMESPACE+'_lshparams', hashSizes=hashSizes, bandSizes=bandSizes, bandNums=bandNums, tests=['kmeans_ami','max_min_dist','rare'], cell_labels=cell_labels, rare_label=le.transform(['293t'])[0],
-        n_seeds=2, Ns=Ns
+        n_seeds=5, Ns=Ns
     )
 
     # experiments_modular(
