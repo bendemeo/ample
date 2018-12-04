@@ -46,6 +46,8 @@ def experiments_modular(X_dimred, sampling_fns, name, n_seeds=10, **kwargs):
         else:
             Ns = [ 100, 500, 1000, 5000, 10000, 20000 ]
 
+        not_replace = set([ 'kmeans++', 'dropClust' ])
+
         sampling_fn_names = [x.__name__ for x in sampling_fns]
 
         assert(len(sampling_fns) == len(sampling_fn_names))
