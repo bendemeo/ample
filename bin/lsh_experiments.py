@@ -93,12 +93,16 @@ def experiments_modular(X_dimred, sampling_fns, name, n_seeds=10, **kwargs):
                             if 'numHashes' in kwargs:
                                 numHashes = kwargs['numHashes']
                             else:
-                                numHashes = 10
+                                numHashes = 100
+                            if 'numBands' in kwargs:
+                                numBands = kwargs['numBands']
+                            else:
+                                numBands=10
                             kwargs['bandSize'] = bandSize
                             kwargs['numHashes'] = numHashes
                             log('Sampling {}'.format(sampling_fn_names[s_idx]))
                             t0 = time()
-                            samp_idx = sampling_fn(X_dimred, N, numHashes = numHashes, bandSize=bandSize, replace = replace)
+                            samp_idx = sampling_fn(X_dimred, N, numBands=numBands, numHashes = numHashes, bandSize=bandSize, replace = replace)
                             t1 = time()
                             log('Sampling {} done'.format(sampling_fn_names[s_idx]))
                         else:
