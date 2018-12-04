@@ -41,7 +41,7 @@ if __name__ == '__main__':
     le = LabelEncoder().fit(labels)
     cell_labels = le.transform(labels)
 
-    bandSizes=np.arrange(5,200,5)
+    bandSizes=np.arange(5,200,5)
     hashSizes=1000*len(bandSizes)
     bandNums=[x/y for x, y in zip(hashSizes,bandSizes)]
 
