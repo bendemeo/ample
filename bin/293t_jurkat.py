@@ -41,16 +41,21 @@ if __name__ == '__main__':
     le = LabelEncoder().fit(labels)
     cell_labels = le.transform(labels)
 
-    experiments_modular(
-        X_dimred, sampling_fns=[lshSketch],
-        name=NAMESPACE,
-        cell_labels = cell_labels,
-        kmeans_ami = True,
-        louvain_ami = False,
-        rare=True,
-        rare_label=le.transform(['293t'])[0],
 
+    try_lsh_params(
+        X_dimred, 'cosineLSH', name=NAMESPACE, hashSizes=[100,100,100,100,100], bandSizes=[10,20,30,40,50], bandNums=[10,5,4,2,2], tests=['kmeans_ami','max_min_dist','rare'], cell_labels=cell_labels, rare_label=le.transform(['293t'])[0]
     )
+
+    # experiments_modular(
+    #     X_dimred, sampling_fns=[lshSketch],
+    #     name=NAMESPACE,
+    #     cell_labels = cell_labels,
+    #     kmeans_ami = True,
+    #     louvain_ami = False,
+    #     rare=True,
+    #     rare_label=le.transform(['293t'])[0],
+    #
+    # )
 
     # experiments(
     #     X_dimred, NAMESPACE,
