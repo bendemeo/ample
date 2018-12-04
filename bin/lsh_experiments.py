@@ -290,9 +290,9 @@ def lsh_stats2(of, X_dimred, samp_idx, name, tests, **kwargs):
         kwargs['N'],
         kwargs['seed'],
         kwargs['time'],
-        kwargs['bandSize'],
         kwargs['numHashes'],
-        kwargs['numBands']
+        kwargs['numBands'],
+        kwargs['bandSize']
     ]
     for t in tests:
         if t == 'rare':
