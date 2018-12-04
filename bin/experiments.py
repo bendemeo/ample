@@ -305,9 +305,17 @@ def experiments(X_dimred, name, n_seeds=10, **kwargs):
                         t1 = time()
                         log('Sampling gs_gap_N done.')
                     elif sampling_fn_names[s_idx] == 'lshSketch':
+                        if 'bandSize' in kwargs:
+                            bandSize = kwargs['bandSize']
+                        else:
+                            bandSize = 10
+                        if 'numHashes' in kwargs:
+                            numHashes = kwargs['numHashes']
+                        else:
+                            numHashes = 10
                         log('Sampling {}'.format(sampling_fn_names[s_idx]))
                         t0 = time()
-                        samp_idx = sampling_fn(X_dimred, N, numHashes = 100, numBands = 1, bandSize = 50, replace = replace)
+                        samp_idx = sampling_fn(X_dimred, N, numHashes = numHashes, numBands = numBands, bandSize = 50, replace = replace)
                         t1 = time()
                         log('Sampling {} done'.format(sampling_fn_names[s_idx]))
                     else:

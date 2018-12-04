@@ -9,6 +9,9 @@ from experiments import *
 from process import load_names
 from utils import *
 
+from lsh_experiments import *
+from cosineLSH import *
+
 NAMESPACE = '293t_jurkat'
 METHOD = 'svd'
 DIMRED = 100
@@ -38,15 +41,25 @@ if __name__ == '__main__':
     le = LabelEncoder().fit(labels)
     cell_labels = le.transform(labels)
 
-    experiments(
+    experiments_modular(
         X_dimred, NAMESPACE,
-        cell_labels=cell_labels,
-        kmeans_ami=True, louvain_ami=False,
+        cell_labels = cell_labels,
+        kmeans_ami = True,
+        louvain_ami = False,
         rare=True,
         rare_label=le.transform(['293t'])[0],
-        #entropy=True,
-        #max_min_dist=True
+        sampling_fns=[cosineLSH]
     )
+    
+    # experiments(
+    #     X_dimred, NAMESPACE,
+    #     cell_labels=cell_labels,
+    #     kmeans_ami=True, louvain_ami=False,
+    #     rare=True,
+    #     rare_label=le.transform(['293t'])[0],
+    #     #entropy=True,
+    #     #max_min_dist=True
+    # )
     exit()
 
     from differential_entropies import differential_entropies
