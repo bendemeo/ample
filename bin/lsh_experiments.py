@@ -245,8 +245,8 @@ def try_lsh_params(X_dimred, hasher, name, hashSizes, bandSizes, bandNums, tests
     else:
         Ns = [ 100, 500, 1000, 5000, 10000, 20000 ]
 
-    assert(len(hashSizes)==length(bandSizes))
-    assert(len(bandSizes)==length(bandNums))
+    assert(len(hashSizes)==len(bandSizes))
+    assert(len(bandSizes)==len(bandNums))
 
     for i in range(len(hashSizes)):
         numHashes=hashSizes[i]
