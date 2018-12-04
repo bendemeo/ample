@@ -119,7 +119,7 @@ def experiments_modular(X_dimred, sampling_fns, name, n_seeds=10, **kwargs):
                         kwargs['seed'] = seed
                         kwargs['time'] = t1 - t0
 
-                        experiment_stats(of, X_dimred, samp_idx, name, **kwargs)
+                        lsh_stats(of, X_dimred, samp_idx, name, **kwargs)
 
         of.close()
 
