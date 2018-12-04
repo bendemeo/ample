@@ -42,13 +42,14 @@ if __name__ == '__main__':
     cell_labels = le.transform(labels)
 
     experiments_modular(
-        X_dimred, NAMESPACE,
+        X_dimred, sampling_fns=cosineLSH,
+        name=NAMESPACE,
         cell_labels = cell_labels,
         kmeans_ami = True,
         louvain_ami = False,
         rare=True,
         rare_label=le.transform(['293t'])[0],
-        sampling_fns=cosineLSH
+
     )
 
     # experiments(
