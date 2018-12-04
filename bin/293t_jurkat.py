@@ -48,7 +48,7 @@ if __name__ == '__main__':
         louvain_ami = False,
         rare=True,
         rare_label=le.transform(['293t'])[0],
-        sampling_fns=list(cosineLSH)
+        sampling_fns=cosineLSH
     )
 
     # experiments(
