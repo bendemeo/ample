@@ -42,7 +42,7 @@ if __name__ == '__main__':
     cell_labels = le.transform(labels)
 
     bandSizes=np.arange(5,200,5)
-    hashSizes=1000*len(bandSizes)
+    hashSizes=[1000]*len(bandSizes)
     bandNums=[x/y for x, y in zip(hashSizes,bandSizes)]
 
     Ns=[500]
