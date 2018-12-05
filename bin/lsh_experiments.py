@@ -2,7 +2,7 @@ from experiments import *
 
 
 
-def try_lsh_params(X_dimred, hasher, name, hashSizes, bandSizes, bandNums, tests, n_seeds=10, visualize = False, **kwargs):
+def try_lsh_params(X_dimred, hasher, name, hashSizes, bandSizes, bandNums, tests, n_seeds=10, makeVisualization = False, **kwargs):
     columns = [
         'name', 'sampling_fn', 'replace', 'N', 'seed', 'time', 'numHashes', 'numBands',
         'bandSize'
@@ -62,7 +62,7 @@ def try_lsh_params(X_dimred, hasher, name, hashSizes, bandSizes, bandNums, tests
                     log('sampling {} done'.format(hasher))
 
 
-                    if visualize and seed == 0:
+                    if makeVisualization and seed == 0:
                         log('making visualization...')
                         visualize([ X_dimred[samp_idx,:] ], kwargs['cell_labels'],
                             name+'_size_{}_bands_{}'.format(bandSize, numBands),
