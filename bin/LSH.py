@@ -8,7 +8,7 @@ from utils import *
 class LSH:
     '''class to construct a random projection of data'''
 
-    def __init__(self, data, numHashes, numBands, bandSize, replace=False, keepStats=TRUE):
+    def __init__(self, data, numHashes, numBands, bandSize, replace=False, keepStats=True):
         ''' numHashes is number of random projections it makes'''
         ''' dim is number of dimensions '''
         self.numHashes = numHashes
