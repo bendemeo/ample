@@ -157,7 +157,7 @@ class LSH:
 
             toRemove = self.findCandidates(next)
             available = [x for x in available if x not in toRemove]
-            log('{} remaining'.formate(len(available)))
+            log('{} remaining'.format(len(available)))
 
         if self.keepStats:
             if not reset:
