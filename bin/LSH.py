@@ -140,7 +140,7 @@ class LSH:
         if self.keepStats:
             self.lastCounts=[]
 
-        while len(available) > 0 or len(sample) < sampleSize:
+        while len(sample) < sampleSize:
             if len(available) == 0:  # reset available if not enough
                 reset = True
                 log("sampled {} out of {} before reset".format(count, sampleSize))
@@ -151,8 +151,10 @@ class LSH:
                     available = range(self.hash.shape[0])
                 else:
                     available = [x for x in range(self.hash.shape[0]) if x not in sample]
+
             next = numpy.random.choice(available)
             sample.append(next)
+
             count = count + 1
 
             toRemove = self.findCandidates(next)
