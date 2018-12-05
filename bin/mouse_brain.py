@@ -83,7 +83,7 @@ if __name__ == '__main__':
         gene_names=viz_genes, genes=genes,
         gene_expr=vstack(datasets),
         kmeans=False,
-        visualize_orig=True
+        visualize_orig=False
     )
 
     # experiments(
