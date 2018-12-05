@@ -253,8 +253,6 @@ def try_lsh_params(X_dimred, hasher, name, hashSizes, bandSizes, bandNums, tests
         numBands=bandNums[i]
         bandSize=bandSizes[i]
 
-
-
         for replace in [True, False]:
             if hasher == 'cosineLSH':
                 downsampler=cosineLSH(X_dimred, numHashes, numBands, bandSize, replace)
@@ -278,6 +276,12 @@ def try_lsh_params(X_dimred, hasher, name, hashSizes, bandSizes, bandNums, tests
                     kwargs['numHashes'] = numHashes
                     kwargs['numBands'] = numBands
                     kwargs['bandSize'] = bandSize
+
+                    if 'lastCounts' in tests:
+                        kwargs['lastCounts'] = downsampler.getMeanCounts()
+
+                    if 'remnants' in tests:
+                        kwargs['remnants'] = downsampler.getRemnants()
 
 
                     lsh_stats2(of, X_dimred, samp_idx, name, tests, **kwargs)
@@ -358,5 +362,9 @@ def lsh_stats2(of, X_dimred, samp_idx, name, tests, **kwargs):
             )
             stats.append(ami)
             stats.append(bami)
+        elif t == 'lastCounts':
+            stats.append(kwargs['lastCounts'])
+        elif t == 'remnants':
+            stats.append(kwargs['remnants'])
     of.write('\t'.join([ str(stat) for stat in stats ]) + '\n')
     of.flush()

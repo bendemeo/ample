@@ -116,6 +116,12 @@ class LSH:
         return numpy.unique(candidates)
 
 
+    def getMeanCounts:
+        return sum(self.lastCounts)/len(self.lastCounts)
+
+    def getRemnants:
+        return self.remnants
+
     def downSample(self, sampleSize=100, replace = True):
 
         #randomly make new hashes for each downsampling
@@ -150,7 +156,7 @@ class LSH:
 
         if keepStats:
             if not reset:
-                self.remnants = available
+                self.remnants = len(available)
             else:
                 self.remnants = 0
 
