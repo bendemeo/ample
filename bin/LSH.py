@@ -19,6 +19,7 @@ class LSH:
         self.numObs, self.numFeatures = self.data.shape
         self.lastCounts = None  # how many sampled before reset
         self.remnants = None  # how many are still fair game after sampling
+        self.keepStats = keepStats
 
         #to be updated by further function calls
         self.hash = None
@@ -133,14 +134,14 @@ class LSH:
         count = 0 # how many have been added since reset
         reset = False  # whether we have reset
 
-        if keepStats:
+        if self.keepStats:
             self.lastCounts=[]
 
         while len(available) > 0 or len(sample) < sampleSize:
             if len(available) == 0:  # reset available if not enough
                 reset = True
                 log("sampled {} out of {} before reset".format(count, sampleSize))
-                if(keepStats):
+                if(self.keepStats):
                     self.lastCounts.append(count)
                 count = 0
                 if replace:
@@ -154,7 +155,7 @@ class LSH:
             toRemove = self.findCandidates(next)
             available = [x for x in available if x not in toRemove]
 
-        if keepStats:
+        if self.keepStats:
             if not reset:
                 self.remnants = len(available)
             else:
