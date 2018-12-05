@@ -54,13 +54,19 @@ def try_lsh_params(X_dimred, hasher, name, hashSizes, bandSizes, bandNums, tests
             for N in Ns:
 
                 for seed in range(n_seeds):
-                    if visualize and seed == 0:
-                        visualize(name+'_size_{}_bands_{}'.format(bandSize, numBands)))
                     log('sampling LSH...')
                     t0 = time()
                     samp_idx=downsampler.downSample(N, replace)
+
                     t1 = time()
                     log('sampling {} done'.format(hasher))
+
+
+                if visualize and seed == 0:
+                    visualize([ X_dimred[samp_idx,:] ], kwargs['cell_labels'],
+                        name+'_size_{}_bands_{}'.format(bandSize, numBands),
+                        image_suffix='.png'
+                    )
 
                     kwargs['sampling_fn']=hasher
                     kwargs['replace'] = replace
