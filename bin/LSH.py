@@ -8,7 +8,7 @@ from utils import *
 class LSH:
     '''class to construct a random projection of data'''
 
-    def __init__(self, data, numHashes, numBands, bandSize, replace=False):
+    def __init__(self, data, numHashes, numBands, bandSize, replace=False, keepStats=TRUE):
         ''' numHashes is number of random projections it makes'''
         ''' dim is number of dimensions '''
         self.numHashes = numHashes
@@ -17,6 +17,8 @@ class LSH:
         self.bandSize = bandSize
         self.replace = replace
         self.numObs, self.numFeatures = self.data.shape
+        self.lastCounts = None  # how many sampled before reset
+        self.remnants = None  # how many are still fair game after sampling
 
         #to be updated by further function calls
         self.hash = None
@@ -123,10 +125,17 @@ class LSH:
         available = range(self.hash.shape[0])
         sample = []
         count = 0 # how many have been added since reset
+        reset = False  # whether we have reset
+
+        if keepStats:
+            self.lastCounts=[]
 
         while len(available) > 0 or len(sample) < sampleSize:
             if len(available) == 0:  # reset available if not enough
+                reset = True
                 log("sampled {} out of {} before reset".format(count, sampleSize))
+                if(keepStats):
+                    self.lastCounts.append(count)
                 count = 0
                 if replace:
                     available = range(self.hash.shape[0])
@@ -138,4 +147,11 @@ class LSH:
 
             toRemove = self.findCandidates(next)
             available = [x for x in available if x not in toRemove]
+
+        if keepStats:
+            if not reset:
+                self.remnants = available
+            else:
+                self.remnants = 0
+
         return numpy.unique(sample)
