@@ -45,7 +45,7 @@ def keep_valid(datasets):
               .format(data_names[i], len(valid_idx)))
         n_valid += len(valid_idx)
     print('Found {} valid cells among all datasets'.format(n_valid))
-    
+
 if __name__ == '__main__':
     datasets, genes_list, n_cells = load_names(data_names, norm=False)
     keep_valid(datasets)
@@ -61,7 +61,7 @@ if __name__ == '__main__':
         np.savetxt('data/dimred/{}_{}.txt'.format(METHOD, NAMESPACE), X_dimred)
     else:
         X_dimred = np.loadtxt('data/dimred/{}_{}.txt'.format(METHOD, NAMESPACE))
-        
+
     viz_genes = [
         'Gja1', 'Flt1', 'Gabra6', 'Syt1', 'Gabrb2', 'Gabra1',
         'Meg3', 'Mbp', 'Rgs5', 'Pcp2', 'Dcn', 'Pvalb', 'Nnat',
@@ -78,48 +78,52 @@ if __name__ == '__main__':
     cell_names = sorted(set(labels))
     cell_labels = le.transform(labels)
 
-    experiments(
-        X_dimred, NAMESPACE, n_seeds=2,
-        cell_labels=cell_labels,
-        kmeans_ami=True, louvain_ami=True,
-        rare=True,
-        rare_label=le.transform(['Endothelial_Tip'])[0],
+    experiment_lsh(
+        X_dimred, NAMESPACE, n_seeds=2, cell_labels=cell_labels,
+        kmeans_ami=True, rare=True,
+        rare_label=le.transform(['Endothelial_Tip'])[0]
     )
-    exit()
-    from differential_entropies import differential_entropies
-    differential_entropies(X_dimred, labels)
-    experiment_gs(
-        X_dimred, NAMESPACE, cell_labels=cell_labels,
-        gene_names=viz_genes, genes=genes,
-        gene_expr=vstack(datasets),
-        kmeans=False, visualize_orig=False
-    )
-    experiment_uni(
-        X_dimred, NAMESPACE, cell_labels=cell_labels,
-        gene_names=viz_genes, genes=genes,
-        gene_expr=vstack(datasets),
-        kmeans=False, visualize_orig=False
-    )
-    experiment_srs(
-        X_dimred, NAMESPACE, cell_labels=cell_labels,
-        gene_names=viz_genes, genes=genes,
-        gene_expr=vstack(datasets),
-        kmeans=False, visualize_orig=False
-    )
-    experiment_kmeanspp(
-        X_dimred, NAMESPACE, cell_labels=cell_labels,
-        gene_names=viz_genes, genes=genes,
-        gene_expr=vstack(datasets),
-        kmeans=False, visualize_orig=False
-    )
+
+    # experiments(
+    #     X_dimred, NAMESPACE, n_seeds=2,
+    #     cell_labels=cell_labels,
+    #     kmeans_ami=True, louvain_ami=True,
+    #     rare=True,
+    #     rare_label=le.transform(['Endothelial_Tip'])[0],
+    # )
+    # exit()
+    # from differential_entropies import differential_entropies
+    # differential_entropies(X_dimred, labels)
+    # experiment_gs(
+    #     X_dimred, NAMESPACE, cell_labels=cell_labels,
+    #     gene_names=viz_genes, genes=genes,
+    #     gene_expr=vstack(datasets),
+    #     kmeans=False, visualize_orig=False
+    # )
+    # experiment_uni(
+    #     X_dimred, NAMESPACE, cell_labels=cell_labels,
+    #     gene_names=viz_genes, genes=genes,
+    #     gene_expr=vstack(datasets),
+    #     kmeans=False, visualize_orig=False
+    # )
+    # experiment_srs(
+    #     X_dimred, NAMESPACE, cell_labels=cell_labels,
+    #     gene_names=viz_genes, genes=genes,
+    #     gene_expr=vstack(datasets),
+    #     kmeans=False, visualize_orig=False
+    # )
+    # experiment_kmeanspp(
+    #     X_dimred, NAMESPACE, cell_labels=cell_labels,
+    #     gene_names=viz_genes, genes=genes,
+    #     gene_expr=vstack(datasets),
+    #     kmeans=False, visualize_orig=False
+    # )
 
     from ample import gs
     samp_idx = gs(X_dimred, 1000, replace=False)
     save_sketch(X, samp_idx, genes, NAMESPACE + '1000')
-    
+
     for scale in [ 10, 25, 100 ]:
         N = int(X.shape[0] / scale)
         samp_idx = gs(X_dimred, N, replace=False)
         save_sketch(X, samp_idx, genes, NAMESPACE + str(N))
-    
-    

@@ -92,6 +92,10 @@ def experiment_uni(X_dimred, name, **kwargs):
     kwargs['sample_type'] = 'uni'
     experiment(uniform, X_dimred, name, **kwargs)
 
+def experiment_lsh(X_dimred, name, **kwargs):
+    kwargs['sample_type'] = 'lshSketch'
+    experiment(lshSketch, X_dimred, name, **kwargs)
+
 def experiment(sampling_fn, X_dimred, name, cell_labels=None,
                kmeans=True, visualize_orig=True,
                downsample=True, n_downsample=100000,
