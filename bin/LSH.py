@@ -118,7 +118,10 @@ class LSH:
 
 
     def getMeanCounts(self):
-        return sum(self.lastCounts)/len(self.lastCounts)
+        if len(self.lastCounts) == 0:
+            return -1  # default if you never reset
+        else:
+            return sum(self.lastCounts)/len(self.lastCounts)
 
     def getRemnants(self):
         return self.remnants
