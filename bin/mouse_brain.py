@@ -80,8 +80,10 @@ if __name__ == '__main__':
 
     experiment_lsh(
         X_dimred, NAMESPACE, n_seeds=2, cell_labels=cell_labels,
-        kmeans_ami=True, rare=True,
-        rare_label=le.transform(['Endothelial_Tip'])[0]
+        gene_names=viz_genes, genes=genes,
+        gene_expr=vstack(datasets),
+        kmeans=False,
+        visualize_orig=True
     )
 
     # experiments(
