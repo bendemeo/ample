@@ -79,7 +79,7 @@ if __name__ == '__main__':
     cell_labels = le.transform(labels)
 
     experiment_lsh(
-        X_dimred, NAMESPACE, n_seeds=2, cell_labels=cell_labels,
+        X_dimred, NAMESPACE, cell_labels=cell_labels,
         gene_names=viz_genes, genes=genes,
         gene_expr=vstack(datasets),
         kmeans=False,
