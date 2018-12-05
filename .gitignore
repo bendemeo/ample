@@ -12,5 +12,4 @@ build/
 data*
 dist/
 plots*
-target*
 temp*
