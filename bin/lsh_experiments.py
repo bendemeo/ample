@@ -64,9 +64,11 @@ def try_lsh_params(X_dimred, hasher, name, hashSizes, bandSizes, bandNums, tests
 
                     if makeVisualization and seed == 0:
                         log('making visualization...')
-                        visualize([ X_dimred[samp_idx,:] ], kwargs['cell_labels'],
+                        visualize([ X_dimred[samp_idx,:] ],
+                            kwargs['cell_labels'][samp_idx],
                             name+'_size_{}_bands_{}'.format(bandSize, numBands),
-                            image_suffix='.png'
+                            image_suffix='.png',
+                            kwargs['cell_types']
                         )
 
                     kwargs['sampling_fn']=hasher
