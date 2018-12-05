@@ -237,7 +237,7 @@ def try_lsh_params(X_dimred, hasher, name, hashSizes, bandSizes, bandNums, tests
         else:
             columns.append(t)
 
-    of = open('target/experiments/{}_LSHparamtest.txt.1'.format(name),'a')
+    of = open('target/experiments/{}.txt.1'.format(name),'a')
     of.write('\t'.join(columns) + '\n')
 
     if 'Ns' in kwargs:
