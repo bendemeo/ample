@@ -12,7 +12,7 @@ from utils import *
 from lsh_experiments import *
 from cosineLSH import *
 
-NAMESPACE = '293t_jurkat_resettest'
+NAMESPACE = '293t_jurkat_lsh'
 METHOD = 'svd'
 DIMRED = 100
 

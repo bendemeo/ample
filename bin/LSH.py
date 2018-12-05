@@ -116,10 +116,10 @@ class LSH:
         return numpy.unique(candidates)
 
 
-    def getMeanCounts:
+    def getMeanCounts(self):
         return sum(self.lastCounts)/len(self.lastCounts)
 
-    def getRemnants:
+    def getRemnants(self):
         return self.remnants
 
     def downSample(self, sampleSize=100, replace = True):
