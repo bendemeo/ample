@@ -166,5 +166,5 @@ class LSH:
                 self.remnants = len(available)
             else:
                 self.remnants = 0
-
+        assert(len(sample)==sampleSize)
         return numpy.unique(sample)
