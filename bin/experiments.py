@@ -153,15 +153,18 @@ def experiment(sampling_fn, X_dimred, name, cell_labels=None,
 
     # Downsample while preserving structure and visualize.
 
-    Ns = [ 1000, 5000, 10000, 20000, 50000 ]
+    Ns = [5000, 10000, 20000, 50000 ]
 
     for N in Ns:
         if N >= X_dimred.shape[0]:
             continue
 
         log('Sampling {}...'.format(N))
+        t1=time()
         samp_idx = sampling_fn(X_dimred, N)
+        t2=time()
         log('Found {} entries'.format(len(set(samp_idx))))
+        log('it took {} seconds to do it'.format(t2-t1))
 
         log('Visualizing sampled...')
 
