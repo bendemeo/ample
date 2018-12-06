@@ -47,12 +47,25 @@ if __name__ == '__main__':
 
     Ns=[500]
 
+    bandSizes=np.arange(10,20,1)
+    hashSizes=[200]*len(bandSizes)
+    bandNums=[x//y for x, y in zip(hashSizes,bandSizes)]
 
-    try_lsh_params(
-        X_dimred, 'cosineLSH', name=NAMESPACE, hashSizes=hashSizes, bandSizes=bandSizes, bandNums=bandNums, tests=['kmeans_ami','max_min_dist','rare', 'lastCounts','remnants'], cell_labels=cell_labels, rare_label=le.transform(['293t'])[0],
-        n_seeds=5, Ns=Ns, makeVisualization = True,
-        cell_types=labels
-    )
+    params = {
+        'numHashes':hashSizes,
+        'numBands':bandNums,
+        'bandSizes':bandSizes
+    }
+    testresults = try_params(X_dimred, 'cosineLSH', params,
+    ['max_min_dist','time','kmeans_ami','lastCounts','remnants'])
+
+    print(testresults)
+
+    # try_lsh_params(
+    #     X_dimred, 'cosineLSH', name=NAMESPACE, hashSizes=hashSizes, bandSizes=bandSizes, bandNums=bandNums, tests=['kmeans_ami','max_min_dist','rare', 'lastCounts','remnants'], cell_labels=cell_labels, rare_label=le.transform(['293t'])[0],
+    #     n_seeds=5, Ns=Ns, makeVisualization = True,
+    #     cell_types=labels
+    # )
 
     # experiments_modular(
     #     X_dimred, sampling_fns=[lshSketch],
