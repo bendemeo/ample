@@ -23,12 +23,12 @@ def gauss_test(n=[100], d=1, m=1, stdev=[1]):
 
 
 if __name__ == '__main__':
-    gauss = numpy.random.randn(100, 99)
-    print(gauss.ndim)
-    scheme = rp.lsh(numProj=100)  # make 20 hash functions
-    print scheme.project(gauss)
-    scheme.makeFinder(5, 3)
-    print scheme.findCandidates(1)
+    # gauss = numpy.random.randn(100, 99)
+    # print(gauss.ndim)
+    # scheme = rp.lsh(numProj=100)  # make 20 hash functions
+    # print scheme.project(gauss)
+    # scheme.makeFinder(5, 3)
+    # print scheme.findCandidates(1)
 
     gauss2D = gauss_test([10,20,100,200], 2, 4, [0.1, 1, 0.01, 2])
     mpl.scatter(gauss2D[:, 0], gauss2D[:, 1])
