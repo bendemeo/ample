@@ -82,8 +82,11 @@ class LSH:
             inds = numpy.random.choice(self.numHashes, self.bandSize, replace=False)
             subsets.append(inds)
 
+            if len(self.hash.shape)==1:
+                keys=[tuple(self.hash[inds])]
             #hash values on newly created band
-            keys = ([tuple(self.hash[row, inds]) for row in range(self.hash.shape[0])])
+            else:
+                keys = ([tuple(self.hash[row, inds]) for row in range(self.hash.shape[0])])
 
             newDict = {}
             for j in range(len(keys)):
@@ -111,7 +114,11 @@ class LSH:
         for i in range(len(self.bands)):
             band = self.bands[i]
             d = self.finder[i]
-            key = tuple(self.hash[ind, band])
+
+            if len(self.hash.shape)==1:
+                key=tuple(self.hash[band])
+            else:
+                key = tuple(self.hash[ind, band])
             candidates = candidates + d.get(key)  # this is O(n) on gauss
 
         return numpy.unique(candidates)

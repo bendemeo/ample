@@ -30,7 +30,7 @@ def gs_gap(X, N, k='auto', seed=None, replace=False,
     X_ptp = X.ptp(0)
 
     low_unit, high_unit = 0., max(X_ptp)
-    
+
     unit = (low_unit + high_unit) / 4.
 
     n_iter = 0
@@ -44,7 +44,7 @@ def gs_gap(X, N, k='auto', seed=None, replace=False,
         for d in range(n_features):
             if X_ptp[d] <= unit:
                 continue
-                
+
             points_d = X[:, d]
             curr_start = None
             curr_interval = -1
@@ -67,7 +67,7 @@ def gs_gap(X, N, k='auto', seed=None, replace=False,
 
         if verbose:
             log('Found {} non-empty grid cells'.format(len(grid)))
-            
+
         if len(grid) > k * (1 + alpha):
             # Too many grid cells, increase unit.
             low_unit = unit
@@ -75,7 +75,7 @@ def gs_gap(X, N, k='auto', seed=None, replace=False,
                 unit *= 2.
             else:
                 unit = (unit + high_unit) / 2.
-            
+
             if verbose:
                 log('Grid size {}, increase unit to {}'
                     .format(len(grid), unit))
@@ -87,7 +87,7 @@ def gs_gap(X, N, k='auto', seed=None, replace=False,
                 unit /= 2.
             else:
                 unit = (unit + low_unit) / 2.
-                
+
             if verbose:
                 log('Grid size {}, decrease unit to {}'
                     .format(len(grid), unit))
@@ -97,7 +97,7 @@ def gs_gap(X, N, k='auto', seed=None, replace=False,
         if high_unit is not None and low_unit is not None and \
            high_unit - low_unit < 1e-20:
             break
-        
+
         if n_iter >= max_iter:
             # Should rarely get here.
             sys.stderr.write('WARNING: Max iterations reached, try increasing '
@@ -141,7 +141,7 @@ def gs_grid(X, N, k='auto', seed=None, replace=False,
     X /= X.max()
 
     low_unit, high_unit = 0., np.max(X)
-    
+
     unit = (low_unit + high_unit) / 4.
 
     n_iter = 0
@@ -158,7 +158,7 @@ def gs_grid(X, N, k='auto', seed=None, replace=False,
             if verbose > 1:
                 if sample_idx % 10000 == 0:
                     log('sample_idx = {}'.format(sample_idx))
-            
+
             sample = X[sample_idx, :]
 
             grid_cell = tuple(np.floor(sample / unit_d).astype(int))
@@ -169,7 +169,7 @@ def gs_grid(X, N, k='auto', seed=None, replace=False,
 
         if verbose:
             log('Found {} non-empty grid cells'.format(len(grid)))
-            
+
         if len(grid) > k * (1 + alpha):
             # Too many grid cells, increase unit.
             low_unit = unit
@@ -177,7 +177,7 @@ def gs_grid(X, N, k='auto', seed=None, replace=False,
                 unit *= 2.
             else:
                 unit = (unit + high_unit) / 2.
-            
+
             if verbose:
                 log('Grid size {}, increase unit to {}'
                     .format(len(grid), unit))
@@ -189,7 +189,7 @@ def gs_grid(X, N, k='auto', seed=None, replace=False,
                 unit /= 2.
             else:
                 unit = (unit + low_unit) / 2.
-                
+
             if verbose:
                 log('Grid size {}, decrease unit to {}'
                     .format(len(grid), unit))
@@ -199,7 +199,7 @@ def gs_grid(X, N, k='auto', seed=None, replace=False,
         if high_unit is not None and low_unit is not None and \
            high_unit - low_unit < 1e-20:
             break
-        
+
         if n_iter >= max_iter:
             # Should rarely get here.
             sys.stderr.write('WARNING: Max iterations reached, try increasing '
@@ -209,7 +209,7 @@ def gs_grid(X, N, k='auto', seed=None, replace=False,
 
     if verbose:
         log('Found {} grid cells'.format(len(grid)))
-                
+
     gs_idx = []
     for n in range(N):
         grid_cells = list(grid.keys())
@@ -227,13 +227,13 @@ def gs_grid(X, N, k='auto', seed=None, replace=False,
 def gs_exact(X, N, k='auto', seed=None, replace=False,
              tol=1e-3, n_iter=300, verbose=1):
     ge_idx = gs(X, N, replace=replace)
-    
+
     dist = pairwise_distances(X, n_jobs=-1)
-    
+
     cost = dist.max()
 
     iter_i = 0
-    
+
     while iter_i < n_iter:
 
         if verbose:
@@ -301,7 +301,7 @@ def uniform(X, N, seed=None, replace=False):
 
     if not seed is None:
         np.random.seed(seed)
-        
+
     return list(np.random.choice(n_samples, size=N, replace=replace))
 
 def kmeans(X, N, seed=None, replace=False, init='random'):
@@ -316,7 +316,7 @@ def kmeans(X, N, seed=None, replace=False, init='random'):
         if cluster not in louv:
             louv[cluster] = []
         louv[cluster].append(i)
-    
+
     lv_idx = []
     for n in range(N):
         louv_cells = list(louv.keys())
@@ -339,11 +339,11 @@ def louvain1(X, N, seed=None, replace=False):
 
 def louvain3(X, N, seed=None, replace=False):
     return louvain(X, N, resolution=3, seed=seed, replace=replace)
-    
+
 def louvain(X, N, resolution=1, seed=None, replace=False):
     from anndata import AnnData
     import scanpy.api as sc
-    
+
     adata = AnnData(X=X)
     sc.pp.neighbors(adata, use_rep='X')
     sc.tl.louvain(adata, resolution=resolution, key_added='louvain')
@@ -354,7 +354,7 @@ def louvain(X, N, resolution=1, seed=None, replace=False):
         if cluster not in louv:
             louv[cluster] = []
         louv[cluster].append(i)
-    
+
     lv_idx = []
     for n in range(N):
         louv_cells = list(louv.keys())
@@ -368,7 +368,7 @@ def louvain(X, N, resolution=1, seed=None, replace=False):
         lv_idx.append(sample)
 
     return lv_idx
-    
+
 def label(X, sites, site_labels, approx=True):
     if approx:
         return label_approx(X, sites, site_labels)
@@ -394,7 +394,7 @@ def label_exact(X, sites, site_labels):
 
 def label_approx(X, sites, site_labels):
     from annoy import AnnoyIndex
-    
+
     assert(X.shape[1] == sites.shape[1])
 
     # Build index over site points.
@@ -411,5 +411,5 @@ def label_approx(X, sites, site_labels):
             labels.append(None)
             continue
         labels.append(site_labels[nearest_site[0]])
-        
+
     return np.array(labels)

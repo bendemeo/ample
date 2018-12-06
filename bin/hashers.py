@@ -19,7 +19,6 @@ class projLSH(LSH):
 
         self.gridSize=gridSize
 
-
     def makeHash(self):
         """
         projects randomly, and bins projection values
@@ -40,12 +39,12 @@ class projLSH(LSH):
 class gridLSH(LSH):
     """just bins coordinates to make an orthogonal grid"""
 
-    def __init__(self,data,gridSize):
+    def __init__(self,data,gridSize, replace=False):
         numBands = 1
-        bandSize = data.shape[1]
-        numHashes = data.shape[1]
-        LSH.__init__(self,data, numHashes=numHashes, numBands=numBands, bandSize=bandSize)
-
+        bandSize = 1
+        numHashes = 1
+        LSH.__init__(self,data, numHashes=numHashes, numBands=numBands, bandSize=bandSize,
+        replace=replace)
         self.gridSize=gridSize
 
     def makeHash(self):
@@ -54,17 +53,29 @@ class gridLSH(LSH):
         X = self.data - self.data.min(0)
         X /= X.max()
 
-        hashes = np.empty((self.numObs,self.numFeatures))
+        #hashes = np.empty((self.numObs,self.numFeatures))
+        hashes = np.empty((self.numObs, 1))
+
+        grid = {}
+
+        #make dict mapping grid squares to points in it
         for i in range(self.numObs):
             coords = X[i,:]
-            hashes[i,:] = [np.floor(y/self.gridSize) for y in coords]
+
+            gridsquare = tuple(np.floor(coords/self.gridSize).astype(int))
+
+            if gridsquare not in grid:
+                grid[gridsquare]=set()
+            grid[gridsquare].add(i)
+
+        #enumerate grid squares, and assign each obs to its square index
+        keys = grid.keys()
+        for square in range(len(keys)):
+            for idx in grid[keys[square]]:
+                hashes[idx,0] = square
+
 
         self.hash=hashes
-
-
-
-
-
 
         #
         # grid_axes = ortho_group.rvs(self.numFeatures)

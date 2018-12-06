@@ -1,4 +1,4 @@
-from anndata import AnnData
+#from anndata import AnnData
 import numpy as np
 import os
 from scanorama import *

@@ -1,4 +1,43 @@
-from experiments import *
+#from experiments import *
+
+# def lsh_experiments(X_dimred, hashers, name, hashSizes, bandSizes, bandNums, tests,
+# n_seeds=10, makeVisualization=False, **kwargs):
+
+#initialize file for a set of experiments
+def start_experiment(name, params, tests, **kwargs):
+    columns = ['name', 'sampling_fn'] + params + tests
+
+    of = open('target/experiments/{}.txt.1'.format(name),'a')
+
+def add_experiment(columns, X_dimred, hasher, paramDict, tests, **kwargs):
+    "add stuff to existing experiment file"
+
+    #each param should have either 1 value (recycled for all) or k values
+    paramLengths = [len(paramDict[k])) for k in paramDict.keys()]
+    uniqueLengths = np.unique(paramLengths)
+    assert(len(uniqueLengths)<=2)
+    if len(uniqueLengths)==2:
+        assert(1 in uniqueLengths)
+
+    wontCompute = [t for t in tests if t not in columns]
+    if len(wontCompute)>0:
+        print('will not compute the following: {}'.format(t))
+
+    numParams = max(paramLengths) # number of param settings to try
+
+
+
+
+    if 'cell_labels' not in kwargs:
+        cantCompute=[i for i in ['entropy','rare','kl_divergence','kmeans_ami','louvain_ami'] if i in tests]
+
+        if len(cantCompute) > 0:
+            err_exit('cell_labels')
+
+    if 'rare_label' not in kwargs:
+        if 'rare' in tests:
+            err_exit('rare_labels')
+
 
 
 

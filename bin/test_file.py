@@ -5,7 +5,8 @@ import time
 import cProfile
 import matplotlib.pyplot as mpl
 from cosineLSH import *
-from lsh_sketch import *
+#from lsh_experiments import start_experiment
+#from lsh_sketch import *
 
 
 def gauss_test(n=[100], d=1, m=1, stdev=[1]):
@@ -21,6 +22,11 @@ def gauss_test(n=[100], d=1, m=1, stdev=[1]):
                                     axis = 0)
     return result
 
+def start_experiment(name, params, tests, **kwargs):
+    columns = ['name', 'samping_fn'] + params + tests
+    print(columns)
+
+
 
 if __name__ == '__main__':
     # gauss = numpy.random.randn(100, 99)
@@ -30,15 +36,22 @@ if __name__ == '__main__':
     # scheme.makeFinder(5, 3)
     # print scheme.findCandidates(1)
 
+    start_experiment('pug', ['height','weight'],['fat','size'])
+
     gauss2D = gauss_test([10,20,100,200], 2, 4, [0.1, 1, 0.01, 2])
     mpl.scatter(gauss2D[:, 0], gauss2D[:, 1])
 
-    subInds = lshSketch(X=gauss2D, N=100, numHashes=3000, numBands=2, bandSize=500)
 
-    # scheme = rp.lsh(200)
-    # scheme.makeFinder(1, 100, data=gauss2D)
-    # subInds = scheme.downSample(sampleSize=20)
-    print(subInds)
+    downsampler = gridLSH(gauss2D, gridSize=0.1)
+    downsampler.makeHash()
+    #print(downsampler.hash)
+
+    subInds = downsampler.downSample(50)
+    print(downsampler.lastCounts)
+
+
+    #subInds = lshSketch(X=gauss2D, N=100, numHashes=3000, numBands=2, bandSize=500)
+
     mpl.scatter(gauss2D[subInds, 0], gauss2D[subInds, 1], c='m')
     mpl.show()
 
