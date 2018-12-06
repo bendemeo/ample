@@ -81,7 +81,6 @@ if __name__ == '__main__':
 
     # downsampler = gridLSH(gauss2D,0.1)
     downsampler = projLSH(gauss2D, 10, 2, 5, 0.05)
-    print downsampler.hash
 
     subInds = downsampler.downSample(50)
 
