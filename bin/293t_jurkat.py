@@ -9,7 +9,7 @@ from experiments import *
 from process import load_names
 from utils import *
 
-from lsh_experiments import *
+from lsh_tester import *
 from cosineLSH import *
 
 NAMESPACE = '293t_jurkat_lsh'
