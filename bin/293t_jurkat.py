@@ -57,7 +57,9 @@ if __name__ == '__main__':
         'bandSize':bandSizes
     }
     testresults = try_params(X_dimred, 'cosineLSH', params,
-    ['max_min_dist','time','kmeans_ami','lastCounts','remnants'])
+    ['max_min_dist','time','kmeans_ami','lastCounts','remnants'],
+    cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
+    Ns=[100,500,1000])
 
     print(testresults)
 
