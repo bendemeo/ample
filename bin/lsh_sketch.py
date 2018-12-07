@@ -3,7 +3,7 @@ import sys
 
 
 import random_proj as rp
-from cosineLSH import cosineLSH
+from hashers import cosineLSH
 from LSH import *
 
 def lshSketch(X, N, numHashes=100, numBands=10, bandSize=10, seed=None, replace=False):
