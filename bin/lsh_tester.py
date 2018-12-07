@@ -27,6 +27,17 @@ from test_file import *
 def try_params(X_dimred, hasher, params, tests, n_seeds=1, **kwargs):
     "version where params is a dict to be unpacked"
 
+    #make sure all needed params are provided
+    if 'cell_labels' not in kwargs:
+        cantCompute=[i for i in ['entropy','rare','kl_divergence','kmeans_ami','louvain_ami'] if i in tests]
+
+        if len(cantCompute) > 0:
+            err_exit('cell_labels')
+
+    if 'rare_label' not in kwargs:
+        if 'rare' in tests:
+            err_exit('rare_labels')
+
     #each param should have either 1 value (recycled for all) or k values
     paramLengths = [len(params[k]) for k in params.keys()]
     uniqueLengths = np.unique(paramLengths)
