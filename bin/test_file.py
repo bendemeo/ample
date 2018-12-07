@@ -41,10 +41,10 @@ if __name__ == '__main__':
 
 
     downsampler = cosineLSH(gauss2D, numHashes = 1000, numBands = 1, bandSize=500)
-    t0 = time()
-    subInds = downsampler.fastDownsample(500)
-    t1 = time()
-    print('fast downsampling took {} seconds'.format(t1-t0))
+    # t0 = time()
+    # subInds = downsampler.fastDownsample(500)
+    # t1 = time()
+    # print('fast downsampling took {} seconds'.format(t1-t0))
 
     t0 = time()
     subInds = downsampler.downSample(500)

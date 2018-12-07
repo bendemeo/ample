@@ -198,7 +198,7 @@ class LSH:
             for i in toRemove:
                 included[i]=False
 
-            available = itertools.compress(range(self.numObs), included)
+            available = list(itertools.compress(range(self.numObs), included))
 
             #possibly O(n)
             #available = [x for x in available if x not in toRemove]
