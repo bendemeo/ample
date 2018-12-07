@@ -11,6 +11,7 @@ from utils import *
 
 from lsh_tester import *
 from hashers import *
+import pandas as pd
 
 NAMESPACE = '293t_jurkat_lsh'
 METHOD = 'svd'
@@ -51,17 +52,34 @@ if __name__ == '__main__':
     hashSizes=[200]*len(bandSizes)
     bandNums=[x//y for x, y in zip(hashSizes,bandSizes)]
 
-    params = {
+    params_cosine = {
         'numHashes':hashSizes,
         'numBands':bandNums,
         'bandSize':bandSizes
     }
-    testresults = try_params(X_dimred, 'cosineLSH', params,
-    ['max_min_dist','time','kmeans_ami','lastCounts','remnants'],
-    cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
-    Ns=[100,500,1000])
 
+    testresults_cosine = try_params(X_dimred, 'cosineLSH', params_cosine,
+    ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
+    'guess','actual','error'],
+    cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
+    Ns=[100,500,1000]
+    )
+
+    params_grid = {
+        'gridSize': np.arrange(0,1,0.01)
+    }
+
+    testresults_grid = try_params(X_dimred, 'gridLSH',params_grid,
+        tests=['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
+        'guess','actual','error'],cell_labels=cell_labels,
+        rare_label=le.transform(['293t'])[0],
+        Ns=[100,500,1000]
+    )
+
+    testresults = pd.concat([testresults_cosine,testresults_grid])
     print(testresults)
+    testresults.to_csv('target/experiments/{}.txt.1'.format(NAMESPACE), sep='\t')
+
 
     # try_lsh_params(
     #     X_dimred, 'cosineLSH', name=NAMESPACE, hashSizes=hashSizes, bandSizes=bandSizes, bandNums=bandNums, tests=['kmeans_ami','max_min_dist','rare', 'lastCounts','remnants'], cell_labels=cell_labels, rare_label=le.transform(['293t'])[0],
