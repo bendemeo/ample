@@ -1,7 +1,9 @@
 # for random projection hashing
 import numpy
 import sys
+from time import time
 from utils import *
+import itertools
 
 # adding stuff for git
 # adding more stuff
@@ -17,7 +19,7 @@ class LSH:
         self.bandSize = bandSize
         self.replace = replace
         self.numObs, self.numFeatures = self.data.shape
-        self.lastCounts = None  # how many sampled before reset
+        self.lastCounts = []  # how many sampled before reset
         self.remnants = None  # how many are still fair game after sampling
         self.keepStats = keepStats
 
@@ -26,7 +28,12 @@ class LSH:
         self.finder = None
         self.bands = None
 
+        self.guess = None  # analytic guess for how many would be sampled before reset
+        self.actual = None
+        self.error = None  # difference from actual value
 
+        self.nbhdSizes = [] # store neighborhood sizes
+        self.takenBands=[[]]*numBands  #band values that have been taken
     def makeHash(self):
         "child classes extend this"
         pass
@@ -102,7 +109,22 @@ class LSH:
         # print dicts
 
         self.finder = dicts
-        self.bands = subsets  # indicies corresponding to 'bands'
+        self.bands = subsets  # indices corresponding to 'bands'
+
+
+    def makeBands(self):
+        subsets=[]
+        for i in range(self.numBands):
+            inds = numpy.random.choice(self.numHashes, self.bandSize, replace=False)
+            subsets.append(inds)
+
+        self.bands = subsets
+
+
+
+
+
+
 
     def findCandidates(self, ind):
         "find all indices agreeing in at least one band"
@@ -121,6 +143,8 @@ class LSH:
                 key = tuple(self.hash[ind, band])
             candidates = candidates + d.get(key)  # this is O(n) on gauss
 
+        if self.keepStats:
+            self.nbhdSizes.append(len(candidates)+1)
         return numpy.unique(candidates)
 
 
@@ -140,13 +164,13 @@ class LSH:
         self.makeFinder()
 
         available = range(self.hash.shape[0])
+        included = [True] * self.numObs
         sample = []
         count = 0 # how many have been added since reset
         reset = False  # whether we have reset
 
         if self.keepStats:
             self.lastCounts=[]
-
         while len(sample) < sampleSize:
             if len(available) == 0:  # reset available if not enough
                 reset = True
@@ -159,13 +183,25 @@ class LSH:
                 else:
                     available = [x for x in range(self.hash.shape[0]) if x not in sample]
 
+
+                included = [False]*self.numObs
+                for i in available:
+                    included[i] = True
+
+
             next = numpy.random.choice(available)
             sample.append(next)
 
             count = count + 1
 
             toRemove = self.findCandidates(next)
-            available = [x for x in available if x not in toRemove]
+            for i in toRemove:
+                included[i]=False
+
+            available = itertools.compress(range(self.numObs), included)
+
+            #possibly O(n)
+            #available = [x for x in available if x not in toRemove]
             # log('{} remaining'.format(len(available)))
 
         if self.keepStats:
@@ -173,5 +209,95 @@ class LSH:
                 self.remnants = len(available)
             else:
                 self.remnants = 0
+
+            # guess of neighborhood size
+            # print(self.numObs)
+            # print(self.lastCounts)
+
+
+
+            meanSize = sum(self.nbhdSizes) / len(self.nbhdSizes)
+
+            self.guess = (float(self.numObs) / meanSize) * self.numBands
+            self.actual = self.getMeanCounts()
+
+
+            self.error = float(abs(self.guess - self.actual))/self.actual
+            if self.error < 0:
+                self.error = -1
+
+
+
+
         assert(len(sample)==sampleSize)
         return numpy.unique(sample)
+
+
+
+
+
+
+
+
+
+
+
+
+
+#this didn't work
+def fastDownsample(self, sampleSize=100, replace = False):
+    self.makeHash()
+    self.makeBands()
+
+    sample= []
+    available = range(self.numObs)
+    reset = False
+    count = 0
+    t0=time()
+    while len(sample) < sampleSize:
+        if len(available) == 0:
+            t1=time()
+            reset = True
+
+            log("sampled {} out of {} before reset".format(count, sampleSize))
+            log("it took {} seconds".format(t1-t0))
+            log("sampled {} total".format(len(sample)))
+            self.lastCounts.append(count)
+
+            self.takenBands = [[]]*self.numBands
+            if replace:
+                available = range(self.hash.shape[0])
+            else:
+                available = [x for x in range(self.hash.shape[0]) if x not in sample]
+            count = 0
+            t0=time()
+
+        nextind = numpy.random.choice(available)
+        discard = False
+        for band in range(self.numBands):
+            #print('band {}'.format(band))
+            cur_band = self.bands[band]
+
+            #print('cur band {}'.format(cur_band))
+
+            #print('hash value {}'.format(self.hash[nextind, cur_band]))
+            hashval = tuple(self.hash[nextind, cur_band])  # hashes in this band
+
+            if hashval in self.takenBands[band]:
+                #print('discarding')
+                discard = True
+                available = [x for x in available if x != nextind]
+
+                break
+
+        if not discard:  # bands of this point are taken
+            sample.append(nextind)
+            # print('appended')
+            count = count + 1
+
+            #remove from taken bands
+            for band in range(self.numBands):
+                hashval = tuple(self.hash[nextind, cur_band])
+                self.takenBands[band].append(hashval)
+
+    return sample

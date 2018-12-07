@@ -1,7 +1,7 @@
 # for testing stuff
 import numpy
 import timeit
-import time
+from time import time
 import cProfile
 import matplotlib.pyplot as mpl
 from hashers import *
@@ -34,18 +34,32 @@ if __name__ == '__main__':
     # scheme.makeFinder(5, 3)
     # print scheme.findCandidates(1)
 
-    start_experiment('pug', ['height','weight'],['fat','size'])
+    #start_experiment('pug', ['height','weight'],['fat','size'])
 
-    gauss2D = gauss_test([10,20,100,200], 2, 4, [0.1, 1, 0.01, 2])
+    gauss2D = gauss_test([10,20,100,2000], 2, 4, [0.1, 1, 0.01, 2])
     mpl.scatter(gauss2D[:, 0], gauss2D[:, 1])
 
 
-    downsampler = gridLSH(gauss2D, gridSize=0.1)
-    downsampler.makeHash()
-    #print(downsampler.hash)
+    downsampler = cosineLSH(gauss2D, numHashes = 1000, numBands = 1, bandSize=500)
+    t0 = time()
+    subInds = downsampler.fastDownsample(500)
+    t1 = time()
+    print('fast downsampling took {} seconds'.format(t1-t0))
 
-    subInds = downsampler.downSample(50)
-    print(downsampler.lastCounts)
+    t0 = time()
+    subInds = downsampler.downSample(500)
+    t1 = time()
+    print('slow downsampling took {} seconds'.format(t1-t0))
+
+    # mpl.scatter(gauss2D[subInds, 0], gauss2D[subInds, 1], c='m')
+    # mpl.show()
+
+    # downsampler = gridLSH(gauss2D, gridSize=0.1)
+    # downsampler.makeHash()
+    # #print(downsampler.hash)
+    #
+    # subInds = downsampler.downSample(50)
+    # print(downsampler.lastCounts)
 
 
     #subInds = lshSketch(X=gauss2D, N=100, numHashes=3000, numBands=2, bandSize=500)

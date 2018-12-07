@@ -101,6 +101,12 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, **kwargs):
                         results['lastCounts'].append(downsampler.getMeanCounts())
                     elif t == 'remnants':
                         results['remnants'].append(downsampler.getRemnants())
+                    elif t == 'guess':
+                        results['guess'].append(downsampler.guess)
+                    elif t == 'actual':
+                        results['actual'].append(downsampler.actual)
+                    elif t == 'error':
+                        results['error'].append(downsampler.error)
                     elif t == 'rare':
                         cell_labels = kwargs['cell_labels']
                         rare_label = kwargs['rare_label']
@@ -183,9 +189,9 @@ if __name__ == '__main__':
     testdata = gauss_test([10,20,100,200], 2, 4, [0.1,1,0.01,2])
 
     params = {
-        'numHashes':[100,100,100,1000],
-        'numBands':[10,5,1,1],
-        'bandSize':[10,20,100,1000]
+        'numHashes':[1000],
+        'numBands':[10,5,1,1,3,4],
+        'bandSize':[10,20,100,1000,200,100]
     }
 
 
@@ -193,9 +199,10 @@ if __name__ == '__main__':
         'gridSize':[0.01,0.1,0.2,0.001],
     }
 
-    testresults = try_params(testdata,'cosineLSH',params, ['max_min_dist','time','lastCounts','remnants'])
+    testresults = try_params(testdata,'cosineLSH',params, ['guess','actual','error','lastCounts'],
+    Ns=[100, 200, 300])
 
-    testresults2 = try_params(testdata, 'gridLSH', params2, ['max_min_dist','time','lastCounts','remnants'], Ns=[100,200])
+    testresults2 = try_params(testdata, 'gridLSH', params2, ['max_min_dist','time','lastCounts','remnants','guess','actual','error'], Ns=[100,200])
 
 
     testresults = pd.DataFrame.from_dict(testresults)
@@ -203,5 +210,5 @@ if __name__ == '__main__':
 
 
     print(testresults)
-    print(testresults2)
-    print(pd.concat([testresults, testresults2]))
+    #print(testresults2)
+    #print(pd.concat([testresults, testresults2]))
