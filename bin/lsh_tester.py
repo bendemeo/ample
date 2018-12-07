@@ -1,4 +1,4 @@
-import pandas
+import pandas as pd
 import hashers
 import numpy as np
 import numpy as np
@@ -175,7 +175,8 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, **kwargs):
                                 cell_labels, full_labels, dist='balanced'
                             )
                             results['louvain_bami'].append(bami)
-    return results
+
+    return pd.DataFrame.from_dict(results)
 
 
 if __name__ == '__main__':
@@ -188,6 +189,19 @@ if __name__ == '__main__':
     }
 
 
+    params2 = {
+        'gridSize':[0.01,0.1,0.2,0.001],
+    }
+
     testresults = try_params(testdata,'cosineLSH',params, ['max_min_dist','time','lastCounts','remnants'])
 
+    testresults2 = try_params(testdata, 'gridLSH', params2, ['max_min_dist','time','lastCounts','remnants'], Ns=[100,200])
+
+
+    testresults = pd.DataFrame.from_dict(testresults)
+    testresults2 = pd.DataFrame.from_dict(testresults2)
+
+
     print(testresults)
+    print(testresults2)
+    print(pd.concat([testresults, testresults2]))
