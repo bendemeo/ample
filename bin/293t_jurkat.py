@@ -53,6 +53,20 @@ if __name__ == '__main__':
     bandNums=[x//y for x, y in zip(hashSizes,bandSizes)]
 
 
+    params_proj = {
+        'numHashes':hashSizes,
+        'numBands':bandNums,
+        'bandSize': bandSizes,
+        'gridSize':[0.1]
+    }
+
+    testresults_proj = try_params(X_dimred, 'projLSH', params_proj,
+    ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
+    'guess','actual','error'],
+    cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
+    Ns=[100,500,1000]
+    )
+
     params_grid = {
         'gridSize': np.arange(0.1,0.9,0.1)
     }
@@ -78,19 +92,7 @@ if __name__ == '__main__':
     )
 
 
-    params_proj = {
-        'numHashes':hashSizes,
-        'numBands':bandNums,
-        'bandSizes': bandSizes,
-        'gridSize':[0.1]
-    }
 
-    testresults_proj = try_params(X_dimred, 'projLSH', params_proj,
-    ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
-    'guess','actual','error'],
-    cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
-    Ns=[100,500,1000]
-    )
 
 
     testresults = pd.concat([testresults_cosine,testresults_grid, testresults_proj])
