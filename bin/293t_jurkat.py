@@ -54,7 +54,7 @@ if __name__ == '__main__':
 
 
     params_grid = {
-        'gridSize': np.arange(0,1,0.01)
+        'gridSize': np.arange(0.1,0.9,0.1)
     }
 
     testresults_grid = try_params(X_dimred, 'gridLSH',params_grid,
@@ -81,7 +81,8 @@ if __name__ == '__main__':
     params_proj = {
         'numHashes':hashSizes,
         'numBands':bandNums,
-        'gridSize':[0.02]
+        'bandSizes': bandSizes,
+        'gridSize':[0.1]
     }
 
     testresults_proj = try_params(X_dimred, 'projLSH', params_proj,
@@ -94,7 +95,7 @@ if __name__ == '__main__':
 
     testresults = pd.concat([testresults_cosine,testresults_grid, testresults_proj])
     print(testresults)
-    testresults.to_csv('target/experiments/{}.txt.1'.format(NAMESPACE), sep='\t')
+    testresults.to_csv('target/experiments/{}.txt.2'.format(NAMESPACE), sep='\t')
 
 
     # try_lsh_params(
