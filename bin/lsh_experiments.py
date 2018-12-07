@@ -9,24 +9,54 @@ def start_experiment(name, params, tests, **kwargs):
 
     of = open('target/experiments/{}.txt.1'.format(name),'a')
 
-def add_experiment(columns, X_dimred, hasher, paramDict, tests, **kwargs):
+def add_experiment(of, columns, X_dimred, hasher, paramDict, tests, n_seeds=1, **kwargs):
     "add stuff to existing experiment file"
 
+    params = paramDict.keys()
+
+    #eliminate stuff that can't be written to the output file
+    wontCompute = [t for t in tests if t not in columns]
+    if len(wontCompute)>0:
+        print('will not compute the following: {}'.format(wontCompute))
+
+    wontTest = [p for p in params if p not in columns]:
+        print('cannot vary the following: {}'.format(wontTest))
+
+    tests = [t for t in tests if t in columns]
+    paramDict = {p:vals for (p,vals) in paramDict.items() if p in columns}
+    params = paramDict.keys()
+
     #each param should have either 1 value (recycled for all) or k values
-    paramLengths = [len(paramDict[k])) for k in paramDict.keys()]
+    paramLengths = [len(paramDict[k]) for k in paramDict.keys()]
     uniqueLengths = np.unique(paramLengths)
     assert(len(uniqueLengths)<=2)
     if len(uniqueLengths)==2:
         assert(1 in uniqueLengths)
 
-    wontCompute = [t for t in tests if t not in columns]
-    if len(wontCompute)>0:
-        print('will not compute the following: {}'.format(t))
-
     numParams = max(paramLengths) # number of param settings to try
 
+    # if only 1 is provided, recycle it
+    for p in params:
+        if len(paramDict[p])==1:
+            paramDict[p]=paramDict[p]*numParams
 
+    print(paramDict)
 
+    # add more hashers as you make them
+    if hasher == 'cosineLSH':
+        requiredParams = ['numHashes','numBands','bandSize']
+    elif hasher == 'gridLSH':
+        requiredParams = ['gridSize']
+    elif hasher == 'projLSH':
+        requiredParams = ['numHashes','numBands','bandSize','gridSize']
+    else:
+        print('did not recognize hasher: {}'.format(hasher))
+        return
+
+    needed = [x for x in requiredParams if x not in params]
+    if len(needed)>0:
+        print('failed to add experiments for {}: params {} not provided'.format(hasher, needed))
+        return
 
     if 'cell_labels' not in kwargs:
         cantCompute=[i for i in ['entropy','rare','kl_divergence','kmeans_ami','louvain_ami'] if i in tests]
@@ -37,6 +67,113 @@ def add_experiment(columns, X_dimred, hasher, paramDict, tests, **kwargs):
     if 'rare_label' not in kwargs:
         if 'rare' in tests:
             err_exit('rare_labels')
+
+
+    for i in range(numParams):
+        currentParams = {p:val[i] for p in paramDict}
+
+        if hasher == 'cosineLSH':
+
+            downsampler = cosineLSH(
+                X_dimred,
+                numHashes=currentParams['numHashes'],
+                numBands=currentParams['numBands'],
+                bandSize=currentParams['bandSize']
+            )
+        elif hasher == 'gridLSH':
+            downsampler = gridLSH(
+                X_dimred,
+                gridSize = currentParams['gridSize']
+            )
+
+        elif hasher == 'projLSH':
+            downsampler = projLSH(
+                X_dimred,
+                gridSize=currentParams['gridSize'],
+                numHashes=currentParams['numHashes'],
+                numBands=currentParams['numBands'],
+                bandSize=currentParams['bandSize']
+            )
+
+
+        if 'Ns' in kwargs:
+            Ns=kwargs['Ns']
+        else:
+            Ns = [100, 500, 1000, 5000, 10000, 20000 ]
+
+
+        for N in Ns:
+            for seed in range(n_seeds):
+                log('sampling {}'.format(hasher))
+                t0 = time()
+                samp_idx=downsampler.downSample(N, replace)
+
+                t1 = time()
+                log('sampling {} done'.format(hasher))
+
+                currentParams['sampling_fn']=hasher
+                currentParams['time']=t1-t0
+                currentParams['replace']=replace
+                currentParams['N']=N
+
+                if 'lastCounts' in tests:
+                    currentParams['lastCounts'] = downsampler.getMeanCounts()
+
+                if 'remnants' in tests:
+                    currentParams['remnants'] = downsampler.getRemnants()
+
+
+                lsh_stats3(of, X_dimred, samp_idx, name, tests, **kwargs)
+
+
+
+def lsh_stats3(of, data, columns, currentParams, samp_idx, name, tests, **kwargs):
+    row = np.empty(len(columns))
+
+    for i in range(len(columns)):
+        name = columns[i]
+        if name in currentParams.keys():
+            row[i] = currentParams[name]
+        else:
+            print('could not report {}'.format(name))
+            row[i] = None
+
+        if name == 'rare' and name in tests:
+            cell_labels = kwargs['cell_labels']
+            rare_label = kwargs['rare_label']
+            cluster_labels = cell_labels[samp_idx]
+            row[i] = sum(cluster_labels == rare_label)
+
+        elif name = 'entropy' and name in tests:
+            cell_labels = kwargs['cell_labels']
+            cluster_labels = cell_labels[samp_idx]
+            clusters = sorted(set(cell_labels))
+            max_cluster = max(clusters)
+            cluster_hist = np.zeros(max_cluster + 1)
+            for c in range(max_cluster + 1):
+                if c in clusters:
+                    cluster_hist[c] = np.sum(cluster_labels == c)
+            row[i] = normalized_entropy(cluster_hist)
+
+        elif name = 'kl_divergence' and name in tests:
+            cell_labels = kwargs['cell_labels']
+            expected = kwargs['expected']
+            cluster_labels = cell_labels[samp_idx]
+            clusters = sorted(set(cell_labels))
+            max_cluster = max(clusters)
+            cluster_hist = np.zeros(max_cluster + 1)
+            for c in range(max_cluster + 1):
+                if c in clusters:
+                    cluster_hist[c] = np.sum(cluster_labels == c)
+            cluster_hist /= np.sum(cluster_hist)
+            row[i] = scipy.stats.entropy(expected, cluster_hist)
+        elif name = 'max_min_dist' and name in tests:
+            dist = pairwise_distances(
+                X_dimred[samp_idx, :], X_dimred, n_jobs=-1
+            )
+            row[i] = dist.min(0).max()
+
+
 
 
 

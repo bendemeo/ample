@@ -136,7 +136,6 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, **kwargs):
                         results['kmeans_ami'].append(ami)
                     elif t == 'kmeans_bami':
                         cell_labels = kwargs['cell_labels']
-
                         k = len(set(cell_labels))
                         km = KMeans(n_clusters=k, n_init=1, random_state=kwargs['seed'])
                         km.fit(X_dimred[samp_idx, :])
