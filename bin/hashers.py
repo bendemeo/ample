@@ -69,7 +69,7 @@ class gridLSH(LSH):
             grid[gridsquare].add(i)
 
         #enumerate grid squares, and assign each obs to its square index
-        keys = grid.keys()
+        keys = list(grid.keys())
         for square in range(len(keys)):
             for idx in grid[keys[square]]:
                 hashes[idx,0] = square
