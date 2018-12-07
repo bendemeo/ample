@@ -10,7 +10,7 @@ from process import load_names
 from utils import *
 
 from lsh_tester import *
-from cosineLSH import *
+from hashers import *
 
 NAMESPACE = '293t_jurkat_lsh'
 METHOD = 'svd'
