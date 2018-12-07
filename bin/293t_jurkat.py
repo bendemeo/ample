@@ -52,6 +52,18 @@ if __name__ == '__main__':
     hashSizes=[200]*len(bandSizes)
     bandNums=[x//y for x, y in zip(hashSizes,bandSizes)]
 
+
+    params_grid = {
+        'gridSize': np.arange(0,1,0.01)
+    }
+
+    testresults_grid = try_params(X_dimred, 'gridLSH',params_grid,
+        tests=['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
+        'guess','actual','error'],cell_labels=cell_labels,
+        rare_label=le.transform(['293t'])[0],
+        Ns=[100,500,1000]
+    )
+
     params_cosine = {
         'numHashes':hashSizes,
         'numBands':bandNums,
@@ -65,18 +77,22 @@ if __name__ == '__main__':
     Ns=[100,500,1000]
     )
 
-    params_grid = {
-        'gridSize': np.arange(0,1,0.01)
+
+    params_proj = {
+        'numHashes':hashSizes,
+        'numBands':bandNums,
+        'gridSize':[0.02]
     }
 
-    testresults_grid = try_params(X_dimred, 'gridLSH',params_grid,
-        tests=['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
-        'guess','actual','error'],cell_labels=cell_labels,
-        rare_label=le.transform(['293t'])[0],
-        Ns=[100,500,1000]
+    testresults_proj = try_params(X_dimred, 'projLSH', params_proj,
+    ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
+    'guess','actual','error'],
+    cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
+    Ns=[100,500,1000]
     )
 
-    testresults = pd.concat([testresults_cosine,testresults_grid])
+
+    testresults = pd.concat([testresults_cosine,testresults_grid, testresults_proj])
     print(testresults)
     testresults.to_csv('target/experiments/{}.txt.1'.format(NAMESPACE), sep='\t')
 
