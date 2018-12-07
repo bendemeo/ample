@@ -4,7 +4,7 @@ import timeit
 import time
 import cProfile
 import matplotlib.pyplot as mpl
-from cosineLSH import *
+from hashers import *
 #from lsh_experiments import start_experiment
 #from lsh_sketch import *
 
@@ -22,9 +22,7 @@ def gauss_test(n=[100], d=1, m=1, stdev=[1]):
                                     axis = 0)
     return result
 
-def start_experiment(name, params, tests, **kwargs):
-    columns = ['name', 'samping_fn'] + params + tests
-    print(columns)
+
 
 
 
