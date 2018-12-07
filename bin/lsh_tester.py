@@ -84,10 +84,10 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, **kwargs):
                     results[p].append(currentParams[p])
 
                 log('sampling {}'.format(hasher))
-                t0 = time.time()
+                t0 = time()
                 samp_idx=downsampler.downSample(N)
 
-                t1 = time.time()
+                t1 = time()
                 log('sampling {} done'.format(hasher))
 
                 #record N
@@ -183,6 +183,11 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, **kwargs):
                             results['louvain_bami'].append(bami)
 
     return pd.DataFrame.from_dict(results)
+
+#tweaks band number until number of candidates is about right
+def optimizeNumBands(lsh):
+
+
 
 
 if __name__ == '__main__':
