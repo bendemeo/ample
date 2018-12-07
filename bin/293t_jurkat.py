@@ -54,7 +54,7 @@ if __name__ == '__main__':
     params = {
         'numHashes':hashSizes,
         'numBands':bandNums,
-        'bandSizes':bandSizes
+        'bandSize':bandSizes
     }
     testresults = try_params(X_dimred, 'cosineLSH', params,
     ['max_min_dist','time','kmeans_ami','lastCounts','remnants'])
