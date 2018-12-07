@@ -137,7 +137,7 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, **kwargs):
                         cell_labels = kwargs['cell_labels']
 
                         k = len(set(cell_labels))
-                        km = KMeans(n_clusters=k, n_init=1, random_state=kwargs['seed'])
+                        km = KMeans(n_clusters=k, n_init=1, random_state=seed)
                         km.fit(X_dimred[samp_idx, :])
 
                         full_labels = label_approx(X_dimred, X_dimred[samp_idx, :], km.labels_)
@@ -148,7 +148,7 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, **kwargs):
                     elif t == 'kmeans_bami':
                         cell_labels = kwargs['cell_labels']
                         k = len(set(cell_labels))
-                        km = KMeans(n_clusters=k, n_init=1, random_state=kwargs['seed'])
+                        km = KMeans(n_clusters=k, n_init=1, random_state=seed)
                         km.fit(X_dimred[samp_idx, :])
 
                         full_labels = label_approx(X_dimred, X_dimred[samp_idx, :], km.labels_)
