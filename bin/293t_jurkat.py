@@ -66,7 +66,7 @@ if __name__ == '__main__':
     )
 
     params_grid = {
-        'gridSize': np.arrange(0,1,0.01)
+        'gridSize': np.arange(0,1,0.01)
     }
 
     testresults_grid = try_params(X_dimred, 'gridLSH',params_grid,
