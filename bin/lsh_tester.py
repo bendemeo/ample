@@ -93,7 +93,7 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], op
 
                 log('sampling {}'.format(hasher))
 
-                log('grid size':downsampler.getattr('gridSize'))
+                log('grid size: {}'.format(downsampler.getattr('gridSize')))
                 t0 = time()
                 samp_idx=downsampler.downSample(N)
 
