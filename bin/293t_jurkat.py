@@ -48,12 +48,12 @@ if __name__ == '__main__':
     hashSizes=[200]*len(bandSizes)
     bandNums=[x//y for x, y in zip(hashSizes,bandSizes)]
 
-    params_randomGrid = {
-        'numHashes':[4],
-        'numBands':[2],
-        'bandSize':[2],
-        'gridSize':[0.01]
-    }
+    # params_randomGrid = {
+    #     'numHashes':[4],
+    #     'numBands':[2],
+    #     'bandSize':[2],
+    #     'gridSize':[0.01]
+    # }
 
     # params_randomGrid = {
     #     'numHashes':hashSizes,
@@ -61,62 +61,64 @@ if __name__ == '__main__':
     #     'bandSize': bandSizes,
     #     'gridSize': [0.1]
     # }
-
-    testresults_randomGrid = try_params(X_dimred, 'randomGridLSH', params_randomGrid,
-    ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare','guess','actual','error'],
-    cell_labels = cell_labels, rare_label = le.transform(['293t'])[0],
-    Ns=[100]
+    #
+    # testresults_randomGrid = try_params(X_dimred, 'randomGridLSH', params_randomGrid,
+    # ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare','guess','actual','error'],
+    # cell_labels = cell_labels, rare_label = le.transform(['293t'])[0],
+    # Ns=[100]
     # optimizeParams=['gridSize'], optimizeSteps=[0.001]
+    # )
+    #
+
+    params_proj = {
+        'numHashes':hashSizes,
+        'numBands':bandNums,
+        'bandSize': bandSizes,
+        'gridSize':[0.1]
+    }
+
+    testresults_proj = try_params(X_dimred, 'projLSH', params_proj,
+    ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
+    'guess','actual','error'],
+    cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
+    Ns=[100,500,1000],
+    optimizeParams=['gridSize'], optimizeSteps=[0.001]
     )
-    #
-    #
-    # params_proj = {
-    #     'numHashes':hashSizes,
-    #     'numBands':bandNums,
-    #     'bandSize': bandSizes,
-    #     'gridSize':[0.1]
-    # }
-    #
-    # testresults_proj = try_params(X_dimred, 'projLSH', params_proj,
-    # ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
-    # 'guess','actual','error'],
-    # cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
-    # Ns=[100,500,1000]
-    # )
-    #
-    # params_grid = {
-    #     'gridSize': np.arange(0.1,0.9,0.1)
-    # }
-    #
-    # testresults_grid = try_params(X_dimred, 'gridLSH',params_grid,
-    #     tests=['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
-    #     'guess','actual','error'],cell_labels=cell_labels,
-    #     rare_label=le.transform(['293t'])[0],
-    #     Ns=[100,500,1000]
-    # )
-    #
-    # params_cosine = {
-    #     'numHashes':hashSizes,
-    #     'numBands':bandNums,
-    #     'bandSize':bandSizes
-    # }
-    #
-    # testresults_cosine = try_params(X_dimred, 'cosineLSH', params_cosine,
-    # ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
-    # 'guess','actual','error'],
-    # cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
-    # Ns=[100,500,1000]
-    # )
-    #
-    #
-    #
-    #
-    #
-    #
-    #
-    # testresults = pd.concat([testresults_cosine,testresults_grid, testresults_proj, testresults_randomGrid])
-    # print(testresults)
-    # testresults.to_csv('target/experiments/{}.txt.3'.format(NAMESPACE), sep='\t')
+    
+    params_grid = {
+        'gridSize': np.arange(0.1,0.9,0.1)
+    }
+
+    testresults_grid = try_params(X_dimred, 'gridLSH',params_grid,
+        tests=['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
+        'guess','actual','error'],cell_labels=cell_labels,
+        rare_label=le.transform(['293t'])[0],
+        Ns=[100,500,1000],
+        optimizeParams=['gridSize'], optimizeSteps=[0.001]
+    )
+
+    params_cosine = {
+        'numHashes':hashSizes,
+        'numBands':bandNums,
+        'bandSize':bandSizes
+    }
+
+    testresults_cosine = try_params(X_dimred, 'cosineLSH', params_cosine,
+    ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
+    'guess','actual','error'],
+    cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
+    Ns=[100,500,1000]
+    )
+
+
+
+
+
+
+
+    testresults = pd.concat([testresults_cosine,testresults_grid, testresults_proj, testresults_randomGrid])
+    print(testresults)
+    testresults.to_csv('target/experiments/{}.txt.3'.format(NAMESPACE), sep='\t')
 
 
     # try_lsh_params(
