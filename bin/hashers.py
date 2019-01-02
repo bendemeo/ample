@@ -49,7 +49,11 @@ class randomGridLSH(LSH):
         self.gridSize = gridSize
 
     def makeHash(self):
+        t0 = time()
         hashes = np.empty((self.numObs,self.numHashes))
+        t1 = time()
+
+        print('initiating took {} seconds'.format(t1-t0))
 
         for hashno in range(self.numHashes):
             t0 = time()
