@@ -41,6 +41,10 @@ if __name__ == '__main__':
 
 
 
+    downsampler = projLSH(gauss2D, 1000, 10, 10, 0.1)
+    downsampler.optimize_param('gridSize', 100, inverted = True)
+
+
     downsampler = randomGridLSH(gauss2D, numHashes = 10, numBands = 2, bandSize = 2, gridSize = 0.01)
 
     #downsampler = cosineLSH(gauss2D, numHashes = 1000, numBands = 1, bandSize=500)
