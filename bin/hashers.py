@@ -52,9 +52,10 @@ class randomGridLSH(LSH):
         hashes = np.empty((self.numObs,self.numHashes))
 
         for hashno in range(self.numHashes):
+            t0 = time()
             basis = rvs(dim = self.numFeatures) # random orthonormal basis
 
-            t0 = time()
+
             newData=np.matmul(self.data, basis)
             t1 = time()
 
