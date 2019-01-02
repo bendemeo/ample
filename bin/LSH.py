@@ -274,6 +274,7 @@ class LSH:
 
         cur_val = cur_val - 1
 
+        print('optimized value is {}'.format(cur_val))
         setattr(self, param, cur_val)
 
 
