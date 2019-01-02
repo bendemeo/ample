@@ -82,9 +82,9 @@ if __name__ == '__main__':
     'guess','actual','error'],
     cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
     Ns=[100,500,1000],
-    optimizeParams=['gridSize'], optimizeSteps=[0.001]
+    optimizeParams=['gridSize'], optimizeSteps=[-0.001]
     )
-    
+
     params_grid = {
         'gridSize': np.arange(0.1,0.9,0.1)
     }
@@ -94,7 +94,7 @@ if __name__ == '__main__':
         'guess','actual','error'],cell_labels=cell_labels,
         rare_label=le.transform(['293t'])[0],
         Ns=[100,500,1000],
-        optimizeParams=['gridSize'], optimizeSteps=[0.001]
+        optimizeParams=['gridSize'], optimizeSteps=[-0.001]
     )
 
     params_cosine = {
