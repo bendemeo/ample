@@ -262,8 +262,8 @@ class LSH:
             subsample = self.downSample(N)
             counts = self.getMeanCounts() #  how many did you sample?
 
-            print(counts)
-            print(cur_val)
+            log(counts)
+            log(cur_val)
 
 
         while(counts < 0):
@@ -274,7 +274,7 @@ class LSH:
 
         cur_val = cur_val - 1
 
-        print('optimized value is {}'.format(cur_val))
+        log('optimized value is {}'.format(cur_val))
         setattr(self, param, cur_val)
 
 
