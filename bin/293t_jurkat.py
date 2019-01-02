@@ -49,6 +49,21 @@ if __name__ == '__main__':
     bandNums=[x//y for x, y in zip(hashSizes,bandSizes)]
 
 
+    params_randomGrid = {
+        'numHashes':hashSizes,
+        'numBands': bandNums,
+        'bandSize': bandSizes,
+        'gridSize': [0.1]
+    }
+
+    testresults_randomGrid = try_params(X_dimred, 'randomGridLSH', params_randomGrid,
+    ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare','guess','actual','error'],
+    cell_labels = cell_labels, rare_label = le.transform(['293t'])[0],
+    Ns=[100,500,1000]
+    # optimizeParams=['gridSize'], optimizeSteps=[0.001]
+    )
+
+
     params_proj = {
         'numHashes':hashSizes,
         'numBands':bandNums,
@@ -87,19 +102,7 @@ if __name__ == '__main__':
     Ns=[100,500,1000]
     )
 
-    params_randomGrid = {
-        'numHashes':hashSizes,
-        'numBands': bandNums,
-        'bandSize': bandSizes,
-        'gridSize': [0.1]
-    }
 
-    testresults_randomGrid = try_params(X_dimred, 'randomGridLSH', params_randomGrid,
-    ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare','guess','actual','error'],
-    cell_labels = cell_labels, rare_label = le.transform(['293t'])[0],
-    Ns=[100,500,1000],
-    optimizeParams=['gridSize'], optimizeSteps=[0.001]
-    )
 
 
 
