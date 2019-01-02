@@ -10,7 +10,8 @@ import itertools
 class LSH:
     '''class to construct a random projection of data'''
 
-    def __init__(self, data, numHashes, numBands, bandSize, replace=False, keepStats=True):
+    def __init__(self, data, numHashes, numBands, bandSize, replace=False, keepStats=True,
+    allowRepeats = True):
         ''' numHashes is number of random projections it makes'''
         ''' dim is number of dimensions '''
         self.numHashes = numHashes
@@ -22,6 +23,7 @@ class LSH:
         self.lastCounts = []  # how many sampled before reset
         self.remnants = None  # how many are still fair game after sampling
         self.keepStats = keepStats
+        self.allowRepeats = allowRepeats
 
         #to be updated by further function calls
         self.hash = None
@@ -86,7 +88,19 @@ class LSH:
         subsets = []  #list of indices comprising bands
 
         for i in range(self.numBands):
-            inds = numpy.random.choice(self.numHashes, self.bandSize, replace=False)
+
+            available = range(self.numHashes)
+
+            if self.allowRepeats:
+                inds = numpy.random.choice(self.numHashes, self.bandSize, replace=False)
+            else:
+                positions = numpy.random.choice(range(len(available)), self.bandSize, replace=False)
+
+                inds = [available[i] for i in positions]
+
+                for position in sorted(positions, reverse = True):
+                    del available[position]
+
             subsets.append(inds)
 
             if len(self.hash.shape)==1:
@@ -232,9 +246,35 @@ class LSH:
         assert(len(sample)==sampleSize)
         return numpy.unique(sample)
 
+    def optimize_param(self, param, N, inverted=False, step = 1):
+        cur_val = getattr(self, param)
+
+        subsample = self.downSample(N)
+        counts = self.getMeanCounts()
+
+        if inverted:
+            step = -1*step
+
+        while counts > 0:
+            cur_val = cur_val + step #increase
+
+            setattr(self, param, cur_val)
+            subsample = self.downSample(N)
+            counts = self.getMeanCounts() #  how many did you sample?
+
+            print(counts)
+            print(cur_val)
 
 
+        while(counts < 0):
+            cur_val = cur_val - step
+            setattr(self, param, cur_val)
+            subsample = self.downSample(N)
+            counts = self.getMeanCounts()
 
+        cur_val = cur_val - 1
+
+        setattr(self, param, cur_val)
 
 
 

@@ -42,12 +42,8 @@ if __name__ == '__main__':
     le = LabelEncoder().fit(labels)
     cell_labels = le.transform(labels)
 
-    bandSizes=np.arange(10,20,1)
-    hashSizes=[200]*len(bandSizes)
-    bandNums=[x//y for x, y in zip(hashSizes,bandSizes)]
 
     Ns=[500]
-
     bandSizes=np.arange(10,20,1)
     hashSizes=[200]*len(bandSizes)
     bandNums=[x//y for x, y in zip(hashSizes,bandSizes)]
@@ -91,13 +87,27 @@ if __name__ == '__main__':
     Ns=[100,500,1000]
     )
 
+    params_randomGrid = {
+        'numHashes':hashSizes,
+        'numBands': bandNums,
+        'bandSize': bandSizes,
+        'gridSize': [0.1]
+    }
+
+    testresults_randomGrid = try_params(X_dimred, 'randomGridLSH', params_randomGrid,
+    ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare','guess','actual','error'],
+    cell_labels = cell_labels, rare_label = le.transform(['293t'])[0],
+    Ns=[100,500,1000],
+    optimizeParams=['gridSize'], optimizeSteps=[0.001]
+    )
 
 
 
 
-    testresults = pd.concat([testresults_cosine,testresults_grid, testresults_proj])
+
+    testresults = pd.concat([testresults_cosine,testresults_grid, testresults_proj, testresults_randomGrid])
     print(testresults)
-    testresults.to_csv('target/experiments/{}.txt.2'.format(NAMESPACE), sep='\t')
+    testresults.to_csv('target/experiments/{}.txt.3'.format(NAMESPACE), sep='\t')
 
 
     # try_lsh_params(

@@ -24,8 +24,8 @@ from lsh_sketch import *
 from test_file import *
 
 
-def try_params(X_dimred, hasher, params, tests, n_seeds=1, **kwargs):
-    "version where params is a dict to be unpacked"
+def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], optimizeSteps=[], **kwargs):
+    """version where params is a dict to be unpacked"""
 
     #make sure all needed params are provided
     if 'cell_labels' not in kwargs:
@@ -74,9 +74,17 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, **kwargs):
         currentParams={p:val[i] for (p,val) in params.items()}
         hasherfunc = getattr(hashers, hasher)
 
+
+
         downsampler = hasherfunc(X_dimred, **currentParams)
 
+
         for N in Ns:
+            for k in range(len(optimizeParams)):
+                p = optimizeParams[k]
+                print('optimizing {}'.format(optimizeParams[k]))
+                downsampler.optimize_param(p,N,step=optimizeSteps[k])
+
             for seed in range(n_seeds):
 
                 #store current parameters
