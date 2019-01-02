@@ -4,6 +4,7 @@ import numpy as np
 from LSH import *
 from test_file import *
 from utils import *
+from time import time
 
 
 class cosineLSH(LSH):
@@ -52,7 +53,12 @@ class randomGridLSH(LSH):
 
         for hashno in range(self.numHashes):
             basis = rvs(dim = self.numFeatures) # random orthonormal basis
+
+            t0 = time()
             newData=np.matmul(self.data, basis)
+            t1 = time()
+
+            print('making random basis took {} seconds'.format(t1-t0))
 
             #do gridLSH in this new basis
 
