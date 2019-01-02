@@ -34,18 +34,18 @@ def reduce_dimensionality(X, method='svd', dimred=DIMRED, raw=False):
 
 def dispersion(X, eps=1e-10):
     mean = X.mean(0).A1
-    
+
     X_nonzero = X[:, mean > eps]
     nonzero_mean = X_nonzero.mean(0).A1
     nonzero_var = (X_nonzero.multiply(X_nonzero)).mean(0).A1
     del X_nonzero
-    
+
     nonzero_dispersion = (nonzero_var / nonzero_mean)
 
     dispersion = np.zeros(X.shape[1])
     dispersion[mean > eps] = nonzero_dispersion
     dispersion[mean <= eps] = float('-inf')
-    
+
     return dispersion
 
 def mkdir_p(path):
@@ -56,3 +56,24 @@ def mkdir_p(path):
             pass
         else:
             raise
+
+def rvs(dim=3):
+     random_state = np.random
+     H = np.eye(dim)
+     D = np.ones((dim,))
+     for n in range(1, dim):
+         x = random_state.normal(size=(dim-n+1,))
+         D[n-1] = np.sign(x[0])
+         x[0] -= D[n-1]*np.sqrt((x*x).sum())
+         # Householder transformation
+         Hx = (np.eye(dim-n+1) - 2.*np.outer(x, x)/(x*x).sum())
+         mat = np.eye(dim)
+         mat[n-1:, n-1:] = Hx
+         H = np.dot(H, mat)
+         # Fix the last sign such that the determinant is 1
+     D[-1] = (-1)**(1-(dim % 2))*D.prod()
+     # Equivalent to np.dot(np.diag(D), H) but faster, apparently
+     H = (D*H.T).T
+     return H
+if __name__ == '__main__':
+    print(rvs(3))

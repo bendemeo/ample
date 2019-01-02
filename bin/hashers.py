@@ -1,7 +1,9 @@
+from __future__ import division
 from scipy.stats import ortho_group
 import numpy as np
 from LSH import *
 from test_file import *
+from utils import *
 
 
 class cosineLSH(LSH):
@@ -36,6 +38,51 @@ class projLSH(LSH):
 
 
 
+class randomGridLSH(LSH):
+    """like gridLSH, but grid axes are randomly chosen orthogonal basis"""
+    def __init__(self, data, gridSize, numHashes, numBands, bandSize, replace = False):
+
+        LSH.__init__(self,data, numHashes=numHashes, numBands=numBands, bandSize=bandSize,
+        replace=replace)
+
+        self.gridSize = gridSize
+
+    def makeHash(self):
+        hashes = np.empty((self.numObs,self.numHashes))
+
+        for hashno in range(self.numHashes):
+            basis = rvs(dim = self.numFeatures) # random orthonormal basis
+            newData=np.matmul(self.data, basis)
+
+            #do gridLSH in this new basis
+
+            #make positive and max 1
+            X = newData - newData.min(0)
+            X /= X.max()
+
+            grid = {}
+
+            #make dict mapping grid squares to points in it
+            for i in range(self.numObs):
+                coords = X[i,:]
+
+                gridsquare = tuple(np.floor(coords / float(self.gridSize)).astype(int))
+
+                if gridsquare not in grid:
+                    grid[gridsquare]=set()
+                grid[gridsquare].add(i)
+
+            #enumerate grid squares, and assign each obs to its square index
+            keys = list(grid.keys())
+            for square in range(len(keys)):
+                for idx in grid[keys[square]]:
+                    hashes[idx,hashno] = square
+
+
+        self.hash=hashes
+
+
+
 class gridLSH(LSH):
     """just bins coordinates to make an orthogonal grid"""
 
@@ -62,7 +109,7 @@ class gridLSH(LSH):
         for i in range(self.numObs):
             coords = X[i,:]
 
-            gridsquare = tuple(np.floor(coords/self.gridSize).astype(int))
+            gridsquare = tuple(np.floor(coords / float(self.gridSize)).astype(int))
 
             if gridsquare not in grid:
                 grid[gridsquare]=set()
