@@ -38,14 +38,14 @@ if __name__ == '__main__':
 
     gauss2D = gauss_test([10,20,100,2000], 2, 4, [0.1, 1, 0.01, 2])
     mpl.scatter(gauss2D[:, 0], gauss2D[:, 1])
-
-
-
-    downsampler = projLSH(gauss2D, 1000, 10, 10, 0.1)
-    downsampler.optimize_param('gridSize', 100, inverted = True)
-
-
-    downsampler = randomGridLSH(gauss2D, numHashes = 10, numBands = 2, bandSize = 2, gridSize = 0.01)
+    #
+    #
+    #
+    # downsampler = projLSH(gauss2D, 1000, 10, 10, 0.1)
+    # downsampler.optimize_param('gridSize', 100, inverted = True)
+    #
+    #
+    # downsampler = randomGridLSH(gauss2D, numHashes = 10, numBands = 2, bandSize = 2, gridSize = 0.01)
 
     #downsampler = cosineLSH(gauss2D, numHashes = 1000, numBands = 1, bandSize=500)
     # t0 = time()
@@ -53,11 +53,30 @@ if __name__ == '__main__':
     # t1 = time()
     # print('fast downsampling took {} seconds'.format(t1-t0))
 
+
+
+    rg = randomGridLSH(gauss2D, numHashes = 10, numBands = 2, bandSize = 2, gridSize = 0.01)
+
     t0 = time()
-    subInds = downsampler.downSample(50)
+    subInds = rg.downSample(1000)
     t1 = time()
-    print('slow downsampling took {} seconds'.format(t1-t0))
-    print(downsampler.hash)
+    print('random grid took {} seconds to downsample'.format(t1-t0))
+    print(rg.hash)
+
+
+    proj = projLSH(gauss2D, numHashes = 10, numBands = 2, bandSize = 2, gridSize = 0.01)
+
+    t0 = time()
+    subInds = rg.downSample(1000)
+    t1 = time()
+    print('random projection took {} seconds to downsample'.format(t1-t0))
+    print(proj.hash)
+
+    # t0 = time()
+    # subInds = downsampler.downSample(50)
+    # t1 = time()
+    # print('slow downsampling took {} seconds'.format(t1-t0))
+    # print(downsampler.hash)
 
     # mpl.scatter(gauss2D[subInds, 0], gauss2D[subInds, 1], c='m')
     # mpl.show()
@@ -72,8 +91,8 @@ if __name__ == '__main__':
 
     #subInds = lshSketch(X=gauss2D, N=100, numHashes=3000, numBands=2, bandSize=500)
 
-    mpl.scatter(gauss2D[subInds, 0], gauss2D[subInds, 1], c='m')
-    mpl.show()#
+    # mpl.scatter(gauss2D[subInds, 0], gauss2D[subInds, 1], c='m')
+    # mpl.show()#
 
     # counts = [10000, 20000, 30000, 40000]
     # for n in counts:

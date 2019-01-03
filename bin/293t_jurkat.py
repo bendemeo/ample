@@ -1,6 +1,7 @@
 from fbpca import pca
 import numpy as np
 import os
+import sys
 from scanorama import *
 from scipy.sparse import vstack
 from sklearn.preprocessing import LabelEncoder, scale
@@ -70,6 +71,25 @@ if __name__ == '__main__':
     # )
     #
 
+    rg = randomGrisLSH(X_dimred, numHashes = 10, numBands = 2, bandSize = 5, gridSize = 0.01)
+
+    t0 = time()
+    subInds = rg.downSample(500)
+    t1 = time()
+    print('random grid took {} seconds to downsample'.format(t1-t0))
+    print(rg.hash)
+
+
+    proj = projLSH(gauss2D, numHashes = 10, numBands = 2, bandSize = 2, gridSize = 0.01)
+
+    t0 = time()
+    subInds = rg.downSample(500)
+    t1 = time()
+    print('random projection took {} seconds to downsample'.format(t1-t0))
+    print(proj.hash)
+
+    sys.exit()
+
     params_proj = {
         'numHashes':hashSizes,
         'numBands':bandNums,
@@ -81,7 +101,7 @@ if __name__ == '__main__':
     ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
     'guess','actual','error'],
     cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
-    Ns=[100,500,1000],
+    Ns=[100a;kk      ],
     optimizeParams=['gridSize'], optimizeSteps=[-0.001]
     )
 
