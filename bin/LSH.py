@@ -267,8 +267,8 @@ class LSH:
             subsample = self.downSample(N)
             counts = self.getMeanCounts() #  how many did you sample?
 
-            log(counts)
-            log(cur_val)
+            print(counts)
+            print('current value: {}, adding step'.format(cur_val))
 
 
         while(counts < 0):
@@ -276,10 +276,12 @@ class LSH:
             setattr(self, param, cur_val)
             subsample = self.downSample(N)
             counts = self.getMeanCounts()
+            print(counts)
+            print('current value {}'.format(cur_val))
 
         cur_val = cur_val - 1
 
-        log('optimized value is {}'.format(cur_val))
+        print('optimized value is {}, subtracting step'.format(cur_val))
         setattr(self, param, cur_val)
 
 
