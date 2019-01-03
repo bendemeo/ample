@@ -251,7 +251,7 @@ class LSH:
         assert(len(sample)==sampleSize)
         return numpy.unique(sample)
 
-    def optimize_param(self, param, N, inverted=False, step = 1, binary = True, max_iter = 20, verbose = True):
+    def optimize_param(self, param, N, inverted=False, step = 1, binary = True, max_iter = 20, verbose = True, tolerance = 0.001):
         if verbose:
             print('optimizing {}'.format(param))
         cur_val = getattr(self, param)
@@ -292,6 +292,10 @@ class LSH:
             elif counts == N:
                 if verbose:
                     print('got it perfect')
+                break
+            elif abs(low - high) < tolerance:
+                if verbose:
+                    print('reached tolerance')
                 break
             setattr(self, param, cur_val)
             subsample = self.downSample(N)
