@@ -83,7 +83,7 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
             for k in range(len(optimizeParams)):
                 p = optimizeParams[k]
                 print('optimizing {}'.format(optimizeParams[k]))
-                downsampler.optimize_param(p,N,invert = invert[k])
+                downsampler.optimize_param(p,N,inverted = inverted[k])
 
             for seed in range(n_seeds):
 
