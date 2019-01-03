@@ -24,7 +24,7 @@ from lsh_sketch import *
 from test_file import *
 
 
-def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], invert=[], **kwargs):
+def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], inverted=[], **kwargs):
     """version where params is a dict to be unpacked"""
 
     #make sure all needed params are provided
