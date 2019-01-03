@@ -46,7 +46,7 @@ if __name__ == '__main__':
 
     Ns=[500]
     bandSizes=np.arange(10,20,1)
-    hashSizes=[200]*len(bandSizes)
+    hashSizes=[100]*len(bandSizes)
     bandNums=[x//y for x, y in zip(hashSizes,bandSizes)]
 
     # params_randomGrid = {
@@ -56,10 +56,12 @@ if __name__ == '__main__':
     #     'gridSize':[0.01]
     # }
 
+
+
     params_randomGrid = {
-        'numHashes':hashSizes,
-        'numBands': bandNums,
-        'bandSize': bandSizes,
+        'numHashes':[10]*4,
+        'numBands': [1, 2, 3, 4],
+        'bandSize': [4,3,2,1],
         'gridSize': [0.1]
     }
 
