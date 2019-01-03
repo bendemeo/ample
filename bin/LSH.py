@@ -92,7 +92,7 @@ class LSH:
             available = range(self.numHashes)
 
             if self.allowRepeats:
-                inds = numpy.random.choice(self.numHashes, self.bandSize, replace=False)
+                inds = numpy.random.choice(int(self.numHashes), int(self.bandSize), replace=False)
             else:
                 positions = numpy.random.choice(range(len(available)), self.bandSize, replace=False)
 
@@ -251,38 +251,83 @@ class LSH:
         assert(len(sample)==sampleSize)
         return numpy.unique(sample)
 
-    def optimize_param(self, param, N, inverted=False, step = 1):
+    def optimize_param(self, param, N, inverted=False, step = 1, binary = True, max_iter = 20, verbose = True):
+        if verbose:
+            print('optimizing {}'.format(param))
         cur_val = getattr(self, param)
 
         subsample = self.downSample(N)
         counts = self.getMeanCounts()
 
-        if inverted:
-            step = -1*step
+        iter = 1
+        low = None
+        high = None
+        while iter < max_iter:
+            if counts > 0 and counts < N:
+                # too low, increase value
+                low = cur_val
+                if high is None:
+                    if not inverted:
+                        cur_val *= 2.
+                    else:
+                        cur_val /= 2.
+                else:
+                    cur_val = (low + high) / 2.
+                if verbose:
+                    log('changing from {} to {}'.format(low, cur_val))
 
-        while counts > 0:
-            cur_val = cur_val + step #increase
+            elif counts < 0:
+                # too high, decrease value
+                high = cur_val
+                if low is None:
+                    if not inverted:
+                        cur_val /= 2
+                    else:
+                        cur_val *= 2
+                else:
+                    cur_val = (low + high) / 2
+                if verbose:
+                    log('changing from {} to {}'.format(high, cur_val))
 
-            setattr(self, param, cur_val)
-            subsample = self.downSample(N)
-            counts = self.getMeanCounts() #  how many did you sample?
-
-            print(counts)
-            print('current value: {}, adding step'.format(cur_val))
-
-
-        while(counts < 0):
-            cur_val = cur_val - step
+            elif counts == N:
+                if verbose:
+                    print('got it perfect')
+                break
             setattr(self, param, cur_val)
             subsample = self.downSample(N)
             counts = self.getMeanCounts()
-            print(counts)
-            print('current value {}'.format(cur_val))
+            if verbose:
+                print('sampled {}'.format(counts))
+            iter += 1
 
-        cur_val = cur_val - 1
-
-        print('optimized value is {}, subtracting step'.format(cur_val))
         setattr(self, param, cur_val)
+
+        # if inverted:
+        #     step = -1*step
+        #
+        # while counts > 0:
+        #     cur_val = cur_val + step #increase
+        #
+        #     setattr(self, param, cur_val)
+        #     subsample = self.downSample(N)
+        #     counts = self.getMeanCounts() #  how many did you sample?
+        #
+        #     print(counts)
+        #     print('current value: {}, adding step'.format(cur_val))
+        #
+        #
+        # while(counts < 0):
+        #     cur_val = cur_val - step
+        #     setattr(self, param, cur_val)
+        #     subsample = self.downSample(N)
+        #     counts = self.getMeanCounts()
+        #     print(counts)
+        #     print('current value {}'.format(cur_val))
+        #
+        # cur_val = cur_val + step
+        #
+        # print('optimized value is {}, subtracting step'.format(cur_val))
+        # setattr(self, param, cur_val)
 
 
 

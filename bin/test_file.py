@@ -54,23 +54,29 @@ if __name__ == '__main__':
     # print('fast downsampling took {} seconds'.format(t1-t0))
 
 
+    N=50
+    rg = randomGridLSH(gauss2D, numHashes = 100, numBands = 2, bandSize = 10, gridSize = 0.01)
 
-    rg = randomGridLSH(gauss2D, numHashes = 10, numBands = 2, bandSize = 2, gridSize = 0.01)
+    rg.optimize_param('gridSize', N, inverted = True)
+
+    print('grid size is {}'.format(rg.gridSize))
+    rg.optimize_param('bandSize', N, inverted = False)
+
 
     t0 = time()
-    subInds = rg.downSample(1000)
+    subInds = rg.downSample(N)
     t1 = time()
     print('random grid took {} seconds to downsample'.format(t1-t0))
     print(rg.hash)
 
 
-    proj = projLSH(gauss2D, numHashes = 10, numBands = 2, bandSize = 2, gridSize = 0.01)
-
-    t0 = time()
-    subInds = proj.downSample(1000)
-    t1 = time()
-    print('random projection took {} seconds to downsample'.format(t1-t0))
-    print(proj.hash)
+    # proj = projLSH(gauss2D, numHashes = 10, numBands = 2, bandSize = 2, gridSize = 0.01)
+    #
+    # t0 = time()
+    # subInds = proj.downSample(1000)
+    # t1 = time()
+    # print('random projection took {} seconds to downsample'.format(t1-t0))
+    # print(proj.hash)
 
     # t0 = time()
     # subInds = downsampler.downSample(50)
@@ -78,8 +84,8 @@ if __name__ == '__main__':
     # print('slow downsampling took {} seconds'.format(t1-t0))
     # print(downsampler.hash)
 
-    # mpl.scatter(gauss2D[subInds, 0], gauss2D[subInds, 1], c='m')
-    # mpl.show()
+    mpl.scatter(gauss2D[subInds, 0], gauss2D[subInds, 1], c='m')
+    mpl.show()
 
     # downsampler = gridLSH(gauss2D, gridSize=0.1)
     # downsampler.makeHash()
