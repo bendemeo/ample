@@ -56,46 +56,46 @@ if __name__ == '__main__':
     #     'gridSize':[0.01]
     # }
 
-    # params_randomGrid = {
-    #     'numHashes':hashSizes,
-    #     'numBands': bandNums,
-    #     'bandSize': bandSizes,
-    #     'gridSize': [0.1]
-    # }
+    params_randomGrid = {
+        'numHashes':hashSizes,
+        'numBands': bandNums,
+        'bandSize': bandSizes,
+        'gridSize': [0.1]
+    }
+
+    testresults_randomGrid = try_params(X_dimred, 'randomGridLSH', params_randomGrid,
+    ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare','guess','actual','error'],
+    cell_labels = cell_labels, rare_label = le.transform(['293t'])[0],
+    Ns=[100]
+    optimizeParams=['gridSize'], invert = [True]
+    )
+
+
+    # rg = randomGridLSH(X_dimred, numHashes = 10, numBands = 2, bandSize = 5, gridSize = 0.01)
     #
-    # testresults_randomGrid = try_params(X_dimred, 'randomGridLSH', params_randomGrid,
-    # ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare','guess','actual','error'],
-    # cell_labels = cell_labels, rare_label = le.transform(['293t'])[0],
-    # Ns=[100]
-    # optimizeParams=['gridSize'], optimizeSteps=[0.001]
-    # )
+    # t0 = time()
+    # subInds = rg.downSample(500)
+    # t1 = time()
+    # print('random grid took {} seconds to downsample'.format(t1-t0))
     #
+    # print('optimizing grid size...')
+    # rg.optimize_param('gridSize', N=500, step=-0.01)
+    #
+    # subInds2 = rg.downSample(500)
+    #
+    #
+    # print(rg.hash)
+    #
+    #
+    # proj = projLSH(X_dimred, numHashes = 10, numBands = 2, bandSize = 2, gridSize = 0.01)
+    #
+    # t0 = time()
+    # subInds = rg.downSample(500)
+    # t1 = time()
+    # print('random projection took {} seconds to downsample'.format(t1-t0))
+    # print(proj.hash)
 
-    rg = randomGridLSH(X_dimred, numHashes = 10, numBands = 2, bandSize = 5, gridSize = 0.01)
-
-    t0 = time()
-    subInds = rg.downSample(500)
-    t1 = time()
-    print('random grid took {} seconds to downsample'.format(t1-t0))
-
-    print('optimizing grid size...')
-    rg.optimize_param('gridSize', N=500, step=-0.01)
-
-    subInds2 = rg.downSample(500)
-
-
-    print(rg.hash)
-
-
-    proj = projLSH(X_dimred, numHashes = 10, numBands = 2, bandSize = 2, gridSize = 0.01)
-
-    t0 = time()
-    subInds = rg.downSample(500)
-    t1 = time()
-    print('random projection took {} seconds to downsample'.format(t1-t0))
-    print(proj.hash)
-
-    sys.exit()
+    # sys.exit()
 
     params_proj = {
         'numHashes':hashSizes,
@@ -109,11 +109,11 @@ if __name__ == '__main__':
     'guess','actual','error'],
     cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
     Ns=[100],
-    optimizeParams=['gridSize'], optimizeSteps=[-0.001]
+    optimizeParams=['gridSize'], invert = [True]
     )
 
     params_grid = {
-        'gridSize': np.arange(0.1,0.9,0.1)
+        'gridSize': [0.1]
     }
 
     testresults_grid = try_params(X_dimred, 'gridLSH',params_grid,
@@ -121,7 +121,7 @@ if __name__ == '__main__':
         'guess','actual','error'],cell_labels=cell_labels,
         rare_label=le.transform(['293t'])[0],
         Ns=[100,500,1000],
-        optimizeParams=['gridSize'], optimizeSteps=[-0.001]
+        optimizeParams=['gridSize'], invert=[True]
     )
 
     params_cosine = {
