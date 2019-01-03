@@ -6,7 +6,7 @@ from sklearn.cluster import KMeans
 from sklearn.metrics import roc_auc_score
 from sklearn.preprocessing import normalize, LabelEncoder
 from LSH import *
-from hasher import *
+from hashers import *
 
 from experiments import *
 from process import load_names
