@@ -85,6 +85,9 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
                 print('optimizing {}'.format(optimizeParams[k]))
                 downsampler.optimize_param(p,N,inverted = inverted[k])
 
+                currentParams[p] = getattr(downsampler, p)
+
+
             for seed in range(n_seeds):
 
                 #store current parameters

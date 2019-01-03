@@ -68,7 +68,7 @@ if __name__ == '__main__':
     testresults_randomGrid = try_params(X_dimred, 'randomGridLSH', params_randomGrid,
     ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare','guess','actual','error'],
     cell_labels = cell_labels, rare_label = le.transform(['293t'])[0],
-    Ns=[100],
+    Ns=[100, 200, 500, 1000],
     optimizeParams=['gridSize'], inverted = [True]
     )
 

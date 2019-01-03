@@ -53,7 +53,7 @@ class randomGridLSH(LSH):
         hashes = np.empty((self.numObs,self.numHashes))
         t1 = time()
 
-        #print('initiating took {} seconds'.format(t1-t0))
+        print('initiating took {} seconds'.format(t1-t0))
 
         for hashno in range(self.numHashes):
             t0 = time()

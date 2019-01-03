@@ -75,5 +75,7 @@ def rvs(dim=3):
      # Equivalent to np.dot(np.diag(D), H) but faster, apparently
      H = (D*H.T).T
      return H
-if __name__ == '__main__':
-    print(rvs(3))
+
+     
+# if __name__ == '__main__':
+#     print(rvs(3))
