@@ -78,7 +78,9 @@ if __name__ == '__main__':
     t1 = time()
     print('random grid took {} seconds to downsample'.format(t1-t0))
 
-    rg.optimize_param('gridSize', step=-0.001)
+    rg.optimize_param('gridSize', N=500, step=-0.001)
+
+    subInds2 = rg.downSample(500)
 
 
     print(rg.hash)
