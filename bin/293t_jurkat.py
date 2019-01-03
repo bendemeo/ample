@@ -78,7 +78,8 @@ if __name__ == '__main__':
     t1 = time()
     print('random grid took {} seconds to downsample'.format(t1-t0))
 
-    rg.optimize_param('gridSize', N=500, step=-0.001)
+    print('optimizing grid size...')
+    rg.optimize_param('gridSize', N=500, step=-0.01)
 
     subInds2 = rg.downSample(500)
 
