@@ -100,7 +100,7 @@ def experiment(sampling_fn, X_dimred, name, cell_labels=None,
                kmeans=True, visualize_orig=True,
                downsample=True, n_downsample=100000,
                gene_names=None, gene_expr=None, genes=None,
-               perplexity=500, kmeans_k=10, sample_type=''):
+               perplexity=500, kmeans_k=10, sample_type='', lsh=False):
 
     # Assign cells to clusters.
 
@@ -161,7 +161,10 @@ def experiment(sampling_fn, X_dimred, name, cell_labels=None,
 
         log('Sampling {}...'.format(N))
         t1=time()
-        samp_idx = sampling_fn(X_dimred, N)
+        if lsh:
+            samp_idx=sampling_fn.downSample(N)
+        else:
+            samp_idx = sampling_fn(X_dimred, N)
         t2=time()
         log('Found {} entries'.format(len(set(samp_idx))))
         log('it took {} seconds to do it'.format(t2-t1))
