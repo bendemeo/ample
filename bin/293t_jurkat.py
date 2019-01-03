@@ -71,7 +71,7 @@ if __name__ == '__main__':
     # )
     #
 
-    rg = randomGrisLSH(X_dimred, numHashes = 10, numBands = 2, bandSize = 5, gridSize = 0.01)
+    rg = randomGridLSH(X_dimred, numHashes = 10, numBands = 2, bandSize = 5, gridSize = 0.01)
 
     t0 = time()
     subInds = rg.downSample(500)

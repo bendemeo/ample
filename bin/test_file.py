@@ -67,7 +67,7 @@ if __name__ == '__main__':
     proj = projLSH(gauss2D, numHashes = 10, numBands = 2, bandSize = 2, gridSize = 0.01)
 
     t0 = time()
-    subInds = rg.downSample(1000)
+    subInds = proj.downSample(1000)
     t1 = time()
     print('random projection took {} seconds to downsample'.format(t1-t0))
     print(proj.hash)
