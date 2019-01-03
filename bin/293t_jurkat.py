@@ -69,7 +69,7 @@ if __name__ == '__main__':
     ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare','guess','actual','error'],
     cell_labels = cell_labels, rare_label = le.transform(['293t'])[0],
     Ns=[100, 200, 500, 1000],
-    optimizeParams=['gridSize'], inverted = [True]
+    optimizeParams=['gridSize'], inverted = [True], n_seeds = 5
     )
 
 
@@ -111,7 +111,7 @@ if __name__ == '__main__':
     'guess','actual','error'],
     cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
     Ns=[100],
-    optimizeParams=['gridSize'], inverted = [True]
+    optimizeParams=['gridSize'], inverted = [True], n_seeds=5
     )
 
     params_grid = {
@@ -123,7 +123,7 @@ if __name__ == '__main__':
         'guess','actual','error'],cell_labels=cell_labels,
         rare_label=le.transform(['293t'])[0],
         Ns=[100,500,1000],
-        optimizeParams=['gridSize'], inverted=[True]
+        optimizeParams=['gridSize'], inverted=[True], n_seeds=5
     )
 
     params_cosine = {
