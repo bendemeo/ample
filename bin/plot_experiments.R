@@ -1,13 +1,14 @@
 library(tidyverse)
 library(data.table)
 
-lsh_param_test_data=fread('~/Documents/bergerlab/lsh/ample/target/experiments/293t_jurkat_lsh.txt.2')
+lsh_param_test_data=fread('~/Documents/bergerlab/lsh/ample/target/experiments/293t_jurkat_lsh.txt.3')
 
 lsh_param_test_data$N = as.character(lsh_param_test_data$N)
 
 by_params <- lsh_param_test_data %>%
-  group_by(N, gridSize) %>%
-  summarise(rare = mean(rare), remnants=mean(remnants))
+  group_by(N, gridSize, sampler, numBands, bandSize) %>%
+  summarise(rare = mean(rare), remnants=mean(remnants)) %>%
+  mutate(percent = rare / as.numeric(N))
 
 
 # the number of rare cells seems stable as N increases, which is good.

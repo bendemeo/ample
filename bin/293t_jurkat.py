@@ -49,55 +49,20 @@ if __name__ == '__main__':
     hashSizes=[100]*len(bandSizes)
     bandNums=[x//y for x, y in zip(hashSizes,bandSizes)]
 
-    # params_randomGrid = {
-    #     'numHashes':[4],
-    #     'numBands':[2],
-    #     'bandSize':[2],
-    #     'gridSize':[0.01]
-    # }
-
-
 
     params_randomGrid = {
-        'numHashes':[10]*4,
-        'numBands': [1, 2, 3, 4],
-        'bandSize': [4,3,2,1],
+        'numHashes':[30]*4,
+        'numBands': [5,6,7,8],
+        'bandSize': [8,7,6,5],
         'gridSize': [0.1]
     }
 
     testresults_randomGrid = try_params(X_dimred, 'randomGridLSH', params_randomGrid,
     ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare','guess','actual','error'],
     cell_labels = cell_labels, rare_label = le.transform(['293t'])[0],
-    Ns=[100, 200, 500, 1000],
+    Ns=[150, 300, 400, 600],
     optimizeParams=['gridSize'], inverted = [True], n_seeds = 5
     )
-
-
-    # rg = randomGridLSH(X_dimred, numHashes = 10, numBands = 2, bandSize = 5, gridSize = 0.01)
-    #
-    # t0 = time()
-    # subInds = rg.downSample(500)
-    # t1 = time()
-    # print('random grid took {} seconds to downsample'.format(t1-t0))
-    #
-    # print('optimizing grid size...')
-    # rg.optimize_param('gridSize', N=500, step=-0.01)
-    #
-    # subInds2 = rg.downSample(500)
-    #
-    #
-    # print(rg.hash)
-    #
-    #
-    # proj = projLSH(X_dimred, numHashes = 10, numBands = 2, bandSize = 2, gridSize = 0.01)
-    #
-    # t0 = time()
-    # subInds = rg.downSample(500)
-    # t1 = time()
-    # print('random projection took {} seconds to downsample'.format(t1-t0))
-    # print(proj.hash)
-
-    # sys.exit()
 
     params_proj = {
         'numHashes':hashSizes,
@@ -110,7 +75,7 @@ if __name__ == '__main__':
     ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
     'guess','actual','error'],
     cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
-    Ns=[100],
+    Ns=[100, 200, 500, 1000],
     optimizeParams=['gridSize'], inverted = [True], n_seeds=5
     )
 
@@ -122,7 +87,7 @@ if __name__ == '__main__':
         tests=['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
         'guess','actual','error'],cell_labels=cell_labels,
         rare_label=le.transform(['293t'])[0],
-        Ns=[100,500,1000],
+        Ns=[200,400,8000],
         optimizeParams=['gridSize'], inverted=[True], n_seeds=5
     )
 
@@ -136,7 +101,7 @@ if __name__ == '__main__':
     ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
     'guess','actual','error'],
     cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
-    Ns=[100,500,1000]
+    Ns=[200,300,800]
     )
 
 
@@ -147,35 +112,10 @@ if __name__ == '__main__':
 
     testresults = pd.concat([testresults_cosine,testresults_grid, testresults_proj, testresults_randomGrid])
     print(testresults)
-    testresults.to_csv('target/experiments/{}.txt.3'.format(NAMESPACE), sep='\t')
+    testresults.to_csv('target/experiments/{}.txt.4'.format(NAMESPACE), sep='\t')
 
 
-    # try_lsh_params(
-    #     X_dimred, 'cosineLSH', name=NAMESPACE, hashSizes=hashSizes, bandSizes=bandSizes, bandNums=bandNums, tests=['kmeans_ami','max_min_dist','rare', 'lastCounts','remnants'], cell_labels=cell_labels, rare_label=le.transform(['293t'])[0],
-    #     n_seeds=5, Ns=Ns, makeVisualization = True,
-    #     cell_types=labels
-    # )
 
-    # experiments_modular(
-    #     X_dimred, sampling_fns=[lshSketch],
-    #     name=NAMESPACE,
-    #     cell_labels = cell_labels,
-    #     kmeans_ami = True,
-    #     louvain_ami = False,
-    #     rare=True,
-    #     rare_label=le.transform(['293t'])[0],
-    #
-    # )
-
-    # experiments(
-    #     X_dimred, NAMESPACE,
-    #     cell_labels=cell_labels,
-    #     kmeans_ami=True, louvain_ami=False,
-    #     rare=True,
-    #     rare_label=le.transform(['293t'])[0],
-    #     #entropy=True,
-    #     #max_min_dist=True
-    # )
     exit()
 
     from differential_entropies import differential_entropies
@@ -187,3 +127,38 @@ if __name__ == '__main__':
     rare(X_dimred, NAMESPACE, cell_labels, le.transform(['293t'])[0])
 
     balance(X_dimred, NAMESPACE, cell_labels)
+
+
+        # try_lsh_params(
+        #     X_dimred, 'cosineLSH', name=NAMESPACE, hashSizes=hashSizes, bandSizes=bandSizes, bandNums=bandNums, tests=['kmeans_ami','max_min_dist','rare', 'lastCounts','remnants'], cell_labels=cell_labels, rare_label=le.transform(['293t'])[0],
+        #     n_seeds=5, Ns=Ns, makeVisualization = True,
+        #     cell_types=labels
+        # )
+
+        # experiments_modular(
+        #     X_dimred, sampling_fns=[lshSketch],
+        #     name=NAMESPACE,
+        #     cell_labels = cell_labels,
+        #     kmeans_ami = True,
+        #     louvain_ami = False,
+        #     rare=True,
+        #     rare_label=le.transform(['293t'])[0],
+        #
+        # )
+
+        # experiments(
+        #     X_dimred, NAMESPACE,
+        #     cell_labels=cell_labels,
+        #     kmeans_ami=True, louvain_ami=False,
+        #     rare=True,
+        #     rare_label=le.transform(['293t'])[0],
+        #     #entropy=True,
+        #     #max_min_dist=True
+        # )
+
+    # params_randomGrid = {
+    #     'numHashes':[4],
+    #     'numBands':[2],
+    #     'bandSize':[2],
+    #     'gridSize':[0.01]
+    # }
