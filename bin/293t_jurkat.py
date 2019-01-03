@@ -80,7 +80,7 @@ if __name__ == '__main__':
     print(rg.hash)
 
 
-    proj = projLSH(gauss2D, numHashes = 10, numBands = 2, bandSize = 2, gridSize = 0.01)
+    proj = projLSH(X_dimred, numHashes = 10, numBands = 2, bandSize = 2, gridSize = 0.01)
 
     t0 = time()
     subInds = rg.downSample(500)
