@@ -293,7 +293,7 @@ class LSH:
                 if verbose:
                     print('got it perfect')
                 break
-            elif abs(low - high) < tolerance:
+            if abs(low - high) < tolerance:
                 if verbose:
                     print('reached tolerance')
                 break

@@ -87,7 +87,7 @@ if __name__ == '__main__':
         tests=['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
         'guess','actual','error'],cell_labels=cell_labels,
         rare_label=le.transform(['293t'])[0],
-        Ns=[200,400,8000],
+        Ns=[100,200,400,800],
         optimizeParams=['gridSize'], inverted=[True], n_seeds=5
     )
 

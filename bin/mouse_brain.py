@@ -5,6 +5,8 @@ from scipy.sparse import vstack
 from sklearn.cluster import KMeans
 from sklearn.metrics import roc_auc_score
 from sklearn.preprocessing import normalize, LabelEncoder
+from LSH import *
+from hasher import *
 
 from experiments import *
 from process import load_names
@@ -78,13 +80,25 @@ if __name__ == '__main__':
     cell_names = sorted(set(labels))
     cell_labels = le.transform(labels)
 
-    experiment_lsh(
-        X_dimred, NAMESPACE, cell_labels=cell_labels,
-        gene_names=viz_genes, genes=genes,
-        gene_expr=vstack(datasets),
-        kmeans=False,
-        visualize_orig=False
-    )
+
+    downsampler = randomGridLSH(X_dimred, 0.01, 10, 2,3)
+
+
+    experiment(downsampler, X_dimred, NAMESPACE, cell_labels=cell_labels,
+    gene_names=viz_genes, genes=genes,
+    gene_expr=vstack(datasets),
+    kmeans=False,
+    visualize_orig=False,
+    sample_type='randomGridLSH')
+
+
+    # experiment_lsh(
+    #     X_dimred, NAMESPACE, cell_labels=cell_labels,
+    #     gene_names=viz_genes, genes=genes,
+    #     gene_expr=vstack(datasets),
+    #     kmeans=False,
+    #     visualize_orig=False
+    # )
 
     # experiments(
     #     X_dimred, NAMESPACE, n_seeds=2,
