@@ -89,8 +89,8 @@ if __name__ == '__main__':
     gene_expr=vstack(datasets),
     kmeans=False,
     visualize_orig=False,
-    sample_type='randomGridLSH',
-    lsh=True)
+    sample_type='cosineGridLSH',
+    lsh=True, optimize_grid_size=False)
 
 
     # experiment_lsh(
