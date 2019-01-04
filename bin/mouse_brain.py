@@ -14,7 +14,7 @@ from utils import *
 
 np.random.seed(0)
 
-NAMESPACE = 'mouse_brain_2'
+NAMESPACE = 'mouse_brain'
 METHOD = 'svd'
 DIMRED = 100
 
@@ -93,7 +93,7 @@ if __name__ == '__main__':
     gene_expr=vstack(datasets),
     kmeans=False,
     visualize_orig=False,
-    sample_type='cosineLSH',
+    sample_type='cosineLSH_2',
     lsh=True, optimize_grid_size=False)
 
 

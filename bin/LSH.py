@@ -249,11 +249,11 @@ class LSH:
 
 
         assert(len(sample)==sampleSize)
-        return numpy.unique(sample)
+        return sorted(numpy.unique(sample))
 
     def optimize_param(self, param, N, inverted=False, step = 1, binary = True, max_iter = 20, verbose = True, tolerance = 0.001):
 
-        
+
         if verbose:
             print('optimizing {}'.format(param))
         cur_val = getattr(self, param)
