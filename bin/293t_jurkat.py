@@ -157,15 +157,15 @@ if __name__ == '__main__':
         #
         # )
 
-        # experiments(
-        #     X_dimred, NAMESPACE,
-        #     cell_labels=cell_labels,
-        #     kmeans_ami=True, louvain_ami=False,
-        #     rare=True,
-        #     rare_label=le.transform(['293t'])[0],
-        #     #entropy=True,
-        #     #max_min_dist=True
-        # )
+        experiments(
+            X_dimred, '293_jurkat_nolsh',
+            cell_labels=cell_labels,
+            kmeans_ami=True, louvain_ami=False,
+            rare=True,
+            rare_label=le.transform(['293t'])[0],
+            #entropy=True,
+            #max_min_dist=True
+        )
 
     # params_randomGrid = {
     #     'numHashes':[4],
