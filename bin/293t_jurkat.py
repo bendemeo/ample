@@ -56,7 +56,8 @@ if __name__ == '__main__':
         ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
         'guess','actual','error'],
         cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
-        Ns=[200,300,800]
+        Ns=[200,300,800],
+        optimizeParams=['gridSize'], inverted = [True], n_seeds = 5
         )
 
     params_randomGrid = {
