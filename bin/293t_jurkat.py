@@ -56,72 +56,74 @@ if __name__ == '__main__':
         ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
         'guess','actual','error'],
         cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
-        Ns=[200,300,800],
-        optimizeParams=['gridSize'], inverted = [True], n_seeds = 5
+        Ns=[200,300,500,800, 1000],
+        optimizeParams=['gridSize'], inverted = [True], n_seeds = 3
         )
-
-    params_randomGrid = {
-        'numHashes':[30]*4,
-        'numBands': [5,6,7,8],
-        'bandSize': [8,7,6,5],
-        'gridSize': [0.1]
-    }
-
-    testresults_randomGrid = try_params(X_dimred, 'randomGridLSH', params_randomGrid,
-    ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare','guess','actual','error'],
-    cell_labels = cell_labels, rare_label = le.transform(['293t'])[0],
-    Ns=[150, 300, 400, 600],
-    optimizeParams=['gridSize'], inverted = [True], n_seeds = 5
-    )
-
-    params_proj = {
-        'numHashes':hashSizes,
-        'numBands':bandNums,
-        'bandSize': bandSizes,
-        'gridSize':[0.1]
-    }
-
-    testresults_proj = try_params(X_dimred, 'projLSH', params_proj,
-    ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
-    'guess','actual','error'],
-    cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
-    Ns=[100, 200, 500, 1000],
-    optimizeParams=['gridSize'], inverted = [True], n_seeds=5
-    )
-
-    params_grid = {
-        'gridSize': [0.1]
-    }
-
-    testresults_grid = try_params(X_dimred, 'gridLSH',params_grid,
-        tests=['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
-        'guess','actual','error'],cell_labels=cell_labels,
-        rare_label=le.transform(['293t'])[0],
-        Ns=[100,200,400,800],
-        optimizeParams=['gridSize'], inverted=[True], n_seeds=5
-    )
-
-    params_cosine = {
-        'numHashes':hashSizes,
-        'numBands':bandNums,
-        'bandSize':bandSizes
-    }
-
-    testresults_cosine = try_params(X_dimred, 'cosineLSH', params_cosine,
-    ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
-    'guess','actual','error'],
-    cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
-    Ns=[200,300,800]
-    )
-
-
+    #
+    # params_randomGrid = {
+    #     'numHashes':[30]*4,
+    #     'numBands': [5,6,7,8],
+    #     'bandSize': [8,7,6,5],
+    #     'gridSize': [0.1]
+    # }
+    #
+    # testresults_randomGrid = try_params(X_dimred, 'randomGridLSH', params_randomGrid,
+    # ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare','guess','actual','error'],
+    # cell_labels = cell_labels, rare_label = le.transform(['293t'])[0],
+    # Ns=[150, 300, 400, 600],
+    # optimizeParams=['gridSize'], inverted = [True], n_seeds = 5
+    # )
+    #
+    # params_proj = {
+    #     'numHashes':hashSizes,
+    #     'numBands':bandNums,
+    #     'bandSize': bandSizes,
+    #     'gridSize':[0.1]
+    # }
+    #
+    # testresults_proj = try_params(X_dimred, 'projLSH', params_proj,
+    # ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
+    # 'guess','actual','error'],
+    # cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
+    # Ns=[100, 200, 500, 1000],
+    # optimizeParams=['gridSize'], inverted = [True], n_seeds=5
+    # )
+    #
+    # params_grid = {
+    #     'gridSize': [0.1]
+    # }
+    #
+    # testresults_grid = try_params(X_dimred, 'gridLSH',params_grid,
+    #     tests=['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
+    #     'guess','actual','error'],cell_labels=cell_labels,
+    #     rare_label=le.transform(['293t'])[0],
+    #     Ns=[100,200,400,800],
+    #     optimizeParams=['gridSize'], inverted=[True], n_seeds=5
+    # )
+    #
+    # params_cosine = {
+    #     'numHashes':hashSizes,
+    #     'numBands':bandNums,
+    #     'bandSize':bandSizes
+    # }
+    #
+    # testresults_cosine = try_params(X_dimred, 'cosineLSH', params_cosine,
+    # ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
+    # 'guess','actual','error'],
+    # cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
+    # Ns=[200,300,800]
+    # )
 
 
 
 
-    testresults = pd.concat([testresults_cosine,testresults_grid, testresults_proj, testresults_randomGrid, testresults_gs])
+    #
+    #
+    # testresults = pd.concat([testresults_cosine,testresults_grid, testresults_proj, testresults_randomGrid, testresults_gs])
+
+    testresults = testresults_gs
     print(testresults)
-    testresults.to_csv('target/experiments/{}.txt.4'.format(NAMESPACE), sep='\t')
+    testresults.to_csv('target/experiments/{}.txt.5'.format(NAMESPACE), sep='\t')
 
 
 
