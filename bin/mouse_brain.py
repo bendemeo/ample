@@ -82,7 +82,6 @@ if __name__ == '__main__':
 
 
     downsampler = randomGridLSH(X_dimred, 0.01, 10, 2,3)
-    downsampler.optimize_param()
 
 
     experiment(downsampler, X_dimred, NAMESPACE, cell_labels=cell_labels,
