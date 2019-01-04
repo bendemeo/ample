@@ -100,7 +100,8 @@ def experiment(sampling_fn, X_dimred, name, cell_labels=None,
                kmeans=True, visualize_orig=True,
                downsample=True, n_downsample=100000,
                gene_names=None, gene_expr=None, genes=None,
-               perplexity=500, kmeans_k=10, sample_type='', lsh=False):
+               perplexity=500, kmeans_k=10, sample_type='', lsh=False,
+               optimize_grid_size=False):
 
     # Assign cells to clusters.
 
@@ -162,6 +163,8 @@ def experiment(sampling_fn, X_dimred, name, cell_labels=None,
         log('Sampling {}...'.format(N))
         t1=time()
         if lsh:
+            if optimize_grid_size:
+                sampling_fn.optimize_param('gridSize',N=500)
             samp_idx=sampling_fn.downSample(N)
         else:
             samp_idx = sampling_fn(X_dimred, N)
