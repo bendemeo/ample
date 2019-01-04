@@ -7,6 +7,109 @@ from utils import *
 from time import time
 
 
+
+class gridLSH(LSH):
+    """just bins coordinates to make an orthogonal grid"""
+
+    def __init__(self,data,gridSize, replace=False):
+        numBands = 1
+        bandSize = 1
+        numHashes = 1
+        LSH.__init__(self,data, numHashes=numHashes, numBands=numBands, bandSize=bandSize,
+        replace=replace)
+        self.gridSize=gridSize
+
+    def makeHash(self):
+
+        #make positive and max 1
+        X = self.data - self.data.min(0)
+        X /= X.max()
+
+        #hashes = np.empty((self.numObs,self.numFeatures))
+        hashes = np.empty((self.numObs, 1))
+
+        grid = {}
+
+        #make dict mapping grid squares to points in it
+        for i in range(self.numObs):
+            coords = X[i,:]
+
+            gridsquare = tuple(np.floor(coords / float(self.gridSize)).astype(int))
+
+            if gridsquare not in grid:
+                grid[gridsquare]=set()
+            grid[gridsquare].add(i)
+
+        #enumerate grid squares, and assign each obs to its square index
+        keys = list(grid.keys())
+        for square in range(len(keys)):
+            for idx in grid[keys[square]]:
+                hashes[idx,0] = square
+
+
+        self.hash=hashes
+
+class gsLSH(LSH):
+    def __init__(self, data, gridSize=None, replace = False):
+        LSH.__init__(self, data, numHashes=1, numBands=1, bandSize=1, replace=replace)
+
+        self.gridSize=gridSize
+
+
+    def makeHash(self): #re-implementation of gs, formulated as an LSH
+        n_samples, n_features = X.shape
+
+        X = self.data - self.data.min(0)
+        X -= X.max()
+
+        X_ptp = X.ptp(0)
+
+        low_unit, high_unit = 0., max(X_ptp)
+
+        if gridSize is None:
+            gridSize=(low_unit + high_unit) / 4
+
+        unit = gridSize
+
+        grid_table = np.zeros((n_samples, n_features))
+
+        for d in range(n_features):
+            if X_ptp[d] <= unit:
+                continue
+
+            points_d = X[:, d]
+            curr_start = None
+            curr_interval = -1
+            for sample_idx in np.argsort(points_d):
+                if curr_start is None or \
+                   curr_start + unit < points_d[sample_idx]:
+                    curr_start = points_d[sample_idx]
+                    curr_interval += 1
+                grid_table[sample_idx, d] = curr_interval
+
+        grid = {}
+
+        for sample_idx in range(n_samples):
+            grid_cell = tuple(grid_table[sample_idx, :])
+            if grid_cell not in grid:
+                grid[grid_cell] = []
+            grid[grid_cell].append(sample_idx)
+
+        del grid_table
+
+        #enumerate grid squares, and assign each obs to its square index
+        keys = list(grid.keys())
+        for square in range(len(keys)):
+            for idx in grid[keys[square]]:
+                hashes[idx,0] = square
+
+
+        self.hash=hashes
+
+
+
+
+
 class cosineLSH(LSH):
 
     def makeHash(self):
@@ -94,46 +197,6 @@ class randomGridLSH(LSH):
 
 
 
-class gridLSH(LSH):
-    """just bins coordinates to make an orthogonal grid"""
-
-    def __init__(self,data,gridSize, replace=False):
-        numBands = 1
-        bandSize = 1
-        numHashes = 1
-        LSH.__init__(self,data, numHashes=numHashes, numBands=numBands, bandSize=bandSize,
-        replace=replace)
-        self.gridSize=gridSize
-
-    def makeHash(self):
-
-        #make positive and max 1
-        X = self.data - self.data.min(0)
-        X /= X.max()
-
-        #hashes = np.empty((self.numObs,self.numFeatures))
-        hashes = np.empty((self.numObs, 1))
-
-        grid = {}
-
-        #make dict mapping grid squares to points in it
-        for i in range(self.numObs):
-            coords = X[i,:]
-
-            gridsquare = tuple(np.floor(coords / float(self.gridSize)).astype(int))
-
-            if gridsquare not in grid:
-                grid[gridsquare]=set()
-            grid[gridsquare].add(i)
-
-        #enumerate grid squares, and assign each obs to its square index
-        keys = list(grid.keys())
-        for square in range(len(keys)):
-            for idx in grid[keys[square]]:
-                hashes[idx,0] = square
-
-
-        self.hash=hashes
 
         #
         # grid_axes = ortho_group.rvs(self.numFeatures)

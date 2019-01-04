@@ -104,13 +104,19 @@ if __name__ == '__main__':
     Ns=[200,300,800]
     )
 
+    params_gs = {}
+
+    testresults_gs = try_params(X_dimred, 'gsLSH', params_gs,
+        ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
+        'guess','actual','error'],
+        cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
+        Ns=[200,300,800]
+        )
 
 
 
 
-
-
-    testresults = pd.concat([testresults_cosine,testresults_grid, testresults_proj, testresults_randomGrid])
+    testresults = pd.concat([testresults_cosine,testresults_grid, testresults_proj, testresults_randomGrid, testresults_gs])
     print(testresults)
     testresults.to_csv('target/experiments/{}.txt.4'.format(NAMESPACE), sep='\t')
 

@@ -11,7 +11,7 @@ class LSH:
     '''class to construct a random projection of data'''
 
     def __init__(self, data, numHashes, numBands, bandSize, replace=False, keepStats=True,
-    allowRepeats = True):
+    allowRepeats = True, verbose = True):
         ''' numHashes is number of random projections it makes'''
         ''' dim is number of dimensions '''
         self.numHashes = numHashes
@@ -36,6 +36,7 @@ class LSH:
 
         self.nbhdSizes = [] # store neighborhood sizes
         self.takenBands=[[]]*numBands  #band values that have been taken
+        self.verbose = verbose
     def makeHash(self):
         "child classes extend this"
         pass
