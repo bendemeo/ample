@@ -57,7 +57,7 @@ class gsLSH(LSH):
 
 
     def makeHash(self): #re-implementation of gs, formulated as an LSH
-        n_samples, n_features = X.shape
+        n_samples, n_features = self.data.shape
 
         X = self.data - self.data.min(0)
         X -= X.max()
