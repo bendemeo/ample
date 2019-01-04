@@ -50,16 +50,27 @@ if __name__ == '__main__':
     bandNums=[x//y for x, y in zip(hashSizes,bandSizes)]
 
 
-    params_gs = {'gridSize': [0.01]}
+    experiments(
+        X_dimred, NAMESPACE,
+        cell_labels=cell_labels,
+        kmeans_ami=True, louvain_ami=False,
+        rare=True,
+        rare_label=le.transform(['293t'])[0],
+        #entropy=True,
+        #max_min_dist=True
+    )
 
-    testresults_gs = try_params(X_dimred, 'gsLSH', params_gs,
-        ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
-        'guess','actual','error'],
-        cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
-        Ns=[200,300,500,800, 1000],
-        optimizeParams=['gridSize'], inverted = [True], n_seeds = 3
-        )
+
+    # params_gs = {'gridSize': [0.01]}
     #
+    # testresults_gs = try_params(X_dimred, 'gsLSH', params_gs,
+    #     ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
+    #     'guess','actual','error'],
+    #     cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
+    #     Ns=[200,300,500,800, 1000],
+    #     optimizeParams=['gridSize'], inverted = [True], n_seeds = 3
+    #     )
+    # #
     # params_randomGrid = {
     #     'numHashes':[30]*4,
     #     'numBands': [5,6,7,8],
@@ -121,10 +132,10 @@ if __name__ == '__main__':
     #
     # testresults = pd.concat([testresults_cosine,testresults_grid, testresults_proj, testresults_randomGrid, testresults_gs])
 
-    testresults = testresults_gs
-    print(testresults)
-    testresults.to_csv('target/experiments/{}.txt.5'.format(NAMESPACE), sep='\t')
-
+    # testresults = testresults_gs
+    # print(testresults)
+    # testresults.to_csv('target/experiments/{}.txt.5'.format(NAMESPACE), sep='\t')
+    #
 
 
     exit()
@@ -157,15 +168,6 @@ if __name__ == '__main__':
         #
         # )
 
-        experiments(
-            X_dimred, '293_jurkat_nolsh',
-            cell_labels=cell_labels,
-            kmeans_ami=True, louvain_ami=False,
-            rare=True,
-            rare_label=le.transform(['293t'])[0],
-            #entropy=True,
-            #max_min_dist=True
-        )
 
     # params_randomGrid = {
     #     'numHashes':[4],
