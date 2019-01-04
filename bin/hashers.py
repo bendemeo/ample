@@ -62,6 +62,8 @@ class gsLSH(LSH):
         X = self.data - self.data.min(0)
         X -= X.max()
 
+        hashes = np.empty((self.numObs, 1))
+
         X_ptp = X.ptp(0)
 
         low_unit, high_unit = 0., max(X_ptp)
