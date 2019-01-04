@@ -37,8 +37,8 @@ if __name__ == '__main__':
 
     #start_experiment('pug', ['height','weight'],['fat','size'])
 
-    gauss2D = gauss_test([10,20,100,2000], 2, 4, [0.1, 1, 0.01, 2])
-    mpl.scatter(gauss2D[:, 0], gauss2D[:, 1])
+    gauss2D = gauss_test([10,20,50,100], 2, 4, [1, 0.5, 0.4, 0.2])
+    #mpl.scatter(gauss2D[:, 0], gauss2D[:, 1])
 
 
     #
@@ -63,7 +63,7 @@ if __name__ == '__main__':
     rg.optimize_param('gridSize', N, inverted = True)
 
 
-    experiment(rg, gauss2D, 'rglshtest', lsh=True)
+    experiment(rg, gauss2D, 'rglshtest2', lsh=True)
 
     print('grid size is {}'.format(rg.gridSize))
     rg.optimize_param('bandSize', N, inverted = False)

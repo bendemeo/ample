@@ -72,7 +72,6 @@ if __name__ == '__main__':
         'Synpr', 'Cacng4', 'Ttr', 'Gpr37', 'C1ql3', 'Fezf2',
     ]
 
-    viz_genes = []
     labels = (
         open('data/cell_labels/mouse_brain_cluster.txt')
         .read().rstrip().split('\n')
@@ -95,7 +94,7 @@ if __name__ == '__main__':
     kmeans=False,
     visualize_orig=False,
     sample_type='randomGridLSH_2_',
-    lsh=True, optimize_grid_size=False)
+    lsh=True, optimize_grid_size=True)
 
 
     # experiment_lsh(
