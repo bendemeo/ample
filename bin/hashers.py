@@ -66,10 +66,10 @@ class gsLSH(LSH):
 
         low_unit, high_unit = 0., max(X_ptp)
 
-        if gridSize is None:
-            gridSize=(low_unit + high_unit) / 4
+        if self.gridSize is None:
+            self.gridSize=(low_unit + high_unit) / 4
 
-        unit = gridSize
+        unit = self.gridSize
 
         grid_table = np.zeros((n_samples, n_features))
 
