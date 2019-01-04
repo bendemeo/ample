@@ -50,7 +50,7 @@ if __name__ == '__main__':
     bandNums=[x//y for x, y in zip(hashSizes,bandSizes)]
 
 
-    params_gs = {}
+    params_gs = {'gridSize': [0.01]}
 
     testresults_gs = try_params(X_dimred, 'gsLSH', params_gs,
         ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
