@@ -81,19 +81,19 @@ if __name__ == '__main__':
     cell_labels = le.transform(labels)
 
 
-    downsampler = randomGridLSH(X_dimred, 0.01, 10, 2,3)
-    downsampler = cosineLSH(X_dimred,
-        numHashes=500,
-        numBands=20,
-        bandSize=30
-    )
+    downsampler = randomGridLSH(X_dimred, 0.01, 7, 2,3)
+    # downsampler = cosineLSH(X_dimred,
+    #     numHashes=500,
+    #     numBands=20,
+    #     bandSize=30
+    # )
 
     experiment(downsampler, X_dimred, NAMESPACE, cell_labels=cell_labels,
     gene_names=viz_genes, genes=genes,
     gene_expr=vstack(datasets),
     kmeans=False,
     visualize_orig=False,
-    sample_type='cosineLSH_2',
+    ample_type='randomGridLSH_2_',
     lsh=True, optimize_grid_size=False)
 
 
