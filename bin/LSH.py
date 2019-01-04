@@ -252,6 +252,8 @@ class LSH:
         return numpy.unique(sample)
 
     def optimize_param(self, param, N, inverted=False, step = 1, binary = True, max_iter = 20, verbose = True, tolerance = 0.001):
+
+        
         if verbose:
             print('optimizing {}'.format(param))
         cur_val = getattr(self, param)
@@ -293,7 +295,7 @@ class LSH:
                 if verbose:
                     print('got it perfect')
                 break
-            if abs(low - high) < tolerance:
+            if (low is not None) and (high is not None) and abs(low-high) < tolerance:
                 if verbose:
                     print('reached tolerance')
                 break

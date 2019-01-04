@@ -5,6 +5,7 @@ from time import time
 import cProfile
 import matplotlib.pyplot as mpl
 from hashers import *
+from experiments import *
 #from lsh_experiments import start_experiment
 #from lsh_sketch import *
 
@@ -38,6 +39,8 @@ if __name__ == '__main__':
 
     gauss2D = gauss_test([10,20,100,2000], 2, 4, [0.1, 1, 0.01, 2])
     mpl.scatter(gauss2D[:, 0], gauss2D[:, 1])
+
+
     #
     #
     #
@@ -58,6 +61,9 @@ if __name__ == '__main__':
     rg = randomGridLSH(gauss2D, numHashes = 100, numBands = 2, bandSize = 10, gridSize = 0.01)
 
     rg.optimize_param('gridSize', N, inverted = True)
+
+
+    experiment(rg, gauss2D, 'rglshtest', lsh=True)
 
     print('grid size is {}'.format(rg.gridSize))
     rg.optimize_param('bandSize', N, inverted = False)

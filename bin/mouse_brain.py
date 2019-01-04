@@ -82,6 +82,7 @@ if __name__ == '__main__':
 
 
     downsampler = randomGridLSH(X_dimred, 0.01, 10, 2,3)
+    downsampler.optimize_param()
 
 
     experiment(downsampler, X_dimred, NAMESPACE, cell_labels=cell_labels,
@@ -89,7 +90,8 @@ if __name__ == '__main__':
     gene_expr=vstack(datasets),
     kmeans=False,
     visualize_orig=False,
-    sample_type='randomGridLSH')
+    sample_type='randomGridLSH',
+    lsh=True)
 
 
     # experiment_lsh(

@@ -2,7 +2,7 @@
 import numpy as np
 import os
 from scanorama import *
-import scanpy.api as sc
+#import scanpy.api as sc
 import scipy.stats
 from scipy.sparse import vstack
 from sklearn.cluster import KMeans
@@ -18,7 +18,7 @@ from save_mtx import save_mtx
 from supervised import adjusted_mutual_info_score
 from ample import *
 from utils import *
-from lsh_sketch import *
+#from lsh_sketch import *
 
 # Clustering-based downsampling efficiency.
 def cluster_efficiency(cluster_labels, auto_labels):
