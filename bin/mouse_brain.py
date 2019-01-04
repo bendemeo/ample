@@ -82,7 +82,11 @@ if __name__ == '__main__':
 
 
     downsampler = randomGridLSH(X_dimred, 0.01, 10, 2,3)
-
+    downsampler = cosineLSH(X_dimred,
+        numHashes=500,
+        numBands=20,
+        bandSize=30
+    )
 
     experiment(downsampler, X_dimred, NAMESPACE, cell_labels=cell_labels,
     gene_names=viz_genes, genes=genes,
