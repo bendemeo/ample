@@ -50,6 +50,15 @@ if __name__ == '__main__':
     bandNums=[x//y for x, y in zip(hashSizes,bandSizes)]
 
 
+    params_gs = {}
+
+    testresults_gs = try_params(X_dimred, 'gsLSH', params_gs,
+        ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
+        'guess','actual','error'],
+        cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
+        Ns=[200,300,800]
+        )
+
     params_randomGrid = {
         'numHashes':[30]*4,
         'numBands': [5,6,7,8],
@@ -104,14 +113,7 @@ if __name__ == '__main__':
     Ns=[200,300,800]
     )
 
-    params_gs = {}
 
-    testresults_gs = try_params(X_dimred, 'gsLSH', params_gs,
-        ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
-        'guess','actual','error'],
-        cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
-        Ns=[200,300,800]
-        )
 
 
 
