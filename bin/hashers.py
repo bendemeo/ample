@@ -50,7 +50,8 @@ class gridLSH(LSH):
         self.hash=hashes
 
 class gsLSH(LSH):
-    def __init__(self, data, k, gridSize=None, replace = False, alpha=0.1):
+    def __init__(self, data, k, gridSize=None, replace = False, alpha=0.1,
+    max_iter = 200, verbose = True):
 
         LSH.__init__(self, data, numHashes=1, numBands=1, bandSize=1, replace=replace)
 
@@ -58,8 +59,10 @@ class gsLSH(LSH):
 
         self.alpha = alpha
         self.k = k # downsampling size you're built for
+        self.verbose = verbose
+        self.max_iter = max_iter
 
-    def makeHash(self, verbose=True): #re-implementation of gs, formulated as an LSH
+    def makeHash(self): #re-implementation of gs, formulated as an LSH
         n_samples, n_features = self.data.shape
 
         X = self.data - self.data.min(0)
@@ -78,7 +81,7 @@ class gsLSH(LSH):
 
         n_iter = 0
         while True:
-            if verbose:
+            if self.verbose:
                 log('n_iter = {}'.format(n_iter))
 
             grid_table = np.zeros((n_samples, n_features))
@@ -108,7 +111,7 @@ class gsLSH(LSH):
 
             del grid_table
 
-            if verbose:
+            if self.verbose:
                 log('found {} non-empty grid cells'.format(len(grid)))
 
 
@@ -120,7 +123,7 @@ class gsLSH(LSH):
                 else:
                     unit = (unit + high_unit) / 2.
 
-                if verbose:
+                if self.verbose:
                     log('Grid size {}, increase unit to {}'
                         .format(len(grid), unit))
 
@@ -132,7 +135,7 @@ class gsLSH(LSH):
                 else:
                     unit = (unit + low_unit) / 2.
 
-                if verbose:
+                if self.verbose:
                     log('Grid size {}, decrease unit to {}'
                         .format(len(grid), unit))
 
@@ -143,7 +146,7 @@ class gsLSH(LSH):
                high_unit - low_unit < 1e-20:
                 break
 
-            if n_iter >= max_iter:
+            if n_iter >= self.max_iter:
                 # Should rarely get here.
                 sys.stderr.write('WARNING: Max iterations reached, try increasing '
                                  ' alpha parameter.\n')
