@@ -84,14 +84,12 @@ class LSH:
 
     def makeFinder(self):
         ''' make a list of numBands dictionaries for randomly chosen subsets
-        of bits. numbands and bandsize can replace global'''
+        of bits.'''
         dicts = []  # list of dictionaries
         subsets = []  #list of indices comprising bands
+        available = range(self.numHashes)  # hashes available for banding
 
         for i in range(self.numBands):
-
-            available = range(self.numHashes)
-
             if self.allowRepeats:
                 inds = numpy.random.choice(int(self.numHashes), int(self.bandSize), replace=False)
             else:
@@ -102,9 +100,11 @@ class LSH:
                 for position in sorted(positions, reverse = True):
                     del available[position]
 
-            subsets.append(inds)
+            subsets.append(inds) #add this list as a band
 
             if len(self.hash.shape)==1:
+                print('warning: hash is not an array')
+                # keys = ([tuple(self.hash[row, inds]) for row in range(self.hash.shape[0])])
                 keys=[tuple(self.hash[inds])]
             #hash values on newly created band
             else:
@@ -183,8 +183,8 @@ class LSH:
         self.makeFinder()
         print('made finder')
 
-        available = range(self.hash.shape[0])
-        included = [True] * self.numObs
+        available = range(self.numObs)
+        included = [True] * self.numObs # all indices available
         sample = []
         count = 0 # how many have been added since reset
         reset = False  # whether we have reset
@@ -199,11 +199,12 @@ class LSH:
                     self.lastCounts.append(count)
                 count = 0
                 if replace:
-                    available = range(self.hash.shape[0])
+                    available = range(self.numObs)
                 else:
-                    available = [x for x in range(self.hash.shape[0]) if x not in sample]
+                    available = [x for x in range(self.numObs) if x not in sample]
 
 
+                #reset included so only available indices are true
                 included = [False]*self.numObs
                 for i in available:
                     included[i] = True

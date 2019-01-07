@@ -4,8 +4,9 @@ library(data.table)
 lsh_param_test_data_1=fread('~/Documents/bergerlab/lsh/ample/target/experiments/293t_jurkat_lsh.txt.3')
 lsh_param_test_data_2=fread('~/Documents/bergerlab/lsh/ample/target/experiments/293t_jurkat_lsh.txt.4')
 lsh_param_test_data_3=fread('~/Documents/bergerlab/lsh/ample/target/experiments/293t_jurkat_lsh.txt.5')
+lsh_param_test_data_3=fread('~/Documents/bergerlab/lsh/ample/target/experiments/293t_jurkat_lsh.txt.6')
 
-lsh_param_test_data = rbind(lsh_param_test_data_1, lsh_param_test_data_2, lsh_param_test_data_3)
+lsh_param_test_data = rbind(lsh_param_test_data_1, lsh_param_test_data_2, lsh_param_test_data_3, fill=TRUE)
 
 lsh_param_test_data$N = as.character(lsh_param_test_data$N)
 

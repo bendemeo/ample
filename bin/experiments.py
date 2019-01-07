@@ -247,7 +247,7 @@ def experiments(X_dimred, name, n_seeds=10, **kwargs):
         columns.append('louvain_ami')
         columns.append('louvain_bami')
 
-    of = open('target/experiments/{}.txt.6'.format(name), 'a')
+    of = open('target/experiments/{}.txt.7'.format(name), 'a')
     of.write('\t'.join(columns) + '\n')
 
     Ns = [ 100, 500, 1000, 5000, 10000, 20000 ]

@@ -44,21 +44,57 @@ if __name__ == '__main__':
     cell_labels = le.transform(labels)
 
 
-    Ns=[500]
-    bandSizes=np.arange(10,20,1)
-    hashSizes=[100]*len(bandSizes)
-    bandNums=[x//y for x, y in zip(hashSizes,bandSizes)]
+    def orig_exp(data,filename, iter = 1):
+        #make original table dataset
+        experiments(data,
+            filename,
+            cell_labels=cell_labels,
+            kmeans_ami=True,
+            louvain_ami=False,
+            rare=True,
+            rare_label=le.transform(['293t'])[0],
+        )
+
+    def LSH_exp(data, filename, Ns, iter=1):
+        results = None
+        params = {'k':Ns}
+
+        results = try_params(X_dimred, 'gsLSH', params,
+            ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
+            'guess','actual','error'],
+            cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
+            Ns=Ns,
+            n_seeds=3
+        )
+        results.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
-    experiments(
-        X_dimred, NAMESPACE,
-        cell_labels=cell_labels,
-        kmeans_ami=True, louvain_ami=False,
-        rare=True,
-        rare_label=le.transform(['293t'])[0],
-        #entropy=True,
-        #max_min_dist=True
-    )
+
+
+    orig_exp(X_dimred, '293t_gs_orig')
+    LSH_exp(X_dimred, '293t_gs_lsh', [100,500,1000])
+
+
+
+    exit()
+
+
+
+    # Ns=[500]
+    # bandSizes=np.arange(10,20,1)
+    # hashSizes=[100]*len(bandSizes)
+    # bandNums=[x//y for x, y in zip(hashSizes,bandSizes)]
+    #
+    #
+    # experiments(
+    #     X_dimred, NAMESPACE,
+    #     cell_labels=cell_labels,
+    #     kmeans_ami=True, louvain_ami=False,
+    #     rare=True,
+    #     rare_label=le.transform(['293t'])[0],
+    #     #entropy=True,
+    #     #max_min_dist=True
+    # )
 
 
     # params_gs = {'gridSize': [0.01]}

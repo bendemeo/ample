@@ -50,11 +50,14 @@ class gridLSH(LSH):
         self.hash=hashes
 
 class gsLSH(LSH):
-    def __init__(self, data, gridSize=None, replace = False):
+    def __init__(self, data, k, gridSize=None, replace = False, alpha=0.1):
+
         LSH.__init__(self, data, numHashes=1, numBands=1, bandSize=1, replace=replace)
 
-        self.gridSize=gridSize
+        self.gridSize=gridSize #starting grid size before optimization
 
+        self.alpha = alpha
+        self.k = k # downsampling size you're built for
 
     def makeHash(self): #re-implementation of gs, formulated as an LSH
         n_samples, n_features = self.data.shape
@@ -62,9 +65,9 @@ class gsLSH(LSH):
         X = self.data - self.data.min(0)
         X -= X.max()
 
-        hashes = np.empty((self.numObs, 1))
+        hashes = np.empty((self.numObs, 1))  # table of grid square assignments
 
-        X_ptp = X.ptp(0)
+        X_ptp = X.ptp(0)  # list of ranges for each feature
 
         low_unit, high_unit = 0., max(X_ptp)
 
@@ -73,31 +76,81 @@ class gsLSH(LSH):
 
         unit = self.gridSize
 
-        grid_table = np.zeros((n_samples, n_features))
+        n_iter = 0
+        while True:
+            if verbose:
+                log('n_iter = {}'.format(n_iter))
 
-        for d in range(n_features):
-            if X_ptp[d] <= unit:
-                continue
+            grid_table = np.zeros((n_samples, n_features))
 
-            points_d = X[:, d]
-            curr_start = None
-            curr_interval = -1
-            for sample_idx in np.argsort(points_d):
-                if curr_start is None or \
-                   curr_start + unit < points_d[sample_idx]:
-                    curr_start = points_d[sample_idx]
-                    curr_interval += 1
-                grid_table[sample_idx, d] = curr_interval
+            for d in range(n_features):
+                if X_ptp[d] <= unit:
+                    # entire range fits in a grid square
+                    continue
 
-        grid = {}
+                points_d = X[:, d]
+                curr_start = None
+                curr_interval = -1
+                for sample_idx in np.argsort(points_d):
+                    if curr_start is None or \
+                       curr_start + unit < points_d[sample_idx]:
+                        curr_start = points_d[sample_idx]
+                        curr_interval += 1
+                    grid_table[sample_idx, d] = curr_interval
 
-        for sample_idx in range(n_samples):
-            grid_cell = tuple(grid_table[sample_idx, :])
-            if grid_cell not in grid:
-                grid[grid_cell] = []
-            grid[grid_cell].append(sample_idx)
+            grid = {}
 
-        del grid_table
+            for sample_idx in range(n_samples):
+                grid_cell = tuple(grid_table[sample_idx, :])
+                if grid_cell not in grid:
+                    grid[grid_cell] = []
+                grid[grid_cell].append(sample_idx)
+
+            del grid_table
+
+            if verbose:
+                log('found {} non-empty grid cells'.format(len(grid)))
+
+
+            if len(grid) > self.k * (1 + self.alpha):
+                #too many grid cells
+                low_unit = unit
+                if high_unit is None:
+                    unit *= 2
+                else:
+                    unit = (unit + high_unit) / 2.
+
+                if verbose:
+                    log('Grid size {}, increase unit to {}'
+                        .format(len(grid), unit))
+
+            elif len(grid) < self.k / (1 + self.alpha):
+                # Too few grid cells, decrease unit.
+                high_unit = unit
+                if low_unit is None:
+                    unit /= 2.
+                else:
+                    unit = (unit + low_unit) / 2.
+
+                if verbose:
+                    log('Grid size {}, decrease unit to {}'
+                        .format(len(grid), unit))
+
+            else:
+                break
+
+            if high_unit is not None and low_unit is not None and \
+               high_unit - low_unit < 1e-20:
+                break
+
+            if n_iter >= max_iter:
+                # Should rarely get here.
+                sys.stderr.write('WARNING: Max iterations reached, try increasing '
+                                 ' alpha parameter.\n')
+                break
+            n_iter += 1
+
+
 
         #enumerate grid squares, and assign each obs to its square index
         keys = list(grid.keys())

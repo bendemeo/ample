@@ -60,13 +60,13 @@ if __name__ == '__main__':
     N=50
     rg = randomGridLSH(gauss2D, numHashes = 100, numBands = 2, bandSize = 10, gridSize = 0.01)
 
-    rg.optimize_param('gridSize', N, inverted = True)
+    #rg.optimize_param('gridSize', N, inverted = True)
 
 
-    experiment(rg, gauss2D, 'rglshtest2', lsh=True)
+    #experiment(rg, gauss2D, 'rglshtest2', lsh=True)
 
     print('grid size is {}'.format(rg.gridSize))
-    rg.optimize_param('bandSize', N, inverted = False)
+    #rg.optimize_param('bandSize', N, inverted = False)
 
 
     t0 = time()
@@ -74,6 +74,8 @@ if __name__ == '__main__':
     t1 = time()
     print('random grid took {} seconds to downsample'.format(t1-t0))
     print(rg.hash)
+
+
 
 
     # proj = projLSH(gauss2D, numHashes = 10, numBands = 2, bandSize = 2, gridSize = 0.01)
