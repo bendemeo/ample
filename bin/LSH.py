@@ -172,7 +172,7 @@ class LSH:
     def getRemnants(self):
         return self.remnants
 
-    def downSample(self, sampleSize=100, replace = True):
+    def downSample(self, sampleSize=100, replace = False):
 
         #randomly make new hashes for each downsampling
         print('making hash...')
