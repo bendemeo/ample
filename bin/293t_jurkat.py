@@ -79,7 +79,7 @@ if __name__ == '__main__':
 
 
 
-    gsLSH_exp(X_dimred, '293t_gs_lsh_ktest', [100,500], [10, 20, 30, 40, 50, 60, 70, 100, 200, 400, 500, 800, 1000])
+    gsLSH_exp(X_dimred, '293t_gs_lsh_ktest', [100,500], [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 400, 500, 800, 1000])
     #orig_exp(X_dimred, '293t_gs_orig')
 
 
