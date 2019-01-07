@@ -13,6 +13,7 @@ from utils import *
 from lsh_tester import *
 from hashers import *
 import pandas as pd
+import math
 
 NAMESPACE = '293t_jurkat_lsh'
 METHOD = 'svd'
