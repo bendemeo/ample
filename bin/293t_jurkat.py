@@ -70,9 +70,9 @@ if __name__ == '__main__':
 
 
 
-
-    orig_exp(X_dimred, '293t_gs_orig')
     LSH_exp(X_dimred, '293t_gs_lsh', [100,500,1000])
+    orig_exp(X_dimred, '293t_gs_orig')
+
 
 
 
