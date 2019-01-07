@@ -57,12 +57,16 @@ if __name__ == '__main__':
             **kwargs
         )
 
-    def LSH_exp(data, filename, Ns, iter=1):
+    def gsLSH_exp(data, filename, Ns, ks=None, iter=1):
         results = None
 
+        if ks is None:
+            ks = [int(math.sqrt(numObs))]
+
         numObs = data.shape[0]
-        params = {'k':[int(math.sqrt(numObs))]}
-        print('k is {}'.format(int(math.sqrt(numObs))))
+
+        params = {'k':ks}
+        print('k is {}'.format(ks))
 
         results = try_params(X_dimred, 'gsLSH', params,
             ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
@@ -75,8 +79,9 @@ if __name__ == '__main__':
 
 
 
-    LSH_exp(X_dimred, '293t_gs_lsh', [100,500,1000])
-    orig_exp(X_dimred, '293t_gs_orig')
+    gsLSH_exp(X_dimred, '293t_gs_lsh_ktest', [100,500], [10, 20, 30, 40, 50, 60, 70, 100, 200, 400, 500, 800, 1000])
+    #orig_exp(X_dimred, '293t_gs_orig')
+
 
 
 
