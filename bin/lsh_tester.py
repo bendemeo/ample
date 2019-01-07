@@ -39,7 +39,7 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
             err_exit('rare_labels')
 
     #each param should have either 1 value (recycled for all) or k values
-    paramLengths = [len(params[k]) for k in params.keys()]
+    paramLengths = [len(params[j]) for j in params.keys()]
     uniqueLengths = np.unique(paramLengths)
     assert(len(uniqueLengths)<=2)
     if len(uniqueLengths)==2:
