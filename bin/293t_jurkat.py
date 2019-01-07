@@ -58,7 +58,9 @@ if __name__ == '__main__':
 
     def LSH_exp(data, filename, Ns, iter=1):
         results = None
-        params = {'k':Ns}
+
+        numObs = data.shape[1]
+        params = {'k':sqrt(numObs)}
 
         results = try_params(X_dimred, 'gsLSH', params,
             ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
@@ -71,7 +73,7 @@ if __name__ == '__main__':
 
 
 
-    #LSH_exp(X_dimred, '293t_gs_lsh', [100,500,1000])
+    LSH_exp(X_dimred, '293t_gs_lsh', [100,500,1000])
     orig_exp(X_dimred, '293t_gs_orig')
 
 

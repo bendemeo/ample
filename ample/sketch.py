@@ -10,7 +10,7 @@ def gs(X, N, **kwargs):
     return gs_gap(X, N, **kwargs)
 
 def gs_gap(X, N, k='auto', seed=None, replace=False,
-           alpha=0.1, max_iter=200, verbose=True, labels=None):
+           alpha=0.1, max_iter=200, verbose=2, labels=None):
     n_samples, n_features = X.shape
 
     # Error checking and initialization.
