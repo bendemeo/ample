@@ -59,7 +59,7 @@ class gsLSH(LSH):
         self.alpha = alpha
         self.k = k # downsampling size you're built for
 
-    def makeHash(self): #re-implementation of gs, formulated as an LSH
+    def makeHash(self, verbose=True): #re-implementation of gs, formulated as an LSH
         n_samples, n_features = self.data.shape
 
         X = self.data - self.data.min(0)
