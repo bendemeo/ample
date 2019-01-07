@@ -60,8 +60,9 @@ if __name__ == '__main__':
     def LSH_exp(data, filename, Ns, iter=1):
         results = None
 
-        numObs = data.shape[1]
+        numObs = data.shape[0]
         params = {'k':[int(math.sqrt(numObs))]}
+        print('k is {}'.format(int(math.sqrt(numObs))))
 
         results = try_params(X_dimred, 'gsLSH', params,
             ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
