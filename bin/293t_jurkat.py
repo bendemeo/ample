@@ -61,7 +61,7 @@ if __name__ == '__main__':
         results = None
 
         numObs = data.shape[1]
-        params = {'k':int(math.sqrt(numObs))}
+        params = {'k':[int(math.sqrt(numObs))]}
 
         results = try_params(X_dimred, 'gsLSH', params,
             ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
