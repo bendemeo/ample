@@ -150,7 +150,7 @@ class LSH:
         candidates = []
         for i in range(len(self.bands)):
             band = self.bands[i]
-            d = self.finder[i]
+            d = self.finder[i] #dictionary mapping inds to composite hashes
 
             if len(self.hash.shape)==1:
                 key=tuple(self.hash[band])

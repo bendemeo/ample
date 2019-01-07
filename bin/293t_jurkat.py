@@ -44,7 +44,7 @@ if __name__ == '__main__':
     cell_labels = le.transform(labels)
 
 
-    def orig_exp(data,filename, iter = 1):
+    def orig_exp(data,filename, iter = 1, **kwargs):
         #make original table dataset
         experiments(data,
             filename,
@@ -53,6 +53,7 @@ if __name__ == '__main__':
             louvain_ami=False,
             rare=True,
             rare_label=le.transform(['293t'])[0],
+            **kwargs
         )
 
     def LSH_exp(data, filename, Ns, iter=1):
@@ -70,7 +71,7 @@ if __name__ == '__main__':
 
 
 
-    LSH_exp(X_dimred, '293t_gs_lsh', [100,500,1000])
+    #LSH_exp(X_dimred, '293t_gs_lsh', [100,500,1000])
     orig_exp(X_dimred, '293t_gs_orig')
 
 
