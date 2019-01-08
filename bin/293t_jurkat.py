@@ -56,7 +56,7 @@ if __name__ == '__main__':
 
         numObs = data.shape[0]
 
-        params = {'k':ks}
+        params = {'target':ks}
         print('k is {}'.format(ks))
 
         results = try_params(X_dimred, 'gsLSH', params,
