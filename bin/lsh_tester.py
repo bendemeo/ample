@@ -207,6 +207,7 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
                             )
                             results['louvain_bami'].append(bami)
 
+    print(results)
     return pd.DataFrame.from_dict(results)
 
 # #tweaks band number until number of candidates is about right

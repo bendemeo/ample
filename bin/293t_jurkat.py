@@ -101,7 +101,7 @@ if __name__ == '__main__':
         'target':[10,20,30,40,50,60,80,100,200,300,400,500],
         'gridSize':[0.01],
         },
-        tests=     ['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare',
+        tests=['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare',
             'guess','actual','error', 'gridSize'],
         optimizeParams=['gridSize'],
         inverted=[True],
