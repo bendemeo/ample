@@ -130,6 +130,8 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
                         results['actual'].append(downsampler.actual)
                     elif t == 'error':
                         results['error'].append(downsampler.error)
+                    elif t == 'gridSize':
+                        results['gridSize'].append(downsampler.gridSize)
                     elif t == 'rare':
                         cell_labels = kwargs['cell_labels']
                         rare_label = kwargs['rare_label']

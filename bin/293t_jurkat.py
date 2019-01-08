@@ -61,7 +61,7 @@ if __name__ == '__main__':
 
         results = try_params(X_dimred, 'gsLSH', params,
             ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
-            'guess','actual','error'],
+            'guess','actual','error', 'gridSize'],
             cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
             Ns=Ns,
             n_seeds=3
@@ -82,7 +82,7 @@ if __name__ == '__main__':
 
         results = try_params(data, 'randomGridLSH', params,
             ['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare',
-            'guess','actual','error'],
+            'guess','actual','error', 'gridSize'],
             cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
             Ns=Ns,
             n_seeds=3,
@@ -92,33 +92,18 @@ if __name__ == '__main__':
         results.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
+    gsLSH_exp(X_dimred, '293t_gs_lsh_ktest', [100,500], [110,120,130,140,150,160,170,180,190,200,220,230,240,250,300], iter=2)
 
-    # randomGrid_exp(X_dimred, '293t_randomgrid_lsh_ktest', [100,500],
-    #     targets=[10,20,30, 40, 60, 80, 100, 200, 400, 500],iter=1
-    # )
+    randomGrid_exp(X_dimred, '293t_randomgrid_lsh_ktest', [100,500],
+        targets=[10,20,30, 40, 60, 80, 100, 200, 400, 500],iter=1
+    )
 
 
 
     test_targets=[10,20,30, 40, 60, 80, 100, 200, 400, 500]
 
-    ktest_cosine = try_params(X_dimred, 'cosineLSH',
-        params={
-            'numHashes':[100],
-            'bandSize':[10],
-            'numBands':[5],
-            'target':test_targets
-        },
-        tests=['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare',
-        'guess','actual','error'],
-        n_seeds=3,
-        cell_labels=cell_labels, rare_label = le.transform(['293t'])[0]
-    )
 
-    cosfile='293t_cosineLSH_ktest'
-    iter=1
-    ktest_cosine.to_csv('target/experiments/{}.txt.{}'.format(cosfile, iter), sep='\t')
 
-    #gsLSH_exp(X_dimred, '293t_gs_lsh_ktest', [100,500], [110,120,130,140,150,160,170,180,190,200,220,230,240,250,300], iter=2)
 
 
 
@@ -126,6 +111,22 @@ if __name__ == '__main__':
 
 
 
+    # ktest_cosine = try_params(X_dimred, 'cosineLSH',
+    #     params={
+    #         'numHashes':[100],
+    #         'bandSize':[10],
+    #         'numBands':[5],
+    #         'target':test_targets
+    #     },
+    #     tests=['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare',
+    #     'guess','actual','error'],
+    #     n_seeds=3,
+    #     cell_labels=cell_labels, rare_label = le.transform(['293t'])[0]
+    # )
+    #
+    # cosfile='293t_cosineLSH_ktest'
+    # iter=1
+    # ktest_cosine.to_csv('target/experiments/{}.txt.{}'.format(cosfile, iter), sep='\t')
 
 
 

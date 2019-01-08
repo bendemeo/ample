@@ -164,6 +164,7 @@ class gsLSH(LSH):
 
 
         self.hash=hashes
+        self.gridSize=unit
 
 
 
