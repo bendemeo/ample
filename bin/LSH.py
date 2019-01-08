@@ -10,7 +10,7 @@ import itertools
 class LSH:
     '''class to construct a random projection of data'''
 
-    def __init__(self, data, numHashes, numBands, bandSize, replace=False, keepStats=True,
+    def __init__(self, data, numHashes, numBands, bandSize, replace=False, keepStats=True, target = 10,
     allowRepeats = True, verbose = True):
         ''' numHashes is number of random projections it makes'''
         ''' dim is number of dimensions '''
@@ -24,6 +24,7 @@ class LSH:
         self.remnants = None  # how many are still fair game after sampling
         self.keepStats = keepStats
         self.allowRepeats = allowRepeats
+        self.target = target
 
         #to be updated by further function calls
         self.hash = None
@@ -192,8 +193,6 @@ class LSH:
         if self.keepStats:
             self.lastCounts=[]
 
-        if sampleSize == 'auto':
-
         while True:
             if len(available) == 0:  # reset available if not enough
                 reset = True
@@ -259,11 +258,12 @@ class LSH:
 
 
 
+        if sampleSize != 'auto':
+            assert(len(sample)==sampleSize)
 
-        assert(len(sample)==sampleSize)
         return sorted(numpy.unique(sample))
 
-    def optimize_param(self, param, target, inverted=False, step = 1, binary = True, max_iter = 200, verbose = True, tolerance = 0.001):
+    def optimize_param(self, param, inverted=False, step = 1, binary = True, max_iter = 200, verbose = True, tolerance = 0.001):
 
 
         if verbose:
@@ -277,7 +277,7 @@ class LSH:
         low = None
         high = None
         while iter < max_iter:
-            if counts > 0 and counts < target:
+            if counts > 0 and counts < self.target:
                 # too low, increase value
                 low = cur_val
                 if high is None:
@@ -290,7 +290,7 @@ class LSH:
                 if verbose:
                     log('changing from {} to {}'.format(low, cur_val))
 
-            elif counts > target:
+            elif counts > self.target:
                 # too high, decrease value
                 high = cur_val
                 if low is None:
@@ -303,7 +303,7 @@ class LSH:
                 if verbose:
                     log('changing from {} to {}'.format(high, cur_val))
 
-            elif counts == N:
+            elif counts == self.target:
                 if verbose:
                     print('got it perfect')
                 break

@@ -18,6 +18,7 @@ from save_mtx import save_mtx
 from supervised import adjusted_mutual_info_score
 from ample import *
 from utils import *
+from lsh_tester import *
 #from lsh_sketch import *
 
 # Clustering-based downsampling efficiency.
@@ -617,3 +618,54 @@ def save_sketch(X, samp_idx, genes, namespace):
     name = 'data/{}'.format(namespace)
     mkdir_p(name)
     save_mtx(name, csr_matrix(X[samp_idx, :]), genes)
+
+def orig_exp(data,filename, iter = 1, **kwargs):
+    #make original table dataset
+    experiments(data,
+        filename,
+        cell_labels=cell_labels,
+        kmeans_ami=True,
+        louvain_ami=False,
+        rare=True,
+        rare_label=le.transform(['293t'])[0],
+        **kwargs
+    )
+
+def gsLSH_exp(data, filename, Ns, ks=None, iter=1):
+    results = None
+
+    if ks is None:
+        ks = [int(math.sqrt(numObs))]
+
+    numObs = data.shape[0]
+
+    params = {'k':ks}
+    print('k is {}'.format(ks))
+
+    results = try_params(X_dimred, 'gsLSH', params,
+        ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
+        'guess','actual','error'],
+        cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
+        Ns=Ns,
+        n_seeds=3
+    )
+    results.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+
+
+def randomGrid_exp(data, filename, Ns, targets, iter=1, n_grids=3, n_seeds=3, **kwargs):
+    ''' random grid experiment formed with OR of some random grids'''
+
+    params = {
+        'numHashes':n_grids,
+        'numBands':n_grids,
+        'bandSize':1,
+        'target': targets
+    }
+
+    results = try_params(data, 'randomGridLSH', params,
+        ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
+        'guess','actual','error'],
+        n_seeds=n_seeds,
+        **kwargs
+    )
+    results.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')

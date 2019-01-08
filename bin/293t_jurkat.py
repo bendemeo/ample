@@ -19,6 +19,10 @@ NAMESPACE = '293t_jurkat_lsh'
 METHOD = 'svd'
 DIMRED = 100
 
+
+
+
+
 data_names = [ 'data/293t_jurkat/jurkat_293t_99_1' ]
 
 def plot(X, title, labels, bold=None):
@@ -44,19 +48,6 @@ if __name__ == '__main__':
     le = LabelEncoder().fit(labels)
     cell_labels = le.transform(labels)
 
-
-    def orig_exp(data,filename, iter = 1, **kwargs):
-        #make original table dataset
-        experiments(data,
-            filename,
-            cell_labels=cell_labels,
-            kmeans_ami=True,
-            louvain_ami=False,
-            rare=True,
-            rare_label=le.transform(['293t'])[0],
-            **kwargs
-        )
-
     def gsLSH_exp(data, filename, Ns, ks=None, iter=1):
         results = None
 
@@ -78,9 +69,38 @@ if __name__ == '__main__':
         results.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
+    def randomGrid_exp(data, filename, Ns, targets, iter=1, n_grids=3):
+        ''' random grid experiment formed with OR of some random grids'''
 
-    gsLSH_exp(X_dimred, '293t_gs_lsh_ktest', [100,500], [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 400, 500, 800, 1000])
+        params = {
+            'numHashes':n_grids,
+            'numBands':n_grids,
+            'bandSize':1,
+            'target': targets
+        }
+
+        results = try_params(data, 'randomGridLSH', params,
+            ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
+            'guess','actual','error'],
+            cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
+            Ns=Ns,
+            n_seeds=3
+        )
+        results.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+
+
+
+    randomGrid_exp(X_dimred, '293t_randomgrid_lsh_ktest', [100,500],
+        targets=[10,20,30, 40, 60, 80, 100, 200, 400, 500],iter=1
+    )
+
+    #gsLSH_exp(X_dimred, '293t_gs_lsh_ktest', [100,500], [110,120,130,140,150,160,170,180,190,200,220,230,240,250,300], iter=2)
+
+
+
     #orig_exp(X_dimred, '293t_gs_orig')
+
+
 
 
 

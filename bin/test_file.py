@@ -6,6 +6,7 @@ import cProfile
 import matplotlib.pyplot as mpl
 from hashers import *
 from experiments import *
+
 #from lsh_experiments import start_experiment
 #from lsh_sketch import *
 
@@ -37,7 +38,7 @@ if __name__ == '__main__':
 
     #start_experiment('pug', ['height','weight'],['fat','size'])
 
-    gauss2D = gauss_test([10,20,50,100], 2, 4, [1, 0.5, 0.4, 0.2])
+    gauss2D = gauss_test([100,200,500,1000], 2, 4, [1, 0.5, 0.4, 0.2])
     #mpl.scatter(gauss2D[:, 0], gauss2D[:, 1])
 
 
@@ -57,10 +58,17 @@ if __name__ == '__main__':
     # print('fast downsampling took {} seconds'.format(t1-t0))
 
 
-    N=50
-    rg = randomGridLSH(gauss2D, numHashes = 100, numBands = 2, bandSize = 10, gridSize = 0.01)
+    randomGrid_exp(gauss2D, '293t_randomgrid_lsh_ktest', [100,500],
+        targets=[10,20,30, 40, 60, 80, 100, 200, 400, 800],iter=1
+    )
 
-    #rg.optimize_param('gridSize', N, inverted = True)
+
+    N=50
+
+
+
+    # rg = randomGridLSH(gauss2D, numHashes = 5, numBands = 3, bandSize = 1, gridSize = 0.01)
+    # rg.optimize_param('gridSize', target=4, inverted = True)
 
 
     #experiment(rg, gauss2D, 'rglshtest2', lsh=True)
@@ -70,7 +78,7 @@ if __name__ == '__main__':
 
 
     t0 = time()
-    subInds = rg.downSample(N)
+    subInds = rg.downSample(5)
     t1 = time()
     print('random grid took {} seconds to downsample'.format(t1-t0))
     print(rg.hash)
@@ -92,6 +100,7 @@ if __name__ == '__main__':
     # print('slow downsampling took {} seconds'.format(t1-t0))
     # print(downsampler.hash)
 
+    mpl.scatter(gauss2D[:, 0], gauss2D[:, 1])
     mpl.scatter(gauss2D[subInds, 0], gauss2D[subInds, 1], c='m')
     mpl.show()
 
