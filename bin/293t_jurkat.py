@@ -111,9 +111,7 @@ if __name__ == '__main__':
         tests=['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare',
         'guess','actual','error'],
         n_seeds=3,
-        cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
-
-        n_seeds=3
+        cell_labels=cell_labels, rare_label = le.transform(['293t'])[0]
     )
 
     cosfile='293t_cosineLSH_ktest'
