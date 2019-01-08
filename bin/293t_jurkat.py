@@ -93,9 +93,9 @@ if __name__ == '__main__':
 
 
 
-    randomGrid_exp(X_dimred, '293t_randomgrid_lsh_ktest', [100,500],
-        targets=[10,20,30, 40, 60, 80, 100, 200, 400, 500],iter=1
-    )
+    # randomGrid_exp(X_dimred, '293t_randomgrid_lsh_ktest', [100,500],
+    #     targets=[10,20,30, 40, 60, 80, 100, 200, 400, 500],iter=1
+    # )
 
 
 
@@ -111,7 +111,9 @@ if __name__ == '__main__':
         tests=['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare',
         'guess','actual','error'],
         n_seeds=3,
+        cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
 
+        n_seeds=3
     )
 
     cosfile='293t_cosineLSH_ktest'
