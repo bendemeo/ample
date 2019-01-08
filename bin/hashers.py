@@ -11,12 +11,12 @@ from time import time
 class gridLSH(LSH):
     """just bins coordinates to make an orthogonal grid"""
 
-    def __init__(self,data,gridSize, replace=False):
+    def __init__(self,data,gridSize, replace=False, target=10):
         numBands = 1
         bandSize = 1
         numHashes = 1
         LSH.__init__(self,data, numHashes=numHashes, numBands=numBands, bandSize=bandSize,
-        replace=replace)
+        replace=replace, target=target)
         self.gridSize=gridSize
 
     def makeHash(self):
@@ -50,10 +50,11 @@ class gridLSH(LSH):
         self.hash=hashes
 
 class gsLSH(LSH):
-    def __init__(self, data, k, gridSize=None, replace = False, alpha=0.1,
+    def __init__(self, data, target=10, gridSize=None, replace = False, alpha=0.1,
     max_iter = 200, verbose = True):
 
-        LSH.__init__(self, data, numHashes=1, numBands=1, bandSize=1, replace=replace)
+        LSH.__init__(self, data, numHashes=1, numBands=1, bandSize=1, replace=replace,
+        target=target)
 
         self.gridSize=gridSize #starting grid size before optimization
 
@@ -177,9 +178,9 @@ class cosineLSH(LSH):
 
 class projLSH(LSH):
 
-    def __init__(self, data, numHashes, numBands, bandSize, gridSize=0.1, replace=False):
+    def __init__(self, data, numHashes, numBands, bandSize, gridSize=0.1, replace=False, target=10):
 
-        LSH.__init__(self, data, numHashes=numHashes, numBands=numBands, bandSize=bandSize, replace=replace)
+        LSH.__init__(self, data, numHashes=numHashes, numBands=numBands, bandSize=bandSize, replace=replace, target=target)
 
         self.gridSize=gridSize
 
@@ -202,10 +203,10 @@ class projLSH(LSH):
 
 class randomGridLSH(LSH):
     """like gridLSH, but grid axes are randomly chosen orthogonal basis"""
-    def __init__(self, data, gridSize, numHashes, numBands, bandSize, replace = False):
+    def __init__(self, data, gridSize, numHashes, numBands, bandSize, replace = False, target=10):
 
         LSH.__init__(self,data, numHashes=numHashes, numBands=numBands, bandSize=bandSize,
-        replace=replace)
+        replace=replace, target=target)
 
         self.gridSize = gridSize
 
