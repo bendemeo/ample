@@ -85,7 +85,9 @@ if __name__ == '__main__':
             'guess','actual','error'],
             cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
             Ns=Ns,
-            n_seeds=3
+            n_seeds=3,
+            optimizeParams=['gridSize'],
+            inverted=[True]
         )
         results.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 

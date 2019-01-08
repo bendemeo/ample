@@ -28,7 +28,7 @@ def err_exit(param_name):
     sys.stderr.write('Needs `{}\' param.\n'.format(param_name))
     exit(1)
 
-def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], targets = None, inverted=[], **kwargs):
+def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], inverted=[], **kwargs):
     """version where params is a dict to be unpacked"""
 
     #make sure all needed params are provided
@@ -85,21 +85,13 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], ta
         downsampler = hasherfunc(X_dimred, **currentParams)
 
         for N in Ns:
-
-            if target == None:
-                curTarget = [N]
-            else:
-                curTarget = target
-
             #optimize params that need to be optimized
             for k in range(len(optimizeParams)):
                 p = optimizeParams[k]
                 print('optimizing {}'.format(optimizeParams[k]))
 
 
-
-
-                downsampler.optimize_param(p,target=optTarget,inverted = inverted[k])
+                downsampler.optimize_param(p,inverted = inverted[k])
 
                 currentParams[p] = getattr(downsampler, p)
 

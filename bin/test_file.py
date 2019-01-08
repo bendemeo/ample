@@ -11,20 +11,6 @@ from experiments import *
 #from lsh_sketch import *
 
 
-def gauss_test(n=[100], d=1, m=1, stdev=[1]):
-    'n points, m gaussias, d dimensions, specified sds'
-    result = numpy.random.randn(1, d)
-    centers = numpy.random.normal(0*d, 10, [m, d])
-    for i in range(len(centers)):
-        print(n[i])
-        print(d)
-        c = centers[i]
-        result = numpy.concatenate((result,
-                                    numpy.random.normal(c, stdev[i], (n[i], d))),
-                                    axis = 0)
-    return result
-
-
 
 
 
