@@ -24,8 +24,6 @@ ggplot(by_params, aes(x=as.numeric(N), y=rare))+
   geom_line(aes(color = sampler, group = paste(sampler,bandSize)))+
   geom_text(aes(label = bandSize))
 
-ggplot(by_params, aes(x=
-
 
 
 # the number of rare cells seems stable as N increases, which is good.
@@ -59,3 +57,49 @@ orig = orig %>% filter(replace=="False", sampling_fn=='gs_gap')
 ### testing different k values
 #####
 ktest = fread('target/experiments/293t_gs_lsh_ktest.txt.1')
+
+ktest <- ktest %>% group_by(k, N) %>% summarize(rare = mean(rare), max_min_dist = mean(max_min_dist), kmeans_ami=mean(kmeans_ami))
+
+ktest %>% filter(N==500) %>%
+  ggplot(mapping=aes(x=k, y=rare)) +
+  geom_point(aes(color = max_min_dist))+
+  geom_line()
+
+ktest %>% filter(N==500) %>%
+  ggplot(mapping=aes(x=k, y=max_min_dist)) +
+  geom_point(aes(color = rare))+
+  geom_line()
+
+
+ktest %>% filter(N==500) %>%
+  ggplot(mapping=aes(x=k, y=kmeans_ami)) +
+  geom_point(aes(color = rare))+
+  geom_line()
+
+
+ktest %>% filter(N==500) %>%
+  ggplot(mapping=aes(x=gridSize, y=kmeans_ami)) +
+  geom_point(aes(color = rare))+
+  geom_line()
+
+
+
+ktest_randomGrid=fread('target/experiments/293t_randomgrid_lsh_ktest.txt.1')
+
+ktest_randomGrid <- ktest_randomGrid %>% group_by(target, N, maxCounts) %>% summarize(rare = mean(rare), max_min_dist = mean(max_min_dist), kmeans_ami=mean(kmeans_ami))
+
+ktest_randomGrid %>% filter(N==500) %>%
+  ggplot(mapping=aes(x=maxCounts, y=rare)) +
+  geom_point(aes(color = max_min_dist))+
+  geom_line()
+
+ktest_randomGrid %>% filter(N==500) %>%
+  ggplot(mapping=aes(x=maxCounts, y=max_min_dist)) +
+  geom_point(aes(color = rare))+
+  geom_line()
+
+
+ktest_randomGrid %>% filter(N==500) %>%
+  ggplot(mapping=aes(x=k, y=kmeans_ami)) +
+  geom_point(aes(color = rare))+
+  geom_line()

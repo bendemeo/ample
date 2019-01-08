@@ -92,17 +92,38 @@ if __name__ == '__main__':
         results.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
-    gsLSH_exp(X_dimred, '293t_gs_lsh_ktest', [100,500], [110,120,130,140,150,160,170,180,190,200,220,230,240,250,300], iter=4)
 
-    randomGrid_exp(X_dimred, '293t_randomgrid_lsh_ktest', [100,500],
-        targets=[10,20,30, 40, 60, 80, 100, 200, 400, 500],iter=4
+    testresults_proj = try_params(X_dimred, 'projLSH',
+        params={
+        'numHashes':[100],
+        'bandSize':[50],
+        'numBands':[2],
+        'target':[10,20,30,40,50,60,80,100,200,300,400,500],
+        'gridSize':[0.01],
+        },
+        tests=     ['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare',
+            'guess','actual','error', 'gridSize'],
+        optimizeParams=['gridSize'],
+        inverted=[True],
+        n_seeds=3,
+        cell_labels=cell_labels, rare_label=le.transform(['293t'])[0]
     )
+
+
+    filename='proj_gridTest'
+    iter=4
+    testresults_proj.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
 
     test_targets=[10,20,30, 40, 60, 80, 100, 200, 400, 500]
 
 
+    gsLSH_exp(X_dimred, '293t_gs_lsh_ktest', [100,500], [20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,230,240,250,300], iter=4)
+
+    randomGrid_exp(X_dimred, '293t_randomgrid_lsh_ktest', [100,500],
+        targets=[10,20,30, 40, 60, 80, 100, 200, 400, 500],iter=4
+    )
 
 
 
