@@ -61,7 +61,7 @@ if __name__ == '__main__':
 
         results = try_params(X_dimred, 'gsLSH', params,
             ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
-            'guess','actual','error', 'gridSize'],
+            'guess','actual','error', 'gridSize', 'maxCounts'],
             cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
             Ns=Ns,
             n_seeds=3
