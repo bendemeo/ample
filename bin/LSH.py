@@ -172,7 +172,7 @@ class LSH:
     def getRemnants(self):
         return self.remnants
 
-    def downSample(self, sampleSize=100, replace = False):
+    def downSample(self, sampleSize='auto', replace = False):
 
         #randomly make new hashes for each downsampling
         print('making hash...')
@@ -191,12 +191,21 @@ class LSH:
 
         if self.keepStats:
             self.lastCounts=[]
-        while len(sample) < sampleSize:
+
+        if sampleSize == 'auto':
+
+        while True:
             if len(available) == 0:  # reset available if not enough
                 reset = True
+
                 log("sampled {} out of {} before reset".format(count, sampleSize))
                 if(self.keepStats):
                     self.lastCounts.append(count)
+
+                if sampleSize == 'auto': #stop sampling when you run out
+                    break
+
+
                 count = 0
                 if replace:
                     available = range(self.numObs)
@@ -212,6 +221,9 @@ class LSH:
 
             next = numpy.random.choice(available)
             sample.append(next)
+
+            if (sampleSize != 'auto') and (len(sample) >= sampleSize):
+                break
 
             count = count + 1
 
@@ -235,8 +247,6 @@ class LSH:
             # print(self.numObs)
             # print(self.lastCounts)
 
-
-
             meanSize = sum(self.nbhdSizes) / len(self.nbhdSizes)
 
             self.guess = (float(self.numObs) / meanSize) * self.numBands
@@ -253,21 +263,21 @@ class LSH:
         assert(len(sample)==sampleSize)
         return sorted(numpy.unique(sample))
 
-    def optimize_param(self, param, N, inverted=False, step = 1, binary = True, max_iter = 20, verbose = True, tolerance = 0.001):
+    def optimize_param(self, param, target, inverted=False, step = 1, binary = True, max_iter = 200, verbose = True, tolerance = 0.001):
 
 
         if verbose:
             print('optimizing {}'.format(param))
         cur_val = getattr(self, param)
 
-        subsample = self.downSample(N)
+        subsample = self.downSample(sampleSize='auto') #sample until exhausted
         counts = self.getMeanCounts()
 
         iter = 1
         low = None
         high = None
         while iter < max_iter:
-            if counts > 0 and counts < N:
+            if counts > 0 and counts < target:
                 # too low, increase value
                 low = cur_val
                 if high is None:
@@ -280,7 +290,7 @@ class LSH:
                 if verbose:
                     log('changing from {} to {}'.format(low, cur_val))
 
-            elif counts < 0:
+            elif counts > target:
                 # too high, decrease value
                 high = cur_val
                 if low is None:
@@ -297,12 +307,13 @@ class LSH:
                 if verbose:
                     print('got it perfect')
                 break
+
             if (low is not None) and (high is not None) and abs(low-high) < tolerance:
                 if verbose:
                     print('reached tolerance')
                 break
             setattr(self, param, cur_val)
-            subsample = self.downSample(N)
+            subsample = self.downSample(sampleSize='auto')
             counts = self.getMeanCounts()
             if verbose:
                 print('sampled {}'.format(counts))

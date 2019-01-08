@@ -51,6 +51,11 @@ ggplot(lsh_param_test_data, aes(x=guess,y=actual))+
 ### original vs LSH
 #####
 orig = fread('target/experiments/293t_gs_orig.txt.7')
+
 lsh = fread('target/experiments/293t_gs_lsh.txt.1')
 
 orig = orig %>% filter(replace=="False", sampling_fn=='gs_gap')
+
+### testing different k values
+#####
+ktest = fread('target/experiments/293t_gs_lsh_ktest.txt.1')
