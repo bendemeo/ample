@@ -73,7 +73,7 @@ if __name__ == '__main__':
         ''' random grid experiment formed with OR of some random grids'''
 
         params = {
-            'gridSize':[0.01]
+            'gridSize':[0.01],
             'numHashes':[n_grids],
             'numBands':[n_grids],
             'bandSize':[1],
