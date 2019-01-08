@@ -59,7 +59,7 @@ class gsLSH(LSH):
         self.gridSize=gridSize #starting grid size before optimization
 
         self.alpha = alpha
-        self.k = k # downsampling size you're built for
+        self.target = target # downsampling size you're built for
         self.verbose = verbose
         self.max_iter = max_iter
 
@@ -116,7 +116,7 @@ class gsLSH(LSH):
                 log('found {} non-empty grid cells'.format(len(grid)))
 
 
-            if len(grid) > self.k * (1 + self.alpha):
+            if len(grid) > self.target * (1 + self.alpha):
                 #too many grid cells
                 low_unit = unit
                 if high_unit is None:
@@ -128,7 +128,7 @@ class gsLSH(LSH):
                     log('Grid size {}, increase unit to {}'
                         .format(len(grid), unit))
 
-            elif len(grid) < self.k / (1 + self.alpha):
+            elif len(grid) < self.target / (1 + self.alpha):
                 # Too few grid cells, decrease unit.
                 high_unit = unit
                 if low_unit is None:
