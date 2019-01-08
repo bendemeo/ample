@@ -165,10 +165,17 @@ class LSH:
 
 
     def getMeanCounts(self):
+
         if len(self.lastCounts) == 0:
             return -1  # default if you never reset
         else:
             return sum(self.lastCounts)/len(self.lastCounts)
+
+    def getMaxCounts(self):
+        if len(self.lastCounts) == 0:
+            return -1  # default if you never reset
+        else:
+            return max(self.lastCounts)
 
     def getRemnants(self):
         return self.remnants
@@ -271,7 +278,7 @@ class LSH:
         cur_val = getattr(self, param)
 
         subsample = self.downSample(sampleSize='auto') #sample until exhausted
-        counts = self.getMeanCounts()
+        counts = self.getMaxCounts()
 
         iter = 1
         low = None
@@ -314,7 +321,7 @@ class LSH:
                 break
             setattr(self, param, cur_val)
             subsample = self.downSample(sampleSize='auto')
-            counts = self.getMeanCounts()
+            counts = self.getMaxCounts()
             if verbose:
                 print('sampled {}'.format(counts))
             iter += 1

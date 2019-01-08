@@ -120,6 +120,8 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
                         results['time'].append(t1-t0)
                     elif t == 'lastCounts':
                         results['lastCounts'].append(downsampler.getMeanCounts())
+                    elif t == 'maxCounts':
+                        results['maxCounts'].append(downsampler.getMaxCounts())
                     elif t == 'remnants':
                         results['remnants'].append(downsampler.getRemnants())
                     elif t == 'guess':
