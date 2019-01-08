@@ -104,7 +104,7 @@ if __name__ == '__main__':
     ktest_cosine = try_params(X_dimred, 'cosineLSH',
         params={
             'numHashes':[100],
-            'hashSize':[10],
+            'bandSize':[10],
             'numBands':[5],
             'target':test_targets
         },
