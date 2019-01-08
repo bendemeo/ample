@@ -92,10 +92,10 @@ if __name__ == '__main__':
         results.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
-    gsLSH_exp(X_dimred, '293t_gs_lsh_ktest', [100,500], [110,120,130,140,150,160,170,180,190,200,220,230,240,250,300], iter=2)
+    gsLSH_exp(X_dimred, '293t_gs_lsh_ktest', [100,500], [110,120,130,140,150,160,170,180,190,200,220,230,240,250,300], iter=4)
 
     randomGrid_exp(X_dimred, '293t_randomgrid_lsh_ktest', [100,500],
-        targets=[10,20,30, 40, 60, 80, 100, 200, 400, 500],iter=1
+        targets=[10,20,30, 40, 60, 80, 100, 200, 400, 500],iter=4
     )
 
 
