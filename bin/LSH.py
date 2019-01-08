@@ -275,6 +275,7 @@ class LSH:
 
         if verbose:
             print('optimizing {}'.format(param))
+            print('target: {}'.format(self.target))
         cur_val = getattr(self, param)
 
         subsample = self.downSample(sampleSize='auto') #sample until exhausted
