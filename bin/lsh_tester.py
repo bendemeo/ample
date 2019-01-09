@@ -208,7 +208,9 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
                             )
                             results['louvain_bami'].append(bami)
 
-    lengths={k:length(v) for (k,v) in results.items()}
+    print(results)
+    lengths={k:len(v) for (k,v) in results.items()}
+
     print(lengths)
 
     return(results)
