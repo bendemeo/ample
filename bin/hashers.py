@@ -117,7 +117,7 @@ class gsLSH(LSH):
                 log('found {} non-empty grid cells'.format(len(grid)))
 
 
-            if not opt_grid:
+            if not self.opt_grid:
                 break
 
             if len(grid) > self.target * (1 + self.alpha):
