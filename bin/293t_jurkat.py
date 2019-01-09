@@ -116,17 +116,33 @@ if __name__ == '__main__':
 
 
 
-    test_targets=[10,20,30, 40, 60, 80, 100, 200, 400, 500]
+    # test_targets=[10,20,30, 40, 60, 80, 100, 200, 400, 500]
+    #
+    #
+    # gsLSH_exp(X_dimred, '293t_gs_lsh_ktest', [100,500], [20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,230,240,250,300], iter=4)
+    #
+    # randomGrid_exp(X_dimred, '293t_randomgrid_lsh_ktest', [100,500],
+    #     targets=[10,20,30, 40, 50, 60, 70, 80, 90, 100, 110, 150, 200, 300, 400, 500],iter=4
+    # )
 
 
-    gsLSH_exp(X_dimred, '293t_gs_lsh_ktest', [100,500], [20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,220,230,240,250,300], iter=4)
 
-    randomGrid_exp(X_dimred, '293t_randomgrid_lsh_ktest', [100,500],
-        targets=[10,20,30, 40, 50, 60, 70, 80, 90, 100, 110, 150, 200, 300, 400, 500],iter=4
-    )
+    filename='gsGridTest'
+    iter=1
+    gsGridTestParams = {
+        'opt_grid':[False],
+        'gridSize': np.arange(start=0.01,stop=0.99,step=0.01).tolist()
+    }
+
+    gsGridTests = ['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare', 'gridSize']
+
+    gsLSH_gridTest = try_params(X_dimred, 'gsLSH',
+        params=gsGridTestParams,
+        tests=gsGridTests,
+        n_seeds=10)
 
 
-
+    gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
     #orig_exp(X_dimred, '293t_gs_orig')
 

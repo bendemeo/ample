@@ -51,7 +51,7 @@ class gridLSH(LSH):
 
 class gsLSH(LSH):
     def __init__(self, data, target=10, gridSize=None, replace = False, alpha=0.1,
-    max_iter = 200, verbose = True):
+    max_iter = 200, verbose = True, opt_grid=True):
 
         LSH.__init__(self, data, numHashes=1, numBands=1, bandSize=1, replace=replace,
         target=target)
@@ -62,6 +62,7 @@ class gsLSH(LSH):
         self.target = target # downsampling size you're built for
         self.verbose = verbose
         self.max_iter = max_iter
+        self.opt_grid = opt_grid
 
     def makeHash(self): #re-implementation of gs, formulated as an LSH
         n_samples, n_features = self.data.shape
@@ -115,6 +116,9 @@ class gsLSH(LSH):
             if self.verbose:
                 log('found {} non-empty grid cells'.format(len(grid)))
 
+
+            if not opt_grid:
+                break
 
             if len(grid) > self.target * (1 + self.alpha):
                 #too many grid cells
