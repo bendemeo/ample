@@ -194,6 +194,7 @@ class LSH:
         available = range(self.numObs)
         included = [True] * self.numObs # all indices available
         sample = []
+        valid_sample=[True] * self.numObs #true if hasn't been sampled
         sample_inds = [] # indices relative to available samples
         count = 0 # how many have been added since reset
         reset = False  # whether we have reset
@@ -217,8 +218,8 @@ class LSH:
                 if replace:
                     available = range(self.numObs)
                 else:
-                    available = list(itertools.compress(range(self.numObs), included))
-                    print('available: {}'.format(available))
+                    available = list(itertools.compress(range(self.numObs), valid_sample))
+                    #print('available: {}'.format(available))
                     #available = [x for x in range(self.numObs) if x not in sample]
 
 
@@ -230,6 +231,7 @@ class LSH:
 
             next = numpy.random.choice(available)
             sample.append(next)
+            valid_sample[next] = False
 
             if (sampleSize != 'auto') and (len(sample) >= sampleSize):
                 break
