@@ -128,29 +128,57 @@ if __name__ == '__main__':
     #     targets=[10,20,30, 40, 50, 60, 70, 80, 90, 100, 110, 150, 200, 300, 400, 500],iter=4
     # )
 
-
-
-    filename='gsGridTest'
-    iter=3
-    gsGridTestParams = {
-        'opt_grid':[False],
-        'gridSize': np.arange(start=1,stop=0.01,step=-0.01).tolist()
+    #
+    #
+    # filename='gsGridTest'
+    # iter=3
+    # gsGridTestParams = {
+    #     'opt_grid':[False],
+    #     'gridSize': np.arange(start=1,stop=0.01,step=-0.01).tolist()
+    # }
+    #
+    # gsGridTests = ['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare']
+    #
+    # gsLSH_gridTest = try_params(X_dimred, 'gsLSH',
+    #     params=gsGridTestParams,
+    #     tests=gsGridTests,
+    #     n_seeds=10,
+    #     cell_labels=cell_labels,
+    #     rare_label=rare_label,
+    #     Ns=[100,300,500,800,1000])
+    #
+    # # with open("gsLSH_gridTest.file", "wb") as f:
+    # #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
+    #
+    # gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+    #
+    #
+    #
+    #
+    filename='randomGridTest'
+    iter = 1
+    randomGridParams = {
+        'gridSize': np.arange(start=1,stop=0.01,step=-0.01).tolist(),
+        'numHashes':[3],
+        'numBands':[1],
+        'bandSize':[3],
     }
 
-    gsGridTests = ['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare']
+    randomGridTests = ['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare']
 
-    gsLSH_gridTest = try_params(X_dimred, 'gsLSH',
-        params=gsGridTestParams,
-        tests=gsGridTests,
+    randomGridLSH_gridTest = try_params(X_dimred, 'randomGridLSH',
+        params = randomGridParams,
+        tests = randomGridTests,
         n_seeds=10,
         cell_labels=cell_labels,
         rare_label=rare_label,
         Ns=[100,300,500,800,1000])
 
-    # with open("gsLSH_gridTest.file", "wb") as f:
-    #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
 
-    gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+
+
+
+
 
     #orig_exp(X_dimred, '293t_gs_orig')
 
