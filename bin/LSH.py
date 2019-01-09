@@ -218,6 +218,7 @@ class LSH:
                     available = range(self.numObs)
                 else:
                     available = list(itertools.compress(range(self.numObs), included))
+                    print('available: {}'.format(available))
                     #available = [x for x in range(self.numObs) if x not in sample]
 
 
