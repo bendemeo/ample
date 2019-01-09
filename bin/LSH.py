@@ -227,7 +227,7 @@ class LSH:
                     included[i] = True
 
 
-            next_ind = numpy.random.choice(available)
+            next = numpy.random.choice(available)
             sample.append(next)
 
             if (sampleSize != 'auto') and (len(sample) >= sampleSize):
