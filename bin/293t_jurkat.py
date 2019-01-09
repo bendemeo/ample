@@ -134,10 +134,10 @@ if __name__ == '__main__':
     iter=2
     gsGridTestParams = {
         'opt_grid':[False],
-        'gridSize': np.arange(start=0.4,stop=0.1,step=-0.1).tolist()
+        'gridSize': np.arange(start=0.5,stop=0.1,step=-0.01).tolist()
     }
 
-    gsGridTests = ['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare', 'gridSize']
+    gsGridTests = ['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare']
 
     gsLSH_gridTest = try_params(X_dimred, 'gsLSH',
         params=gsGridTestParams,
@@ -147,10 +147,10 @@ if __name__ == '__main__':
         rare_label=rare_label,
         Ns=[100,300,500,800,1000])
 
-    with open("gsLSH_gridTest.file", "wb") as f:
-        pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
+    # with open("gsLSH_gridTest.file", "wb") as f:
+    #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
 
-    #gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+    gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
     #orig_exp(X_dimred, '293t_gs_orig')
 

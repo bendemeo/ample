@@ -213,9 +213,9 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
 
     print(lengths)
 
-    return(results)
+    # return(results)
     #print(results)
-    # return pd.DataFrame.from_dict(results)
+    return pd.DataFrame.from_dict(results)
 
 # #tweaks band number until number of candidates is about right
 # def optimizeNumBands(lsh):
