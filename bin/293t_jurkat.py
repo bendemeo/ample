@@ -174,7 +174,7 @@ if __name__ == '__main__':
         rare_label=rare_label,
         Ns=[100,300,500,800,1000])
 
-
+    randomGridLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
 
