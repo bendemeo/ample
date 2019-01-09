@@ -130,7 +130,7 @@ if __name__ == '__main__':
 
 
     filename='gsGridTest'
-    iter=1
+    iter=2
     gsGridTestParams = {
         'opt_grid':[False],
         'gridSize': np.arange(start=0.99,stop=0.01,step=-0.01).tolist()
