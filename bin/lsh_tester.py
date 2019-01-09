@@ -208,6 +208,9 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
                             )
                             results['louvain_bami'].append(bami)
 
+    lengths={k:length(v) for (k,v) in results}
+    print(lengths)
+
     return(results)
     #print(results)
     # return pd.DataFrame.from_dict(results)
