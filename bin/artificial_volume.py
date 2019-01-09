@@ -20,7 +20,7 @@ if __name__ == '__main__':
     datasets, genes_list, n_cells = load_names(data_names, norm=False)
     datasets, genes = merge_datasets(datasets, genes_list)
     X = vstack(datasets)
-    
+
     k = DIMRED
     U, s, Vt = pca(normalize(X), k=k)
     X_dimred = U[:, :k] * s[:k]
@@ -31,13 +31,37 @@ if __name__ == '__main__':
     for i in range(3):
         Xs.append((X_dimred / (10. ** i)) + (translate * 2 * i))
         labels += list(np.zeros(X_dimred.shape[0]) + i)
-        
+
     X_dimred = np.concatenate(Xs)
     cell_labels = np.array(labels, dtype=int)
 
     expected = np.array([ 1, 1/10., 1/100.])
     expected = np.array(expected) / sum(expected)
-        
+
+    #see how grid size affects this
+
+    filename='gsGridTest_equalvol'
+    iter=1
+    gsGridTestParams = {
+        'opt_grid':[False],
+        'gridSize': np.arange(start=0.99,stop=0.01,step=-0.01).tolist()
+    }
+
+    gsGridTests = ['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare', 'gridSize']
+
+    gsLSH_gridTest = try_params(X_dimred, 'gsLSH',
+        params=gsGridTestParams,
+        tests=gsGridTests,
+        n_seeds=10,
+        cell_labels=cell_labels,
+        Ns=[100,300,500,800,1000])
+
+
+    gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+
+
+
+
     experiments(
         X_dimred, NAMESPACE,
         rare=True, cell_labels=cell_labels, rare_label=2,

@@ -23,12 +23,13 @@ from utils import *
 #from lsh_sketch import *
 from test_file import *
 from experiments import *
+import pickle
 
 def err_exit(param_name):
     sys.stderr.write('Needs `{}\' param.\n'.format(param_name))
     exit(1)
 
-def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], inverted=[], **kwargs):
+def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], inverted=[], pickle_it=True, **kwargs):
     """version where params is a dict to be unpacked"""
 
     #make sure all needed params are provided
@@ -207,8 +208,9 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
                             )
                             results['louvain_bami'].append(bami)
 
-    print(results)
-    return pd.DataFrame.from_dict(results)
+    return(results)
+    #print(results)
+    # return pd.DataFrame.from_dict(results)
 
 # #tweaks band number until number of candidates is about right
 # def optimizeNumBands(lsh):

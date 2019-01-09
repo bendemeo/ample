@@ -14,6 +14,7 @@ from lsh_tester import *
 from hashers import *
 import pandas as pd
 import math
+import pickle
 
 NAMESPACE = '293t_jurkat_lsh'
 METHOD = 'svd'
@@ -133,7 +134,7 @@ if __name__ == '__main__':
     iter=2
     gsGridTestParams = {
         'opt_grid':[False],
-        'gridSize': np.arange(start=0.99,stop=0.01,step=-0.01).tolist()
+        'gridSize': np.arange(start=0.9,stop=0.1,step=-0.1).tolist()
     }
 
     gsGridTests = ['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare', 'gridSize']
@@ -146,8 +147,10 @@ if __name__ == '__main__':
         rare_label=rare_label,
         Ns=[100,300,500,800,1000])
 
+    with open("gsLSH_gridTest.file", "wb") as f:
+        pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
 
-    gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+    #gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
     #orig_exp(X_dimred, '293t_gs_orig')
 
