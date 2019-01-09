@@ -48,6 +48,8 @@ if __name__ == '__main__':
     le = LabelEncoder().fit(labels)
     cell_labels = le.transform(labels)
 
+    rare_label = le.transform(['293t'])[0]
+
     def gsLSH_exp(data, filename, Ns, ks=None, iter=1):
         results = None
 
@@ -139,7 +141,10 @@ if __name__ == '__main__':
     gsLSH_gridTest = try_params(X_dimred, 'gsLSH',
         params=gsGridTestParams,
         tests=gsGridTests,
-        n_seeds=10)
+        n_seeds=10,
+        cell_labels=cell_labels,
+        rare_label=rare_label,
+        Ns=[100,300,500,800,1000])
 
 
     gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
