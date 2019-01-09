@@ -134,7 +134,7 @@ if __name__ == '__main__':
     iter=3
     gsGridTestParams = {
         'opt_grid':[False],
-        'gridSize': np.arange(start=1,stop=0,step=-0.01).tolist()
+        'gridSize': np.arange(start=1,stop=0.01,step=-0.01).tolist()
     }
 
     gsGridTests = ['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare']
