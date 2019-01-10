@@ -54,6 +54,7 @@ if __name__ == '__main__':
         tests=gsGridTests,
         n_seeds=10,
         cell_labels=cell_labels,
+        rare_label=2
         Ns=[100,300,500,800,1000])
 
 
@@ -62,10 +63,10 @@ if __name__ == '__main__':
 
 
 
-    experiments(
-        X_dimred, NAMESPACE,
-        rare=True, cell_labels=cell_labels, rare_label=2,
-        entropy=True,
-        kl_divergence=True, expected=expected,
-        max_min_dist=True
-    )
+    # experiments(
+    #     X_dimred, NAMESPACE,
+    #     rare=True, cell_labels=cell_labels, rare_label=2,
+    #     entropy=True,
+    #     kl_divergence=True, expected=expected,
+    #     max_min_dist=True
+    # )
