@@ -179,9 +179,9 @@ if __name__ == '__main__':
     filename='cosTest'
     iter = 1
     cosParams = {
-        'numHashes':np.arange(1,1000,1).tolist(),
+        'numHashes':np.arange(1,100,1).tolist(),
         'numBands':[1],
-        'bandSize':np.arange(1,1000,1).tolist()
+        'bandSize':np.arange(1,100,1).tolist()
     }
 
     cosTests = ['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare']
