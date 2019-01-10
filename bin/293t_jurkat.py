@@ -176,26 +176,46 @@ if __name__ == '__main__':
     #
     # randomGridLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
-    filename='cosTest'
+    # filename='cosTest'
+    # iter = 1
+    # cosParams = {
+    #     'numHashes':np.arange(1,100,1).tolist(),
+    #     'numBands':[1],
+    #     'bandSize':np.arange(1,100,1).tolist()
+    # }
+    #
+    # cosTests = ['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare']
+    #
+    # cosLSH_test = try_params(X_dimred, 'cosineLSH',
+    #     params = cosParams,
+    #     tests = cosTests,
+    #     n_seeds=10,
+    #     cell_labels=cell_labels,
+    #     rare_label=rare_label,
+    #     Ns=[100,300,500,800,1000])
+    #
+    # cosLSH_test.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+
+    filename='projTest'
     iter = 1
-    cosParams = {
-        'numHashes':np.arange(1,100,1).tolist(),
+    projParams = {
+        'gridSize': np.arange(start=1,stop=0.01,step=-0.01).tolist(),
+        'numHashes':[100],
         'numBands':[1],
-        'bandSize':np.arange(1,100,1).tolist()
+        'bandSize':[100],
     }
 
-    cosTests = ['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare']
+    projTests = ['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare']
 
-    cosLSH_test = try_params(X_dimred, 'cosineLSH',
-        params = cosParams,
-        tests = cosTests,
+    projLSH_Test = try_params(X_dimred, 'projLSH',
+        params = projParams,
+        tests = projTests,
         n_seeds=10,
         cell_labels=cell_labels,
         rare_label=rare_label,
         Ns=[100,300,500,800,1000])
 
-    cosLSH_test.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
-
+    projLSH_Test.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
 
