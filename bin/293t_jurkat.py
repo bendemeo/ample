@@ -179,9 +179,9 @@ if __name__ == '__main__':
     filename='cosTest'
     iter = 1
     cosParams = {
-        'numHashes':np.arange(1,1000,1),
+        'numHashes':np.arange(1,1000,1).tolist(),
         'numBands':[1],
-        'bandSize':np.arange(1,1000,1)
+        'bandSize':np.arange(1,1000,1).tolist()
     }
 
     cosTests = ['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare']
@@ -195,6 +195,7 @@ if __name__ == '__main__':
         Ns=[100,300,500,800,1000])
 
     cosLSH_test.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+
 
 
 
