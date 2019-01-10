@@ -61,7 +61,7 @@ if __name__ == '__main__':
     iter=1
     gsGridTestParams = {
         'opt_grid':[False],
-        'gridSize': np.arange(start=1,stop=0.01,step=-0.1).tolist()
+        'gridSize': np.arange(start=1,stop=0.01,step=-0.01).tolist()
     }
 
     gsGridTests = ['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare', 'kl_divergence']
@@ -69,7 +69,7 @@ if __name__ == '__main__':
     gsLSH_gridTest = try_params(X_dimred, 'gsLSH',
         params=gsGridTestParams,
         tests=gsGridTests,
-        n_seeds=1,
+        n_seeds=10,
         cell_labels=cell_labels,
         rare_label=rare_label,
         Ns=[100,300,500,800,1000],
