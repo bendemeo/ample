@@ -61,18 +61,20 @@ if __name__ == '__main__':
     iter=1
     gsGridTestParams = {
         'opt_grid':[False],
-        'gridSize': np.arange(start=1,stop=0.01,step=-0.01).tolist()
+        'gridSize': np.arange(start=1,stop=0.01,step=-0.1).tolist()
     }
 
-    gsGridTests = ['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare']
+    gsGridTests = ['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare', 'kl_divergence']
 
     gsLSH_gridTest = try_params(X_dimred, 'gsLSH',
         params=gsGridTestParams,
         tests=gsGridTests,
-        n_seeds=10,
+        n_seeds=1,
         cell_labels=cell_labels,
         rare_label=rare_label,
-        Ns=[100,300,500,800,1000])
+        Ns=[100,300,500,800,1000],
+        expected=np.array([ 1./3, 1./3, 1./3])
+        )
 
     gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
@@ -87,7 +89,7 @@ if __name__ == '__main__':
         'bandSize':[3],
     }
 
-    randomGridTests = ['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare']
+    randomGridTests = ['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare', 'kl_divergence']
 
     randomGridLSH_gridTest = try_params(X_dimred, 'randomGridLSH',
         params = randomGridParams,
@@ -95,12 +97,14 @@ if __name__ == '__main__':
         n_seeds=10,
         cell_labels=cell_labels,
         rare_label=rare_label,
-        Ns=[100,300,500,800,1000])
+        Ns=[100,300,500,800,1000],
+        expected=np.array([ 1./3, 1./3, 1./3]))
 
     randomGridLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
     ######cosine LSH###############
-    filename='cosTest_equaldens'
+
+    filename = 'cosTest_equaldens'
     iter = 1
     cosParams = {
         'numHashes':np.arange(1,100,1).tolist(),
@@ -108,7 +112,7 @@ if __name__ == '__main__':
         'bandSize':np.arange(1,100,1).tolist()
     }
 
-    cosTests = ['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare']
+    cosTests = ['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare', 'kl_divergence']
 
     cosLSH_test = try_params(X_dimred, 'cosineLSH',
         params = cosParams,
@@ -116,7 +120,8 @@ if __name__ == '__main__':
         n_seeds=10,
         cell_labels=cell_labels,
         rare_label=rare_label,
-        Ns=[100,300,500,800,1000])
+        Ns=[100,300,500,800,1000],
+        expected=np.array([ 1./3, 1./3, 1./3]))
 
     cosLSH_test.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
@@ -132,7 +137,7 @@ if __name__ == '__main__':
         'bandSize':[100],
     }
 
-    projTests = ['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare']
+    projTests = ['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare', 'kl_divergence']
 
     projLSH_Test = try_params(X_dimred, 'projLSH',
         params = projParams,
@@ -140,7 +145,8 @@ if __name__ == '__main__':
         n_seeds=10,
         cell_labels=cell_labels,
         rare_label=rare_label,
-        Ns=[100,300,500,800,1000])
+        Ns=[100,300,500,800,1000],
+        expected=np.array([ 1./3, 1./3, 1./3]))
 
     projLSH_Test.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
@@ -157,7 +163,7 @@ if __name__ == '__main__':
         'bandSize':[5]
     }
 
-    Tests = ['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare']
+    Tests = ['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare', 'kl_divergence']
 
     Test = try_params(X_dimred, 'randomGridLSH',
         params = Params,
@@ -165,6 +171,7 @@ if __name__ == '__main__':
         n_seeds=10,
         cell_labels=cell_labels,
         rare_label=rare_label,
-        Ns=[100,300,500,800,1000])
+        Ns=[100,300,500,800,1000],
+        expected=np.array([ 1./3, 1./3, 1./3]))
 
     Test.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
