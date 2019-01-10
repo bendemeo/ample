@@ -43,14 +43,14 @@ if __name__ == '__main__':
     samp_idx = gs_gap(X_dimred, 3000, replace=True, verbose=10)
     report_cluster_counts(cell_labels[samp_idx])
     exit()
-
-    experiments(
-        X_dimred, NAMESPACE,
-        rare=True, cell_labels=cell_labels, rare_label=2,
-        entropy=True,
-        kl_divergence=True, expected=np.array([ 1./3, 1./3, 1./3]),
-        max_min_dist=True
-    )
+    # 
+    # experiments(
+    #     X_dimred, NAMESPACE,
+    #     rare=True, cell_labels=cell_labels, rare_label=2,
+    #     entropy=True,
+    #     kl_divergence=True, expected=np.array([ 1./3, 1./3, 1./3]),
+    #     max_min_dist=True
+    # )
 
     rare_label=2
 
