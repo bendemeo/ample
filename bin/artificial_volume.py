@@ -54,7 +54,7 @@ if __name__ == '__main__':
         tests=gsGridTests,
         n_seeds=10,
         cell_labels=cell_labels,
-        rare_label=2
+        rare_label=2,
         Ns=[100,300,500,800,1000])
 
 
