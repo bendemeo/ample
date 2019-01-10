@@ -196,27 +196,50 @@ if __name__ == '__main__':
     #
     # cosLSH_test.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
-    filename='projTest'
+    # filename='projTest'
+    # iter = 1
+    # projParams = {
+    #     'gridSize': np.arange(start=1,stop=0.01,step=-0.01).tolist(),
+    #     'numHashes':[100],
+    #     'numBands':[1],
+    #     'bandSize':[100],
+    # }
+    #
+    # projTests = ['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare']
+    #
+    # projLSH_Test = try_params(X_dimred, 'projLSH',
+    #     params = projParams,
+    #     tests = projTests,
+    #     n_seeds=10,
+    #     cell_labels=cell_labels,
+    #     rare_label=rare_label,
+    #     Ns=[100,300,500,800,1000])
+    #
+    # projLSH_Test.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+
+
+    filename='randomGrid_20'
     iter = 1
-    projParams = {
-        'gridSize': np.arange(start=1,stop=0.01,step=-0.01).tolist(),
-        'numHashes':[100],
-        'numBands':[1],
-        'bandSize':[100],
+    gridSizes=np.arange(start=1,stop=0.01,step=-0.01).tolist()
+
+    Params = {
+        'gridSize': gridSizes,
+        'numHashes':[50],
+        'numBands':[5],
+        'bandSize':[5]
     }
 
-    projTests = ['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare']
+    Tests = ['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare']
 
-    projLSH_Test = try_params(X_dimred, 'projLSH',
-        params = projParams,
-        tests = projTests,
+    Test = try_params(X_dimred, 'randomGridLSH',
+        params = Params,
+        tests = Tests,
         n_seeds=10,
         cell_labels=cell_labels,
         rare_label=rare_label,
         Ns=[100,300,500,800,1000])
 
-    projLSH_Test.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
-
+    Test.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
     #orig_exp(X_dimred, '293t_gs_orig')
