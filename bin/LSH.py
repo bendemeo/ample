@@ -183,13 +183,7 @@ class LSH:
     def downSample(self, sampleSize='auto', replace = False):
 
         #randomly make new hashes for each downsampling
-        print('making hash...')
-        self.makeHash()
-        print('made hash')
 
-        print('making finder...')
-        self.makeFinder()
-        print('made finder')
 
         available = range(self.numObs)
         included = [True] * self.numObs # all indices available

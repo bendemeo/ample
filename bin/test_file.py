@@ -1,6 +1,7 @@
 # for testing stuff
 import numpy
 import timeit
+import math
 from time import time
 import cProfile
 import matplotlib.pyplot as mpl
@@ -10,6 +11,21 @@ from experiments import *
 #from lsh_experiments import start_experiment
 #from lsh_sketch import *
 
+
+
+
+def gauss_test(n=[100], d=1, m=1, stdev=[1]):
+    'n points, m gaussias, d dimensions, specified sds'
+    result = numpy.random.randn(1, d)
+    centers = numpy.random.normal(0*d, 10, [m, d])
+    for i in range(len(centers)):
+        print(n[i])
+        print(d)
+        c = centers[i]
+        result = numpy.concatenate((result,
+                                    numpy.random.normal(c, stdev[i], (n[i], d))),
+                                    axis = 0)
+    return result
 
 
 
@@ -24,8 +40,18 @@ if __name__ == '__main__':
 
     #start_experiment('pug', ['height','weight'],['fat','size'])
 
-    gauss2D = gauss_test([100,200,500,1000], 2, 4, [1, 0.5, 0.4, 0.2])
+    sizes=[100,200,500,1000]
+    N=sum(sizes)
+    gauss2D = gauss_test(sizes, 2, 4, [1, 0.5, 0.4, 0.2])
     #mpl.scatter(gauss2D[:, 0], gauss2D[:, 1])
+
+
+    downsampler = gsLSH(gauss2D, target = int(math.sqrt(N)))
+
+    subInds = downsampler.downsample_weighted(500)
+
+
+
 
 
     #
@@ -44,12 +70,12 @@ if __name__ == '__main__':
     # print('fast downsampling took {} seconds'.format(t1-t0))
 
 
-    randomGrid_exp(gauss2D, '293t_randomgrid_lsh_ktest', [100,500],
-        targets=[10,20,30, 40, 60, 80, 100, 200, 400, 800],iter=1
-    )
-
-
-    N=50
+    # randomGrid_exp(gauss2D, '293t_randomgrid_lsh_ktest', [100,500],
+    #     targets=[10,20,30, 40, 60, 80, 100, 200, 400, 800],iter=1
+    # )
+    #
+    #
+    # N=50
 
 
 
@@ -58,16 +84,16 @@ if __name__ == '__main__':
 
 
     #experiment(rg, gauss2D, 'rglshtest2', lsh=True)
-
-    print('grid size is {}'.format(rg.gridSize))
-    #rg.optimize_param('bandSize', N, inverted = False)
-
-
-    t0 = time()
-    subInds = rg.downSample(5)
-    t1 = time()
-    print('random grid took {} seconds to downsample'.format(t1-t0))
-    print(rg.hash)
+    #
+    # print('grid size is {}'.format(rg.gridSize))
+    # #rg.optimize_param('bandSize', N, inverted = False)
+    #
+    #
+    # # t0 = time()
+    # # subInds = rg.downSample(5)
+    # # t1 = time()
+    # print('random grid took {} seconds to downsample'.format(t1-t0))
+    # print(rg.hash)
 
 
 

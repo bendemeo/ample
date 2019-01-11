@@ -170,6 +170,123 @@ class gsLSH(LSH):
         self.hash=hashes
         self.gridSize=unit
 
+    def downsample_weighted(self, sampleSize, alpha=1, replace=False):
+        self.makeHash()
+        self.makeFinder()
+
+        grid = self.finder[0]
+        full_grid = grid # keeps all squares
+
+        sizes = {square:len(v) for (square,v) in grid.items()} #sizes of grid squares
+        print('square sizes: {}'.format(sizes))
+
+        weights = [1/(np.power(size, alpha)) for size in sizes.values()]
+        total = sum(weights)
+
+        weights = [float(w)/total for w in weights] #make them sum to 1
+        assert(np.abs(sum(weights) - 1) < .000001)
+
+        available = range(self.numObs)
+        included = [True] * self.numObs # all indices available
+        square_sampled = [True] * len(grid) # whether square has been sampled
+        avail_square = range(len(grid)) # which squares available
+
+        sample = []
+        valid_sample=[True] * self.numObs #true if hasn't been sampled
+        sample_inds = [] # indices relative to available samples
+        count = 0 # how many have been added since reset
+        reset = False  # whether we have reset
+
+        if self.keepStats:
+            self.lastCounts=[]
+
+        subinds = []
+
+        for n in range(sampleSize):
+            grid_cells = list(grid.keys())
+
+            grid_cell = grid_cells[np.random.choice(len(grid_cells),p=weights)]
+
+            samples = list(grid[grid_cell])
+            sample = samples[np.random.choice(len(samples))]
+
+            # del grid[grid_cell]
+
+            if not replace:
+                print(grid[grid_cell])
+                grid[grid_cell].remove(sample)
+                print(grid[grid_cell])
+                sizes[grid_cell] -= 1
+                if len(grid[grid_cell]) == 0:
+                    del grid[grid_cell]
+                    del sizes[grid_cell]
+
+
+
+                weights = [1/(np.power(size,alpha)) for size in sizes.values()]
+
+                total = sum(weights)
+                weights = [float(w)/total for w in weights] #make them sum to 1
+                assert(np.abs(sum(weights) - 1) < .000001)
+
+            print('appending {}'.format(sample))
+            subinds.append(sample)
+            print('samples is now {}'.format(subinds))
+
+        print('samples: {}'.format(samples))
+        return(sorted(subinds))
+
+
+        # while True:
+        #     if len(available) == 0:  # reset available if not enough
+        #         reset = True
+        #
+        #         log("sampled {} out of {} before reset".format(count, sampleSize))
+        #         if(self.keepStats):
+        #             self.lastCounts.append(count)
+        #
+        #         if sampleSize == 'auto': #stop sampling when you run out
+        #             break
+        #
+        #
+        #         count = 0
+        #         if replace:
+        #             available = range(self.numObs)
+        #         else:
+        #             available = list(itertools.compress(range(self.numObs), valid_sample))
+        #             #print('available: {}'.format(available))
+        #             #available = [x for x in range(self.numObs) if x not in sample]
+        #
+        #
+        #         #reset included so only available indices are true
+        #         included = [False]*self.numObs
+        #         for i in available:
+        #             included[i] = True
+        #
+        #
+        #     next = numpy.random.choice(available)
+        #     sample.append(next)
+        #     valid_sample[next] = False
+        #
+        #     if (sampleSize != 'auto') and (len(sample) >= sampleSize):
+        #         break
+        #
+        #     count = count + 1
+        #
+        #     toRemove = self.findCandidates(next)
+        #     for i in toRemove:
+        #         included[i]=False
+        #
+        #     available = list(itertools.compress(range(self.numObs), included))
+        #
+        #
+
+
+
+
+
+
+
 
 
 
