@@ -178,7 +178,7 @@ class gsLSH(LSH):
         full_grid = grid # keeps all squares
 
         sizes = {square:len(v) for (square,v) in grid.items()} #sizes of grid squares
-        print('square sizes: {}'.format(sizes))
+        #print('square sizes: {}'.format(sizes))
 
         weights = [1/(np.power(size, alpha)) for size in sizes.values()]
         total = sum(weights)
@@ -229,11 +229,11 @@ class gsLSH(LSH):
                 weights = [float(w)/total for w in weights] #make them sum to 1
                 assert(np.abs(sum(weights) - 1) < .000001)
 
-            print('appending {}'.format(sample))
+            #print('appending {}'.format(sample))
             subinds.append(sample)
-            print('samples is now {}'.format(subinds))
+            #print('samples is now {}'.format(subinds))
 
-        print('samples: {}'.format(samples))
+        #print('samples: {}'.format(samples))
         return(sorted(subinds))
 
 
