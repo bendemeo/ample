@@ -264,10 +264,10 @@ if __name__ == '__main__':
     # ktest_cosine.to_csv('target/experiments/{}.txt.{}'.format(cosfile, iter), sep='\t')
 
     filename='gsGridTest_weighted'
-    iter=1
+    iter=2
     gsGridTestParams = {
      'opt_grid':[False],
-     'gridSize': np.arange(start=0.6,stop=0.1,step=-0.02).tolist()
+     'gridSize': np.arange(start=0.5,stop=0.1,step=-0.01).tolist()
     }
 
     gsGridTests = ['max_min_dist','time','kmeans_ami','rare']
@@ -278,7 +278,7 @@ if __name__ == '__main__':
      n_seeds=1,
      cell_labels=cell_labels,
      rare_label=rare_label,
-     Ns=[100,300,500,800,1000],
+     Ns=[100,200,300,400,500,600,700,800,900,1000],
      weighted=True)
 
     # with open("gsLSH_gridTest.file", "wb") as f:

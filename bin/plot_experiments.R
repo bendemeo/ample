@@ -56,9 +56,21 @@ orig = orig %>% filter(replace=="False", sampling_fn=='gs_gap')
 
 ### testing different k values
 #####
-ktest = fread('target/experiments/293t_gs_lsh_ktest.txt.1')
+ktest = fread('target/experiments/293t_gs_lsh_ktest.txt.4')
 
-ktest <- ktest %>% group_by(k, N) %>% summarize(rare = mean(rare), max_min_dist = mean(max_min_dist), kmeans_ami=mean(kmeans_ami))
+#ktest <- ktest %>% group_by(target, N, gridSize) %>% summarize(rare = mean(rare), max_min_dist = mean(max_min_dist), kmeans_ami=mean(kmeans_ami))
+
+ktest %>% filter(N==500) %>%
+  group_by(gridSize) %>%
+  summarize(max_min_dist=mean(max_min_dist), rare=mean(rare)) %>%
+  ggplot(mapping=aes(x=gridSize,y=max_min_dist))+
+  geom_point(aes(color=rare))+
+  geom_line()
+
+
+ktest %>% filter(N==500) %>%
+  ggplot(mapping=aes(x=maxCounts,y=max_min_dist))+
+  geom_boxplot(aes(group=maxCounts))
 
 ktest %>% filter(N==500) %>%
   ggplot(mapping=aes(x=k, y=rare)) +
@@ -78,12 +90,13 @@ ktest %>% filter(N==500) %>%
 
 
 ktest %>% filter(N==500) %>%
-  ggplot(mapping=aes(x=gridSize, y=kmeans_ami)) +
+  ggplot(mapping=aes(x=gridSize, y=max_min_dist)) +
   geom_point(aes(color = rare))+
   geom_line()
 
 
-
+####testing grid size
+######
 ktest_randomGrid=fread('target/experiments/293t_randomgrid_lsh_ktest.txt.1')
 
 ktest_randomGrid <- ktest_randomGrid %>% group_by(target, N, maxCounts) %>% summarize(rare = mean(rare), max_min_dist = mean(max_min_dist), kmeans_ami=mean(kmeans_ami))
@@ -103,3 +116,91 @@ ktest_randomGrid %>% filter(N==500) %>%
   ggplot(mapping=aes(x=k, y=kmeans_ami)) +
   geom_point(aes(color = rare))+
   geom_line()
+
+
+####more comprehensive grid size test
+#######
+sizetest=fread('target/experiments/gsGridTest.txt.3')
+sizetest_rg=fread('target/experiments/randomGridTest.txt.1') # 3 random grids
+sizetest_cos = fread('target/experiments/cosTest.txt.1')
+sizetest_proj = fread('target/experiments/projTest.txt.1')
+
+##gsLSH plots
+
+#gridsize vs max_min_dist
+sizetest %>% filter(N==500) %>%
+  ggplot(aes(x=gridSize, y=max_min_dist))+
+  geom_boxplot(aes(group=cut_width(gridSize,0.03)))
+
+#gridsize vs rare
+sizetest %>% filter(N==500) %>%
+  ggplot(aes(x=gridSize, y=rare))+
+  geom_boxplot(aes(group=cut_width(gridSize,0.01)))
+
+#N vs rare
+sizetest %>% ggplot(aes(x=N, y=rare))+
+  geom_smooth(aes(color=cut_width(gridSize,0.05), span=0.1))
+
+##randomGridLSH plots
+
+sizetest_rg %>% filter(N==500) %>% ggplot(aes(x=gridSize, y=max_min_dist))+
+  geom_boxplot(aes(group=cut_width(gridSize,0.03)))
+
+sizetest_rg %>% filter(N==500) %>% ggplot(aes(x=gridSize, y=rare))+
+  geom_boxplot(aes(group=cut_width(gridSize,0.03)))
+
+sizetest_rg %>% ggplot(aes(x=N, y=rare))+
+  geom_smooth(aes(color=cut_width(gridSize,0.05)))
+
+sizetest_rg %>% filter(N==1000) %>%ggplot(aes(x=maxCounts,y=max_min_dist))+
+  geom_boxplot(aes(group=cut_width(maxCounts,20)))
+
+
+##cosineLSH plots
+
+sizetest_cos %>% filter(N==1000) %>%
+  ggplot(aes(x=numHashes,y=rare))+
+  geom_boxplot(aes(group=numHashes))
+
+sizetest_cos %>% filter(N==1000) %>%
+  ggplot(aes(x=lastCounts,y=rare))+
+  geom_boxplot(aes(group=cut_width(lastCounts,10)))
+
+
+##projLSH plots 
+
+#gridsize vs max_min_dist
+sizetest_proj %>% filter(N==500) %>%
+  ggplot(aes(x=gridSize, y=max_min_dist))+
+  geom_boxplot(aes(group=cut_width(gridSize,0.03)))
+
+#gridsize vs rare
+sizetest_proj %>% filter(N==500) %>%
+  ggplot(aes(x=gridSize, y=rare))+
+  geom_boxplot(aes(group=cut_width(gridSize,0.05)))
+
+#N vs rare
+sizetest_proj %>% ggplot(aes(x=N, y=rare))+
+  geom_smooth(aes(color=cut_width(gridSize,0.05)))
+
+############equal density test results############
+
+gs_equaldens = fread('target/experiments/gsGridTest_equaldens.txt.1')
+# gs_equaldens$N <- as.character(gs_equaldens$N)
+gs_equaldens %>% ggplot(aes(x=gridSize, y=kl_divergence)) +
+  geom_smooth(aes(color=cut_width(N,100)), span=0.1)
+
+######## weighted rare sampling ##############
+gs_weighted = fread('target/experiments/gsGridTest_weighted.txt.1')
+
+gs_weighted %>% ggplot(aes(x=gridSize,y=rare)) +
+  geom_line(aes(color = cut_width(N,100)))
+
+gs_weighted %>% filter(N==100) %>%
+  ggplot(aes(x=gridSize, y=rare))+
+  geom_boxplot(aes(group=cut_width(gridSize,0.01)))
+
+gs_weighted %>% ggplot(aes(x=N, y=rare))+
+  geom_line(aes(color=as.character(gridSize), span=0.1))
+
+            
