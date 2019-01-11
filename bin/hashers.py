@@ -213,9 +213,9 @@ class gsLSH(LSH):
             # del grid[grid_cell]
 
             if not replace:
-                print(grid[grid_cell])
+                #print(grid[grid_cell])
                 grid[grid_cell].remove(sample)
-                print(grid[grid_cell])
+                #print(grid[grid_cell])
                 sizes[grid_cell] -= 1
                 if len(grid[grid_cell]) == 0:
                     del grid[grid_cell]
