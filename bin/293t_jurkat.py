@@ -275,7 +275,7 @@ if __name__ == '__main__':
     gsLSH_gridTest = try_params(X_dimred, 'gsLSH',
      params=gsGridTestParams,
      tests=gsGridTests,
-     n_seeds=1,
+     n_seeds=10,
      cell_labels=cell_labels,
      rare_label=rare_label,
      Ns=[100,200,300,400,500,600,700,800,900,1000],
