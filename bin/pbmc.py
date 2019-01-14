@@ -67,6 +67,7 @@ if __name__ == '__main__':
     # )
 
 
+    downsampler = gsLSH(X_dimred)
     for alpha in np.arange(1,10,0.5):
         filename='gsLSHTest_weighted_alpha_{}'.format(alpha)
         experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels=cell_labels,
