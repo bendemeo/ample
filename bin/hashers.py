@@ -50,11 +50,12 @@ class gridLSH(LSH):
         self.hash=hashes
 
 class gsLSH(LSH):
-    def __init__(self, data, target=10, gridSize=None, replace = False, alpha=0.1,
+    def __init__(self, data, target='auto', gridSize=None, replace = False, alpha=0.1,
     max_iter = 200, verbose = True, opt_grid=True):
 
         LSH.__init__(self, data, numHashes=1, numBands=1, bandSize=1, replace=replace,
         target=target)
+
 
         self.gridSize=gridSize #starting grid size before optimization
 
@@ -171,6 +172,7 @@ class gsLSH(LSH):
         self.gridSize=unit
 
     def downsample_weighted(self, sampleSize, alpha=1, replace=False):
+        print('alpha is {}'.format(alpha))
         self.makeHash()
         self.makeFinder()
 

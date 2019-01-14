@@ -1,6 +1,7 @@
 # for random projection hashing
 import numpy
 import sys
+import math
 from time import time
 from utils import *
 import itertools
@@ -10,7 +11,7 @@ import itertools
 class LSH:
     '''class to construct a random projection of data'''
 
-    def __init__(self, data, numHashes, numBands, bandSize, replace=False, keepStats=True, target = 10,
+    def __init__(self, data, numHashes, numBands, bandSize, replace=False, keepStats=True, target = 'auto',
     allowRepeats = True, verbose = True):
         ''' numHashes is number of random projections it makes'''
         ''' dim is number of dimensions '''
@@ -24,7 +25,11 @@ class LSH:
         self.remnants = None  # how many are still fair game after sampling
         self.keepStats = keepStats
         self.allowRepeats = allowRepeats
-        self.target = target
+
+        if target == 'auto':
+            self.target = int(math.sqrt(self.numObs))
+        else:
+            self.target = target
 
         #to be updated by further function calls
         self.hash = None

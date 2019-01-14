@@ -102,9 +102,12 @@ def experiment(sampling_fn, X_dimred, name, cell_labels=None,
                downsample=True, n_downsample=100000,
                gene_names=None, gene_expr=None, genes=None,
                perplexity=500, kmeans_k=10, sample_type='', lsh=False,
-               optimize_grid_size=False):
+               optimize_grid_size=False, weighted = False, alpha=1, filename=None):
 
     # Assign cells to clusters.
+
+    if filename = None:
+        filename = name
 
     if kmeans or \
        not os.path.isfile('data/cell_labels/{}.txt'.format(name)):
@@ -155,7 +158,7 @@ def experiment(sampling_fn, X_dimred, name, cell_labels=None,
 
     # Downsample while preserving structure and visualize.
 
-    Ns = [5000, 10000, 20000, 50000 ]
+    Ns = [5000, 10000, 20000]
 
     for N in Ns:
         if N >= X_dimred.shape[0]:
@@ -164,9 +167,12 @@ def experiment(sampling_fn, X_dimred, name, cell_labels=None,
         log('Sampling {}...'.format(N))
         t1=time()
         if lsh:
-            if optimize_grid_size:
-                sampling_fn.optimize_param('gridSize',N=500)
-            samp_idx=sampling_fn.downSample(N)
+            # if optimize_grid_size:
+            #     sampling_fn.optimize_param('gridSize',N=500)
+            if weighted:
+                samp_idx = sampling_fn.downSample_weighted(N, alpha=alpha)
+            else:
+                samp_idx=sampling_fn.downSample(N)
         else:
             samp_idx = sampling_fn(X_dimred, N)
         t2=time()
