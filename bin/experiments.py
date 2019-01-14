@@ -170,7 +170,7 @@ def experiment(sampling_fn, X_dimred, name, cell_labels=None,
             # if optimize_grid_size:
             #     sampling_fn.optimize_param('gridSize',N=500)
             if weighted:
-                samp_idx = sampling_fn.downSample_weighted(N, alpha=alpha)
+                samp_idx = sampling_fn.downsample_weighted(N, alpha=alpha)
             else:
                 samp_idx=sampling_fn.downSample(N)
         else:
