@@ -72,7 +72,7 @@ if __name__ == '__main__':
 
     downsampler = gsLSH(X_dimred)
     for alpha in np.arange(1,10,0.5):
-        filename='gsLSHTest_weighted_alpha_{}'.format(alpha)
+        filename='pbmc_gsLSHTest_weighted_alpha_{}'.format(alpha)
         experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels=cell_labels,
             gene_names=viz_genes, genes=genes, gene_expr=vstack(datasets),
             kmeans=False,
