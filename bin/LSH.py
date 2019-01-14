@@ -183,6 +183,8 @@ class LSH:
     def downSample(self, sampleSize='auto', replace = False):
 
         #randomly make new hashes for each downsampling
+        self.makeHash()
+        self.makeFinder()
 
 
         available = range(self.numObs)
