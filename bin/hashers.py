@@ -60,10 +60,11 @@ class gsLSH(LSH):
         self.gridSize=gridSize #starting grid size before optimization
 
         self.alpha = alpha
-        self.target = target # downsampling size you're built for
+        #self.target = target # downsampling size you're built for
         self.verbose = verbose
         self.max_iter = max_iter
         self.opt_grid = opt_grid
+        print('target: {}'.format(self.target))
 
     def makeHash(self): #re-implementation of gs, formulated as an LSH
         n_samples, n_features = self.data.shape
