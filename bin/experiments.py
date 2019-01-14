@@ -192,6 +192,7 @@ def experiment(sampling_fn, X_dimred, name, cell_labels=None,
 
         print('X_dimred has {} cells'.format(X_dimred.shape[0]))
         print('there are {} cell labels'.format(len(cell_labels)))
+        print('there are {} cell labels with shape'.format(cell_labels.shape))
         assert(X_dimred.shape[0] == len(cell_labels))
         print('assertion passed!')
         visualize([ X_dimred[samp_idx, :] ], cell_labels[samp_idx],
