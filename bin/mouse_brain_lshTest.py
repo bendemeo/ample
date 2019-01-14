@@ -85,14 +85,15 @@ if __name__ == '__main__':
 
     print('there are {} labels'.format(len(cell_labels)))
 
+    print(X_dimred.shape)
 
-    experiment(gs_gap, X_dimred, NAMESPACE, filename='orig_fn_2',         cell_labels=cell_labels,
-                gene_names=viz_genes, genes=genes, gene_expr=vstack(datasets),
-                kmeans=False,
-                visualize_orig=False,
-                sample_type='gsLSH_wt',
-                lsh=False
-    )
+    # experiment(gs_gap, X_dimred, NAMESPACE, filename='orig_fn_2',         cell_labels=cell_labels,
+    #             gene_names=viz_genes, genes=genes, gene_expr=vstack(datasets),
+    #             kmeans=False,
+    #             visualize_orig=False,
+    #             sample_type='gsLSH_wt',
+    #             lsh=False
+    # )
 
 
 
