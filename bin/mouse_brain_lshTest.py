@@ -86,7 +86,7 @@ if __name__ == '__main__':
     print('there are {} labels'.format(len(cell_labels)))
 
 
-    experiment(gs_gap, X_dimred, NAMESPACE, filename='orig_fn', cell_labels=cell_labels,
+    experiment(gs_gap, X_dimred, NAMESPACE, filename='orig_fn_2',         cell_labels=cell_labels,
                 gene_names=viz_genes, genes=genes, gene_expr=vstack(datasets),
                 kmeans=False,
                 visualize_orig=False,
