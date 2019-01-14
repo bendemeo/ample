@@ -91,13 +91,12 @@ if __name__ == '__main__':
                 kmeans=False,
                 visualize_orig=False,
                 sample_type='gsLSH_wt',
-                lsh=False,
-                weighted = True, alpha = alpha
+                lsh=False
     )
 
 
 
-    # 
+    #
     # iter = 1
     #
     #
