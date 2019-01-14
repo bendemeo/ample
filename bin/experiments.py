@@ -106,7 +106,7 @@ def experiment(sampling_fn, X_dimred, name, cell_labels=None,
 
     # Assign cells to clusters.
 
-    if filename = None:
+    if filename is None:
         filename = name
 
     if kmeans or \
