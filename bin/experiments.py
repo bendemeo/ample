@@ -189,7 +189,7 @@ def experiment(sampling_fn, X_dimred, name, cell_labels=None,
             expr = None
 
         visualize([ X_dimred[samp_idx, :] ], cell_labels[samp_idx],
-                  name + '_{}{}'.format(sample_type, N), cell_types,
+                  filename + '_{}'.format(N), cell_types,
                   gene_names=gene_names, gene_expr=expr, genes=genes,
                   perplexity=max(N/200, 50), n_iter=500,
                   size=max(int(30000/N), 1), image_suffix='.png')

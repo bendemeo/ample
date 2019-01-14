@@ -80,16 +80,18 @@ if __name__ == '__main__':
     cell_names = sorted(set(labels))
     cell_labels = le.transform(labels)
 
-    filename='gsLSHTest_weighted_alpha1'
+
     iter = 1
 
 
     downsampler = gsLSH(X_dimred)
 
-    experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels=cell_labels,
-        gene_names=viz_genes, genes=genes, gene_expr=vstack(datasets),
-        kmeans=False,
-        visualize_orig=False,
-        sample_type='gsLSH_wt',
-        lsh=True, optimize_grid_size=True,
-        weighted = True, alpha = 1)
+    for alpha in np.arange(2,10,0.5):
+        filename='gsLSHTest_weighted_alpha_{}'.format(alpha)
+        experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels=cell_labels,
+            gene_names=viz_genes, genes=genes, gene_expr=vstack(datasets),
+            kmeans=False,
+            visualize_orig=False,
+            sample_type='gsLSH_wt',
+            lsh=True, optimize_grid_size=True,
+            weighted = True, alpha = alpha)
