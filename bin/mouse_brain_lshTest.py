@@ -97,18 +97,18 @@ if __name__ == '__main__':
 
 
 
-    #
-    # iter = 1
-    #
-    #
-    # downsampler = gsLSH(X_dimred)
-    #
-    # for alpha in np.arange(2,10,0.5):
-    #     filename='gsLSHTest_weighted_alpha_{}'.format(alpha)
-    #     experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels=cell_labels,
-    #         gene_names=viz_genes, genes=genes, gene_expr=vstack(datasets),
-    #         kmeans=False,
-    #         visualize_orig=False,
-    #         sample_type='gsLSH_wt',
-    #         lsh=True, optimize_grid_size=True,
-    #         weighted = True, alpha = alpha)
+
+    iter = 1
+
+
+    downsampler = gsLSH(X_dimred)
+
+    for alpha in np.arange(1,10,1):
+        filename='gsLSHTest_weighted_strength_{}'.format(alpha)
+        experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels=cell_labels,
+            gene_names=viz_genes, genes=genes, gene_expr=vstack(datasets),
+            kmeans=False,
+            visualize_orig=False,
+            sample_type='gsLSH_wt',
+            lsh=True, optimize_grid_size=True,
+            weighted = True, alpha = alpha)
