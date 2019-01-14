@@ -8,6 +8,9 @@ from sklearn.preprocessing import LabelEncoder, scale
 from experiments import *
 from process import load_names
 from utils import *
+from LSH import *
+from hashers import *
+
 
 NAMESPACE = 'pbmc_facs'
 METHOD = 'svd'
