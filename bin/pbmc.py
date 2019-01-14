@@ -55,6 +55,7 @@ if __name__ == '__main__':
     le = LabelEncoder().fit(labels)
     cell_labels = le.transform(labels)
 
+    viz_genes = []
 
     # experiment(gs_gap, X_dimred, NAMESPACE, filename='orig_fn', cell_labels=cell_labels,
     #             gene_names=viz_genes, genes=genes, gene_expr=vstack(datasets),
