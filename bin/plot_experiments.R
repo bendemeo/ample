@@ -1,5 +1,6 @@
 library(tidyverse)
 library(data.table)
+library(dplyr)
 setwd('~/Documents/bergerlab/lsh/ample/')
 
 ### comparing different LSH
@@ -139,7 +140,7 @@ sizetest %>% filter(N==500) %>%
 
 #N vs rare
 sizetest %>% ggplot(aes(x=N, y=rare))+
-  geom_smooth(aes(color=cut_width(gridSize,0.05), span=0.1))
+  geom_smooth(aes(color=cut_width(gridSize,0.01), span=0.1))
 
 ##randomGridLSH plots
 
@@ -183,6 +184,29 @@ sizetest_proj %>% filter(N==500) %>%
 sizetest_proj %>% ggplot(aes(x=N, y=rare))+
   geom_smooth(aes(color=cut_width(gridSize,0.05)))
 
+
+##gridLSH with lots of grids
+sizetest_rg2 = fread('target/experiments/randomGrid_50hash_5band_size5_equaldens.txt.1')
+
+
+sizetest_rg2 %>% filter(N==500) %>% ggplot(aes(x=gridSize, y=max_min_dist))+
+  geom_boxplot(aes(group=cut_width(gridSize,0.03)))
+
+sizetest_rg2 %>% filter(N==500) %>% ggplot(aes(x=gridSize, y=rare))+
+  geom_boxplot(aes(group=cut_width(gridSize,0.03)))
+
+sizetest_rg2 %>% ggplot(aes(x=N, y=rare))+
+  geom_smooth(aes(color=cut_width(gridSize,0.05)))
+
+sizetest_rg2 %>% filter(maxCounts > 10) %>% ggplot(aes(x=N, y=rare))+
+  geom_line(aes(color=cut_width(maxCounts,10)))
+
+sizetest_rg2 %>% filter(N==1000) %>%ggplot(aes(x=maxCounts,y=max_min_dist))+
+  geom_boxplot(aes(group=cut_width(maxCounts,20)))
+
+sizetest_rg2 %>% filter(N==100) %>% ggplot(aes(x=maxCounts, y=rare)) + 
+  geom_smooth()
+
 ############equal density test results############
 
 gs_equaldens = fread('target/experiments/gsGridTest_equaldens.txt.1')
@@ -202,5 +226,20 @@ gs_weighted %>% filter(N==100) %>%
 
 gs_weighted %>% ggplot(aes(x=N, y=rare))+
   geom_line(aes(color=as.character(gridSize), span=0.1))
+
+
+
+#weighted vs nonweighted
+gs_compare = full_join(gs_weighted, sizetest)
+gs_compare$sampler[which(is.na(gs_compare$maxCounts))] <- 'gsLSH_wt'
+
+
+gs_compare %>% group_by(sampler, N) %>% summarize(best_size=gridSize[which(rare==max(rare))[1]])
+
+
+gs_compare %>% filter(as.numeric(gridSize)>=0 %>% View()
+gs_compare %>% filter(as.numeric(gridSize)>0.3, as.numeric(gridSize)<0.4) %>% 
+  ggplot(aes(x=N, y=rare))+
+  geom_smooth(aes(color=sampler, lty=cut_width(gridSize, 0.01)))
 
             

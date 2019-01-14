@@ -29,7 +29,7 @@ def err_exit(param_name):
     sys.stderr.write('Needs `{}\' param.\n'.format(param_name))
     exit(1)
 
-def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], inverted=[], weighted=False, pickle_it=True, **kwargs):
+def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], inverted=[], weighted=False, alpha=1, pickle_it=True, **kwargs):
     """version where params is a dict to be unpacked"""
 
     #make sure all needed params are provided
@@ -108,7 +108,7 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
                 #log('grid size: {}'.format(getattr(downsampler, 'gridSize')))
                 t0 = time()
                 if weighted:
-                    samp_idx = downsampler.downsample_weighted(N)
+                    samp_idx = downsampler.downsample_weighted(N, alpha=alpha)
                 else:
                     samp_idx=downsampler.downSample(N)
 
