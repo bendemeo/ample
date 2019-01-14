@@ -287,29 +287,29 @@ if __name__ == '__main__':
 
     gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
-        filename='gsGridTest_alpha_2'
-        iter=1
-        gsGridTestParams = {
-         'opt_grid':[False],
-         'gridSize': np.arange(start=0.5,stop=0.1,step=-0.01).tolist()
-        }
+    filename='gsGridTest_alpha_2'
+    iter=1
+    gsGridTestParams = {
+     'opt_grid':[False],
+     'gridSize': np.arange(start=0.5,stop=0.1,step=-0.01).tolist()
+    }
 
-        gsGridTests = ['max_min_dist','time','kmeans_ami','rare']
+    gsGridTests = ['max_min_dist','time','kmeans_ami','rare']
 
-        gsLSH_gridTest = try_params(X_dimred, 'gsLSH',
-         params=gsGridTestParams,
-         tests=gsGridTests,
-         n_seeds=10,
-         cell_labels=cell_labels,
-         rare_label=rare_label,
-         Ns=np.arange(10,100,10).tolist(),
-         weighted=True,
-         alpha=2)
+    gsLSH_gridTest = try_params(X_dimred, 'gsLSH',
+     params=gsGridTestParams,
+     tests=gsGridTests,
+     n_seeds=10,
+     cell_labels=cell_labels,
+     rare_label=rare_label,
+     Ns=np.arange(10,100,10).tolist(),
+     weighted=True,
+     alpha=2)
 
-        # with open("gsLSH_gridTest.file", "wb") as f:
-        #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
+    # with open("gsLSH_gridTest.file", "wb") as f:
+    #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
 
-        gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+    gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
 
