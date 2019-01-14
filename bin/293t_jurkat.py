@@ -145,7 +145,7 @@ if __name__ == '__main__':
         n_seeds=10,
         cell_labels=cell_labels,
         rare_label=rare_label,
-        Ns=np.arange(10,100,10).tolist()
+        Ns=np.arange(start=10,stop=100,step=10).tolist()
         )
 
     # with open("gsLSH_gridTest.file", "wb") as f:
@@ -279,7 +279,6 @@ if __name__ == '__main__':
      n_seeds=10,
      cell_labels=cell_labels,
      rare_label=rare_label,
-     Ns=np.arange(10,100,10).tolist(),
      weighted=True)
 
     # with open("gsLSH_gridTest.file", "wb") as f:
