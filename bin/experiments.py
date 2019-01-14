@@ -188,11 +188,15 @@ def experiment(sampling_fn, X_dimred, name, cell_labels=None,
         else:
             expr = None
 
+        assert(X_dimred.shape()[0] == len(cell_labels))
+        print('assertion passed!')
         visualize([ X_dimred[samp_idx, :] ], cell_labels[samp_idx],
                   filename + '_{}'.format(N), cell_types,
                   gene_names=gene_names, gene_expr=expr, genes=genes,
                   perplexity=max(N/200, 50), n_iter=500,
                   size=max(int(30000/N), 1), image_suffix='.png')
+
+
 
         report_cluster_counts(cell_labels[samp_idx])
 
