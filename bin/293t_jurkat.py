@@ -130,28 +130,28 @@ if __name__ == '__main__':
 
     #
     #
-    filename='gsGridTest'
-    iter=4
-    gsGridTestParams = {
-        'opt_grid':[False],
-        'gridSize': np.arange(start=1,stop=0.01,step=-0.01).tolist()
-    }
-
-    gsGridTests = ['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare']
-
-    gsLSH_gridTest = try_params(X_dimred, 'gsLSH',
-        params=gsGridTestParams,
-        tests=gsGridTests,
-        n_seeds=10,
-        cell_labels=cell_labels,
-        rare_label=rare_label,
-        Ns=np.arange(start=10,stop=100,step=10).tolist()
-        )
-
-    # with open("gsLSH_gridTest.file", "wb") as f:
-    #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
-
-    gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+    # filename='gsGridTest'
+    # iter=4
+    # gsGridTestParams = {
+    #     'opt_grid':[False],
+    #     'gridSize': np.arange(start=1,stop=0.01,step=-0.01).tolist()
+    # }
+    #
+    # gsGridTests = ['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare']
+    #
+    # gsLSH_gridTest = try_params(X_dimred, 'gsLSH',
+    #     params=gsGridTestParams,
+    #     tests=gsGridTests,
+    #     n_seeds=10,
+    #     cell_labels=cell_labels,
+    #     rare_label=rare_label,
+    #     Ns=np.arange(start=10,stop=100,step=10).tolist()
+    #     )
+    #
+    # # with open("gsLSH_gridTest.file", "wb") as f:
+    # #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
+    #
+    # gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
     #
     #
@@ -279,7 +279,9 @@ if __name__ == '__main__':
      n_seeds=10,
      cell_labels=cell_labels,
      rare_label=rare_label,
-     weighted=True)
+     weighted=True,
+     Ns=np.arange(start=10,stop=100,step=10).tolist()
+     )
 
     # with open("gsLSH_gridTest.file", "wb") as f:
     #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)

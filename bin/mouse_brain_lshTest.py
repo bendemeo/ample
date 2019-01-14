@@ -76,9 +76,14 @@ if __name__ == '__main__':
         open('data/cell_labels/mouse_brain_cluster.txt')
         .read().rstrip().split('\n')
     )
+
+
+
     le = LabelEncoder().fit(labels)
     cell_names = sorted(set(labels))
     cell_labels = le.transform(labels)
+
+    print('there are {} labels'.format(len(cell_labels)))
 
 
     iter = 1
