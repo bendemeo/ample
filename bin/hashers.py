@@ -69,6 +69,8 @@ class gsLSH(LSH):
     def makeHash(self): #re-implementation of gs, formulated as an LSH
         n_samples, n_features = self.data.shape
 
+        print('target is {} at time of hashing'.format(self.target))
+
         X = self.data - self.data.min(0)
         X -= X.max()
 
@@ -174,11 +176,13 @@ class gsLSH(LSH):
 
     def downsample_weighted(self, sampleSize, alpha=1, replace=False):
         print('alpha is {}'.format(alpha))
-        self.makeHash()
-        self.makeFinder()
 
         if self.target == 'N':
             self.target = sampleSize
+        self.makeHash()
+        self.makeFinder()
+
+
 
         grid = self.finder[0]
         full_grid = grid # keeps all squares
