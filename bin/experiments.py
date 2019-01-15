@@ -199,6 +199,11 @@ def experiment(sampling_fn, X_dimred, name, cell_labels=None,
 
         if cell_labels == 'grid':
             cell_labels = sampling_fn.hash
+
+            
+            print('cell labels is a {} of shape {}'.format(type(cell_labels),cell_labels.shape))
+
+
             cell_types = [ str(ct) for ct in sorted(set(cell_labels)) ]
 
         visualize([ X_dimred[samp_idx, :] ], cell_labels[samp_idx],
