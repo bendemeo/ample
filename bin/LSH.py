@@ -185,8 +185,10 @@ class LSH:
     def getRemnants(self):
         return self.remnants
 
-    def downSample(self, sampleSize='auto', replace = False):
+    def downSample(self, sampleSize, replace = False):
 
+        if self.target == 'N':
+            self.target = sampleSize
         #randomly make new hashes for each downsampling
         self.makeHash()
         self.makeFinder()
