@@ -5,11 +5,8 @@ import math
 from time import time
 from utils import *
 import itertools
-from hashers import *
+#from hashers import *
 
-def plus(lsh_1, lsh_2):
-    result = sumLSH([lsh_1, lsh_2])
-    return(result)
         #
 # adding stuff for git
 # adding more stuff
