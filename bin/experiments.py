@@ -198,7 +198,7 @@ def experiment(sampling_fn, X_dimred, name, cell_labels=None,
         # print('assertion passed!')
 
         if cell_labels == 'grid':
-            cell_labels = sampling_fn.gridLabels
+            cell_labels = sampling_fn.hash
             cell_types = [ str(ct) for ct in sorted(set(cell_labels)) ]
 
         visualize([ X_dimred[samp_idx, :] ], cell_labels[samp_idx],
