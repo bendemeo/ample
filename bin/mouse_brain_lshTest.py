@@ -107,7 +107,7 @@ if __name__ == '__main__':
 
     downsampler = gsLSH(X_dimred, target='N')
     alpha=2
-    filename='gsLSHTest_gridviz_weighted_{}'.format(alpha)
+    filename='gsLSHTest_N_gridviz_weighted_{}'.format(alpha)
 
     experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels='grid',
         gene_names=viz_genes, genes=genes, gene_expr=vstack(datasets),
@@ -117,6 +117,19 @@ if __name__ == '__main__':
         lsh=True, optimize_grid_size=False,
         weighted = True, alpha = alpha)
 
+
+
+    downsampler = gsLSH(X_dimred)
+    alpha=2
+    filename='gsLSHTest_sqrtN_gridviz_weighted_{}'.format(alpha)
+
+    experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels='grid',
+        gene_names=viz_genes, genes=genes, gene_expr=vstack(datasets),
+        kmeans=False,
+        visualize_orig=False,
+        sample_type='gsLSH_wt',
+        lsh=True, optimize_grid_size=False,
+        weighted = True, alpha = alpha)
 
     #
     # for alpha in np.arange(0.2,4,0.2):
