@@ -199,8 +199,8 @@ def experiment(sampling_fn, X_dimred, name, cell_labels=None,
 
         if cell_labels == 'grid':
             cell_labels = sampling_fn.hash
+            cell_labels = sampling_fn.hash[0,]
 
-            
             print('cell labels is a {} of shape {}'.format(type(cell_labels),cell_labels.shape))
 
 
