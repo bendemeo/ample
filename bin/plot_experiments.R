@@ -139,11 +139,23 @@ sizetest %>% filter(N==500) %>%
   geom_boxplot(aes(group=cut_width(gridSize,0.01)))
 
 sizetest %>% filter(N==500) %>%
-  ggplot(aes(x=max_min_dist,y=maxCounts))+
+  ggplot(aes(x=maxCounts,y=max_min_dist))+
   geom_line()
 
+sizetest %>% filter(N==500) %>%
+  ggplot(aes(x=maxCounts,y=rare))+
+  geom_boxplot(aes(group=cut_width(maxCounts,5)))
+
 sizetest %>% filter(rare==28, N==500) %>%
-  ggplot(aes(x=max_min_dist,y=maxCounts))
+   ggplot(aes(x=maxCounts))+
+   geom_histogram()
+
+sizetest %>% filter(N==500) %>%
+  ggplot(aes(x=gridSize, y=maxCounts))+
+  geom_point()
+
+sizetest %>% filter(N==500)  %>% ggplot(aes(x=rare,y=max_min_dist))+
+  geom_boxplot(aes(group=rare))
 
 #N vs rare
 sizetest %>% ggplot(aes(x=N, y=rare))+
@@ -233,6 +245,12 @@ gs_equaldens %>% ggplot(aes(x=gridSize, y=kl_divergence)) +
 ######## weighted rare sampling ##############
 gs_weighted = fread('target/experiments/gsGridTest_weighted.txt.2')
 
+
+gs_weighted %>% filter(N==500) %>%
+  ggplot(aes(x=gridSize, y=max_min_dist))+
+  geom_line()
+
+
 gs_weighted %>% ggplot(aes(x=gridSize,y=rare)) +
   geom_line(aes(color = cut_width(N,100)))
 
@@ -246,17 +264,21 @@ gs_weighted %>% ggplot(aes(x=N, y=rare))+
 
 
 #weighted vs nonweighted
-gs_compare = full_join(gs_weighted, sizetest)
+
+unweighted = fread('target/experiments/gsGridTest.txt.4')
+gs_compare = full_join(gs_weighted, unweighted)
 gs_compare$sampler[which(is.na(gs_compare$maxCounts))] <- 'gsLSH_wt'
 
 
 gs_compare %>% group_by(sampler, N) %>% summarize(best_size=gridSize[which(rare==max(rare))[1]])
 
 
-gs_compare %>% filter(as.numeric(gridSize)>=0 %>% View()
+gs_compare %>% filter(as.numeric(gridSize)>=0) %>% View()
 gs_compare %>% filter(as.numeric(gridSize)>0.3, as.numeric(gridSize)<0.4) %>% 
   ggplot(aes(x=N, y=rare))+
   geom_smooth(aes(color=sampler, lty=cut_width(gridSize, 0.01)))
+
+
 
 
 
@@ -267,11 +289,11 @@ gridTest_wt = fread('target/experiments/gsGridTest_weighted.txt.2')
 
 #huge dataframe of all, best vs. best
 
-compare_all = full_join(sizetest, gs_weighted) %>%
+compare_all = full_join(unweighted, gs_weighted) %>%
   full_join(sizetest_rg2)
             
 compare_all$sampler[which(is.na(compare_all$maxCounts))] <- 'gsLSH_wt'
 
 compare_all %>% group_by(sampler, N) %>% summarize(best_size=gridSize[which(rare==max(rare))[1]], best_rare = mean(rare[gridSize==best_size]),
-                                                   mean_counts=mean(maxCounts), max_min_dist=mean(max_min_dist))
+                                                   mean_counts=mean(maxCounts), max_min_dist=mean(max_min_dist)) %>% View()
 

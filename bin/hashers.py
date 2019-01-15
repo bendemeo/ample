@@ -49,6 +49,65 @@ class gridLSH(LSH):
 
         self.hash=hashes
 
+
+
+class multiLSH(LSH):
+    def __init__(self, components):
+        self.components = components
+
+        # get data from a representative
+        rep = components[0]
+        self.data = rep.data
+        self.target = rep.target
+        self.numObs, self.numFeatures = self.data.shape
+        self.keepStats = rep.keepStats
+        self.nbhdSizes = []
+
+
+    def makeHash(self):
+        for lsh in self.components:
+            lsh.makeHash()
+
+    def makeFinder(self):
+        for lsh in self.components:
+                lsh.makeFinder()
+
+
+
+class sumLSH(multiLSH):
+    def __init__(self, summands):
+        multiLSH.__init__(self, summands)
+
+    def findCandidates(self, ind): #OR of all summand candidates
+        candidates = []
+        for lsh in self.components:
+            candidates.append(lsh.findCandidates(ind))
+
+        candidates = set().union(*candidates)
+
+        if self.keepStats:
+            self.nbhdSizes.append(len(candidates)+1)
+        return candidates
+
+
+class prodLSH(multiLSH):
+    def __init__(self, factors):
+        multiLSH.__init__(self, factors)
+
+    def findCandidates(self, ind): #AND of all product candidates
+        candidates = []
+        for lsh in self.components:
+            candidates.append(lsh.findCandidates(ind))
+
+        candidates = set().intersection(*candidates)
+
+        if self.keepStats:
+            self.nbhdSizes.append(len(candidates)+1)
+
+        return candidates
+
+
+
 class gsLSH(LSH):
     def __init__(self, data, target='auto', gridSize=None, replace = False, alpha=0.1,
     max_iter = 200, verbose = True, opt_grid=True):
@@ -64,6 +123,7 @@ class gsLSH(LSH):
         self.verbose = verbose
         self.max_iter = max_iter
         self.opt_grid = opt_grid
+
         print('target: {}'.format(self.target))
 
     def makeHash(self): #re-implementation of gs, formulated as an LSH
@@ -172,6 +232,7 @@ class gsLSH(LSH):
 
 
         self.hash=hashes
+        self.gridLabels = [int(x) for y in list(hashes) for x in y]
         self.gridSize=unit
 
     def downsample_weighted(self, sampleSize, alpha=1, replace=False):
@@ -386,9 +447,11 @@ class randomGridLSH(LSH):
 
         self.hash=hashes
 
-
-
-
+#how to add two hashers
+#can't overload operator due to weird dependencies?
+def plus(*args):
+    result = sumLSH(args)
+    return(result)
         #
         # grid_axes = ortho_group.rvs(self.numFeatures)
         #
@@ -396,7 +459,9 @@ class randomGridLSH(LSH):
         #     # project onto ith grid axis
         #     projection = np.matmul
 
-
+def times(*args):
+    result = prodLSH(args)
+    return(result)
 
 if __name__ == '__main__':
     gauss2D = gauss_test([10,20,100,200], 2, 4, [0.1, 1, 0.01, 2])

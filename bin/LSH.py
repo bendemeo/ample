@@ -5,7 +5,12 @@ import math
 from time import time
 from utils import *
 import itertools
+from hashers import *
 
+def plus(lsh_1, lsh_2):
+    result = sumLSH([lsh_1, lsh_2])
+    return(result)
+        #
 # adding stuff for git
 # adding more stuff
 class LSH:
@@ -189,6 +194,8 @@ class LSH:
 
         if self.target == 'N':
             self.target = sampleSize
+
+
         #randomly make new hashes for each downsampling
         self.makeHash()
         self.makeFinder()
@@ -263,13 +270,13 @@ class LSH:
 
             meanSize = sum(self.nbhdSizes) / len(self.nbhdSizes)
 
-            self.guess = (float(self.numObs) / meanSize) * self.numBands
-            self.actual = self.getMeanCounts()
+            #self.guess = (float(self.numObs) / meanSize) * self.numBands
+            #self.actual = self.getMeanCounts()
 
 
-            self.error = float(abs(self.guess - self.actual))/self.actual
-            if self.error < 0:
-                self.error = -1
+            #self.error = float(abs(self.guess - self.actual))/self.actual
+            #if self.error < 0:
+                #self.error = -1
 
 
 
@@ -337,6 +344,14 @@ class LSH:
 
         setattr(self, param, cur_val)
 
+    def __add__(self, other):
+        result = plus(self,other)
+        return(result)
+
+    def __mul__(self, other):
+        result = prodLSH([self, other])
+        return(result)
+
         # if inverted:
         #     step = -1*step
         #
@@ -363,8 +378,6 @@ class LSH:
         #
         # print('optimized value is {}, subtracting step'.format(cur_val))
         # setattr(self, param, cur_val)
-
-
 
 
 

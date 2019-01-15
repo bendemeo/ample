@@ -148,6 +148,7 @@ def experiment(sampling_fn, X_dimred, name, cell_labels=None,
         else:
             expr = None
 
+
         embedding = visualize(
             [ X_dimred[idx, :] ], cell_labels[idx],
             name + '_orig{}'.format(len(idx)), cell_types,
@@ -195,6 +196,11 @@ def experiment(sampling_fn, X_dimred, name, cell_labels=None,
         print('there are {} cell labels with shape'.format(cell_labels.shape))
         assert(X_dimred.shape[0] == len(cell_labels))
         print('assertion passed!')
+
+        if cell_labels == 'grid':
+            cell_labels = sampling_fn.gridLabels
+            cell_types = [ str(ct) for ct in sorted(set(cell_labels)) ]
+
         visualize([ X_dimred[samp_idx, :] ], cell_labels[samp_idx],
                   filename + '_{}'.format(N), cell_types,
                   gene_names=gene_names, gene_expr=expr, genes=genes,

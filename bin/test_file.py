@@ -7,7 +7,7 @@ import cProfile
 import matplotlib.pyplot as mpl
 from hashers import *
 from experiments import *
-
+from copy import deepcopy
 #from lsh_experiments import start_experiment
 #from lsh_sketch import *
 
@@ -47,8 +47,23 @@ if __name__ == '__main__':
 
 
     downsampler = gsLSH(gauss2D, target = int(math.sqrt(N)))
+    # downsampler_2 = deepcopy(downsampler)
+    #
+    # downsampler = times(downsampler, downsampler_2)
+    # downsampler_2  = randomGridLSH(gauss2D, 0.1, 1,1,1)
+    # #
+    # # downsampler = plus(downsampler_1, downsampler_2)
+    #
+    # downsampler = times(downsampler_1, downsampler_2)
+    # downsampler_2 = downsampler
+    # for n in range(2):
+    #     downsampler_2=times(downsampler_2, downsampler)
+    #
+    # print(downsampler_2.components)
 
-    subInds = downsampler.downsample_weighted(500)
+
+    subInds = downsampler.downSample(50)
+    print(downsampler.gridLabels)
 
 
 

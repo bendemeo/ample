@@ -98,17 +98,33 @@ if __name__ == '__main__':
 
 
 
-    iter = 1
 
+
+    iter = 1
+    #
+    # gs = gsLSH(X_dimred, target='auto')
+    # rg = randomGridLSH(X_dimred, target)
 
     downsampler = gsLSH(X_dimred, target='N')
+    alpha=2
+    filename='gsLSHTest_gridviz_weighted_{}'.format(alpha)
 
-    for alpha in np.arange(0.2,4,0.2):
-        filename='gsLSHTest_weighted_Nboxes_strength_{}'.format(alpha)
-        experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels=cell_labels,
-            gene_names=viz_genes, genes=genes, gene_expr=vstack(datasets),
-            kmeans=False,
-            visualize_orig=False,
-            sample_type='gsLSH_wt',
-            lsh=True, optimize_grid_size=False,
-            weighted = True, alpha = alpha)
+    experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels='grid',
+        gene_names=viz_genes, genes=genes, gene_expr=vstack(datasets),
+        kmeans=False,
+        visualize_orig=False,
+        sample_type='gsLSH_wt',
+        lsh=True, optimize_grid_size=False,
+        weighted = True, alpha = alpha)
+
+
+    #
+    # for alpha in np.arange(0.2,4,0.2):
+    #     filename='gsLSHTest_weighted_Nboxes_strength_{}'.format(alpha)
+    #     experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels=cell_labels,
+    #         gene_names=viz_genes, genes=genes, gene_expr=vstack(datasets),
+    #         kmeans=False,
+    #         visualize_orig=False,
+    #         sample_type='gsLSH_wt',
+    #         lsh=True, optimize_grid_size=False,
+    #         weighted = True, alpha = alpha)
