@@ -177,6 +177,9 @@ class gsLSH(LSH):
         self.makeHash()
         self.makeFinder()
 
+        if self.target == 'N':
+            self.target = sampleSize
+
         grid = self.finder[0]
         full_grid = grid # keeps all squares
 
