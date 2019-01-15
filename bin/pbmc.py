@@ -58,6 +58,7 @@ if __name__ == '__main__':
     le = LabelEncoder().fit(labels)
     cell_labels = le.transform(labels)
 
+    print('cell labels is a {} of shape {}'.format(type(cell_labels),cell_labels.shape))
     viz_genes = []
 
     # experiment(gs_gap, X_dimred, NAMESPACE, filename='orig_fn', cell_labels=cell_labels,
