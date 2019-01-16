@@ -213,7 +213,7 @@ class LSH:
             if len(available) == 0:  # reset available if not enough
                 reset = True
 
-                log("sampled {} out of {} before reset".format(count, sampleSize))
+                #log("sampled {} out of {} before reset".format(count, sampleSize))
                 if(self.keepStats):
                     self.lastCounts.append(count)
 
