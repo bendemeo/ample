@@ -130,26 +130,26 @@ if __name__ == '__main__':
     # gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
     #
-    filename='pbmc_gsGridTest_clustcounts_nonwt'
-    iter=1
-    gsGridTestParams = {
-     'opt_grid':[False],
-     'gridSize': np.arange(start=1,stop=0.01,step=-0.01).tolist()
-    }
-
-    gsGridTests = ['max_min_dist','time','cluster_counts', 'maxCounts']
-
-    gsLSH_gridTest = try_params(X_dimred, 'gsLSH',
-     params=gsGridTestParams,
-     tests=gsGridTests,
-     n_seeds=3,
-     cell_labels=cell_labels,
-     cluster_labels = labels,
-     weighted=False,
-     Ns=[1000]
-     )
-
-    gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+    # filename='pbmc_gsGridTest_clustcounts_nonwt'
+    # iter=1
+    # gsGridTestParams = {
+    #  'opt_grid':[False],
+    #  'gridSize': np.arange(start=1,stop=0.01,step=-0.01).tolist()
+    # }
+    #
+    # gsGridTests = ['max_min_dist','time','cluster_counts', 'maxCounts']
+    #
+    # gsLSH_gridTest = try_params(X_dimred, 'gsLSH',
+    #  params=gsGridTestParams,
+    #  tests=gsGridTests,
+    #  n_seeds=3,
+    #  cell_labels=cell_labels,
+    #  cluster_labels = labels,
+    #  weighted=False,
+    #  Ns=[1000]
+    #  )
+    #
+    # gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
     # # experiment_gs(
     # #     X_dimred, NAMESPACE, cell_labels=cell_labels,
     #     kmeans=False, visualize_orig=False
@@ -188,7 +188,28 @@ if __name__ == '__main__':
 
     gsGridTests = ['max_min_dist','time','cluster_counts', 'maxCounts']
 
-    gsLSH_gridTest = try_params(X_dimred, 'gsLSH',
+    gsLSH_gridTest = try_params(X_dimred,'gridLSH',
+     params=gsGridTestParams,
+     tests=gsGridTests,
+     n_seeds=3,
+     cell_labels=cell_labels,
+     cluster_labels = labels,
+     weighted=True,
+     Ns=[1000]
+     )
+
+    gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+
+    filename='pbmc_gridLSHTest_clustcounts_randomorigin'
+    iter=1
+    gsGridTestParams = {
+     'randomize_origin':[True],
+     'gridSize': np.arange(start=1,stop=0.01,step=-0.01).tolist()
+    }
+
+    gsGridTests = ['max_min_dist','time','cluster_counts', 'maxCounts']
+
+    gsLSH_gridTest = try_params(X_dimred, 'gridLSH',
      params=gsGridTestParams,
      tests=gsGridTests,
      n_seeds=3,
