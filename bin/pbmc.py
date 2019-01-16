@@ -128,7 +128,7 @@ if __name__ == '__main__':
      tests=gsGridTests,
      n_seeds=10,
      cell_labels=cell_labels,
-     cluster_labels = labels
+     cluster_labels = labels,
      weighted=True,
      Ns=np.arange(start=10,stop=100,step=10).tolist()
      )
