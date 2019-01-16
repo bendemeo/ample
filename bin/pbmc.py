@@ -60,7 +60,7 @@ if __name__ == '__main__':
     le = LabelEncoder().fit(labels)
     cell_labels = le.transform(labels)
 
-    print('labels is a {} of shape {}'.format(type(labels),labels.shape))
+    #print('labels is a {} of shape {}'.format(type(labels),labels.shape))
     print(labels)
     viz_genes = []
 
