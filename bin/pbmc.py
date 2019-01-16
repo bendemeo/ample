@@ -20,8 +20,6 @@ data_names = [
     'data/pbmc/68k'
 ]
 
-]
-
 def plot(X, title, labels, bold=None):
     plot_clusters(X, labels)
     if bold:
