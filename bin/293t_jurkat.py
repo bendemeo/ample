@@ -263,56 +263,75 @@ if __name__ == '__main__':
     # cosfile='293t_cosineLSH_ktest'
     # iter=1
     # ktest_cosine.to_csv('target/experiments/{}.txt.{}'.format(cosfile, iter), sep='\t')
+    #
+    # filename='gsGridTest_weighted'
+    # iter=3
+    # gsGridTestParams = {
+    #  'opt_grid':[False],
+    #  'gridSize': np.arange(start=0.5,stop=0.1,step=-0.01).tolist()
+    # }
+    #
+    # gsGridTests = ['max_min_dist','time','kmeans_ami','rare']
+    #
+    # gsLSH_gridTest = try_params(X_dimred, 'gsLSH',
+    #  params=gsGridTestParams,
+    #  tests=gsGridTests,
+    #  n_seeds=10,
+    #  cell_labels=cell_labels,
+    #  rare_label=rare_label,
+    #  weighted=True,
+    #  Ns=np.arange(start=10,stop=100,step=10).tolist()
+    #  )
+    #
+    # # with open("gsLSH_gridTest.file", "wb") as f:
+    # #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
+    #
+    # gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+    #
+    # filename='gsGridTest_alpha_2'
+    # iter=1
+    # gsGridTestParams = {
+    #  'opt_grid':[False],
+    #  'gridSize': np.arange(start=0.5,stop=0.1,step=-0.01).tolist()
+    # }
+    #
+    # gsGridTests = ['max_min_dist','time','kmeans_ami','rare']
+    #
+    # gsLSH_gridTest = try_params(X_dimred, 'gsLSH',
+    #  params=gsGridTestParams,
+    #  tests=gsGridTests,
+    #  n_seeds=10,
+    #  cell_labels=cell_labels,
+    #  rare_label=rare_label,
+    #  Ns=np.arange(10,100,10).tolist(),
+    #  weighted=True,
+    #  alpha=2)
+    #
+    # # with open("gsLSH_gridTest.file", "wb") as f:
+    # #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
+    #
+    # gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
-    filename='gsGridTest_weighted'
-    iter=3
-    gsGridTestParams = {
-     'opt_grid':[False],
-     'gridSize': np.arange(start=0.5,stop=0.1,step=-0.01).tolist()
-    }
-
-    gsGridTests = ['max_min_dist','time','kmeans_ami','rare']
-
-    gsLSH_gridTest = try_params(X_dimred, 'gsLSH',
-     params=gsGridTestParams,
-     tests=gsGridTests,
-     n_seeds=10,
-     cell_labels=cell_labels,
-     rare_label=rare_label,
-     weighted=True,
-     Ns=np.arange(start=10,stop=100,step=10).tolist()
-     )
-
-    # with open("gsLSH_gridTest.file", "wb") as f:
-    #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
-
-    gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
-
-    filename='gsGridTest_alpha_2'
+    filename='gsGridTest_clustcounts_wt'
     iter=1
     gsGridTestParams = {
      'opt_grid':[False],
-     'gridSize': np.arange(start=0.5,stop=0.1,step=-0.01).tolist()
+     'gridSize': [0.3]
     }
 
-    gsGridTests = ['max_min_dist','time','kmeans_ami','rare']
+    gsGridTests = ['max_min_dist','time','cluster_counts']
 
     gsLSH_gridTest = try_params(X_dimred, 'gsLSH',
      params=gsGridTestParams,
      tests=gsGridTests,
-     n_seeds=10,
+     n_seeds=1,
      cell_labels=cell_labels,
-     rare_label=rare_label,
-     Ns=np.arange(10,100,10).tolist(),
+     cluster_labels = labels,
      weighted=True,
-     alpha=2)
-
-    # with open("gsLSH_gridTest.file", "wb") as f:
-    #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
+     Ns=[1000]
+     )
 
     gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
-
-
 
     exit()
 
