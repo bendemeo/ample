@@ -55,10 +55,12 @@ if __name__ == '__main__':
         open('data/cell_labels/pbmc_facs_cluster.txt')
         .read().rstrip().split()
     )
+
+
     le = LabelEncoder().fit(labels)
     cell_labels = le.transform(labels)
 
-    print('cell labels is a {} of shape {}'.format(type(cell_labels),cell_labels.shape))
+    print('labels is a {} of shape {}'.format(type(labels),labels.shape))
     viz_genes = []
 
     # experiment(gs_gap, X_dimred, NAMESPACE, filename='orig_fn', cell_labels=cell_labels,
@@ -125,6 +127,7 @@ if __name__ == '__main__':
      tests=gsGridTests,
      n_seeds=10,
      cell_labels=cell_labels,
+     cluster_labels = labels
      weighted=True,
      Ns=np.arange(start=10,stop=100,step=10).tolist()
      )
