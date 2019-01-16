@@ -61,6 +61,14 @@ if __name__ == '__main__':
     #
     # print(downsampler_2.components)
 
+    alpha=1
+    experiment(downsampler, gauss2D, 'testpng2', filename = 'testpng2', cell_labels='grid',
+        gene_names=[], genes=[], gene_expr=gauss2D,
+        kmeans=False,
+        visualize_orig=False,
+        sample_type='gsLSH_wt',
+        lsh=True, optimize_grid_size=False,
+        weighted = True, alpha = alpha)
 
     subInds = downsampler.downSample(50)
     print(downsampler.gridLabels)
@@ -127,9 +135,9 @@ if __name__ == '__main__':
     # print('slow downsampling took {} seconds'.format(t1-t0))
     # print(downsampler.hash)
 
-    mpl.scatter(gauss2D[:, 0], gauss2D[:, 1])
-    mpl.scatter(gauss2D[subInds, 0], gauss2D[subInds, 1], c='m')
-    mpl.show()
+    # mpl.scatter(gauss2D[:, 0], gauss2D[:, 1])
+    # mpl.scatter(gauss2D[subInds, 0], gauss2D[subInds, 1], c='m')
+    # mpl.show()
 
     # downsampler = gridLSH(gauss2D, gridSize=0.1)
     # downsampler.makeHash()

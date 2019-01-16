@@ -109,6 +109,9 @@ if __name__ == '__main__':
         lsh=True, optimize_grid_size=False,
         weighted = True, alpha = alpha)
 
+
+
+
     # experiment_gs(
     #     X_dimred, NAMESPACE, cell_labels=cell_labels,
     #     kmeans=False, visualize_orig=False
