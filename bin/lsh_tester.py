@@ -134,15 +134,15 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
                         cell_labels = kwargs['cell_labels']
                         cluster_labels = kwargs['cluster_labels']
                         types = [cluster_labels[i] for i in samp_idx]
-                        print('types:')
-                        print(types)
+                        # print('types:')
+                        #print(types)
 
                         labels = sorted(set(cluster_labels))
                         for lab in labels:
                             counts = sum([type==lab for type in types])
                             #print(sum(sum(types==i)))
                             results[lab].append(counts)
-                            print(results)
+                            #print(results)
                     elif t == 'lastCounts':
                         results['lastCounts'].append(downsampler.getMeanCounts())
                     elif t == 'maxCounts':

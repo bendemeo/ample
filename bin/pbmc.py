@@ -118,7 +118,7 @@ if __name__ == '__main__':
     iter=1
     gsGridTestParams = {
      'opt_grid':[False],
-     'gridSize': [0.3, 0.4, 0.5]
+     'gridSize': np.arange(start=1,stop=0.01,step=-0.01).tolist()
     }
 
     gsGridTests = ['max_min_dist','time','cluster_counts']
