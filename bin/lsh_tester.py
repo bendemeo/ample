@@ -34,7 +34,7 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
 
     #make sure all needed params are provided
     if 'cell_labels' not in kwargs:
-        cantCompute=[i for i in ['entropy','rare','kl_divergence','kmeans_ami','louvain_ami'] if i in tests]
+        cantCompute=[i for i in ['entropy','rare','kl_divergence','kmeans_ami','louvain_ami', 'cluster_counts'] if i in tests]
 
         if len(cantCompute) > 0:
             err_exit('cell_labels')
@@ -42,6 +42,10 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
     if 'rare_label' not in kwargs:
         if 'rare' in tests:
             err_exit('rare_labels')
+
+    if 'cluster_labels' not in kwargs:
+        if 'cluster_counts' in tests:
+            err_exit('cluster_labels')
 
     #each param should have either 1 value (recycled for all) or k values
     paramLengths = [len(params[j]) for j in params.keys()]
@@ -68,15 +72,17 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
     numTests = len(Ns)*n_seeds*numSettings
 
     #empty lists for all params and test values
-    results = {t:[] for t in tests}
+    results = {t:[] for t in tests if t != 'cluster_counts'}
     for p in params.keys():
         results[p]=[]
 
+    if 'cluster_counts' in tests:
+        cluster_labels = sorted(set(kwargs['cluster_labels']))
+        for lab in cluster_labels:
+            results[lab]=[]
+
     results['sampler'] = [hasher]*numTests
     results['N']=[]
-
-
-
 
     for i in range(numSettings):
         currentParams={p:val[i] for (p,val) in params.items()}
@@ -122,6 +128,11 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
                 for t in tests:
                     if t == 'time':
                         results['time'].append(t1-t0)
+                    elif t == 'cluster_counts':
+                        types = cell_labels[sample_idx]
+                        for i in range(len(cluster_labels)):
+                            label = cluster_labels[i]
+                            results[label].append(sum(types == i))
                     elif t == 'lastCounts':
                         results['lastCounts'].append(downsampler.getMeanCounts())
                     elif t == 'maxCounts':

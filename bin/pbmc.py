@@ -82,38 +82,54 @@ if __name__ == '__main__':
     #         lsh=True, optimize_grid_size=True,
     #         weighted = True, alpha = alpha)
 
-    print('cell labels originally: ')
-    print(cell_labels)
+    # print('cell labels originally: ')
+    # print(cell_labels)
+    #
+    # downsampler = gsLSH(X_dimred, target='N')
+    # alpha=2
+    # filename='pbmc_gsLSHTest_N_gridviz_weighted_{}'.format(alpha)
+    #
+    # experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels='grid',
+    #     gene_names=viz_genes, genes=genes, gene_expr=vstack(datasets),
+    #     kmeans=False,
+    #     visualize_orig=False,
+    #     sample_type='gsLSH_wt',
+    #     lsh=True, optimize_grid_size=False,
+    #     weighted = True, alpha = alpha)
+    #
+    #
+    #
+    # downsampler = gsLSH(X_dimred)
+    # alpha=2
+    # filename='pbmc_gsLSHTest_sqrtN_gridviz_weighted_{}'.format(alpha)
+    #
+    # experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels='grid',
+    #     gene_names=viz_genes, genes=genes, gene_expr=vstack(datasets),
+    #     kmeans=False,
+    #     visualize_orig=False,
+    #     sample_type='gsLSH_wt',
+    #     lsh=True, optimize_grid_size=False,
+    #     weighted = True, alpha = alpha)
 
-    downsampler = gsLSH(X_dimred, target='N')
-    alpha=2
-    filename='pbmc_gsLSHTest_N_gridviz_weighted_{}'.format(alpha)
+    filename='gsGridTest_clustcounts'
+    iter=1
+    gsGridTestParams = {
+     'opt_grid':[False],
+     'gridSize':[0.1, 0.2, 0.3]
+    }
 
-    experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels='grid',
-        gene_names=viz_genes, genes=genes, gene_expr=vstack(datasets),
-        kmeans=False,
-        visualize_orig=False,
-        sample_type='gsLSH_wt',
-        lsh=True, optimize_grid_size=False,
-        weighted = True, alpha = alpha)
+    gsGridTests = ['max_min_dist','time','cluster_counts']
 
+    gsLSH_gridTest = try_params(X_dimred, 'gsLSH',
+     params=gsGridTestParams,
+     tests=gsGridTests,
+     n_seeds=10,
+     cell_labels=cell_labels,
+     weighted=True,
+     Ns=np.arange(start=10,stop=100,step=10).tolist()
+     )
 
-
-    downsampler = gsLSH(X_dimred)
-    alpha=2
-    filename='pbmc_gsLSHTest_sqrtN_gridviz_weighted_{}'.format(alpha)
-
-    experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels='grid',
-        gene_names=viz_genes, genes=genes, gene_expr=vstack(datasets),
-        kmeans=False,
-        visualize_orig=False,
-        sample_type='gsLSH_wt',
-        lsh=True, optimize_grid_size=False,
-        weighted = True, alpha = alpha)
-
-
-
-
+    gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
     # experiment_gs(
     #     X_dimred, NAMESPACE, cell_labels=cell_labels,
     #     kmeans=False, visualize_orig=False
