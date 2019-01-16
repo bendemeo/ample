@@ -133,7 +133,7 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
 
                         cell_labels = kwargs['cell_labels']
                         cluster_labels = kwargs['cluster_labels']
-                        types = cluster_labels[samp_idx]
+                        types = [cluster_labels[i] for i in samp_idx]
                         print('types:')
                         print(types)
 
