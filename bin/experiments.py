@@ -203,6 +203,7 @@ def experiment(sampling_fn, X_dimred, name, cell_labels=None,
             print('printing cell labels...')
             print(cell_labels)
 
+            prin
             print('cell labels is a {} of shape {}'.format(type(cell_labels),cell_labels.shape))
 
 

@@ -85,7 +85,7 @@ if __name__ == '__main__':
     print('cell labels originally: ')
     print(cell_labels)
 
-    downsampler = gsLSH(X_dimred, target='N', max_iter=1, gridSize = 0.9)
+    downsampler = gsLSH(X_dimred, target='N')
     alpha=2
     filename='pbmc_gsLSHTest_N_gridviz_weighted_{}'.format(alpha)
 
