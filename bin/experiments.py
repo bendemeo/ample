@@ -198,9 +198,10 @@ def experiment(sampling_fn, X_dimred, name, cell_labels=None,
         # print('assertion passed!')
 
         if cell_labels == 'grid':
+
+            cell_labels = sampling_fn.hash[:,0].astype(int)
             print('printing cell labels...')
             print(cell_labels)
-            cell_labels = sampling_fn.hash[:,0].astype(int)
 
             print('cell labels is a {} of shape {}'.format(type(cell_labels),cell_labels.shape))
 
