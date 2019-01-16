@@ -17,13 +17,9 @@ METHOD = 'svd'
 DIMRED = 100
 
 data_names = [
-    'data/pbmc/10x/b_cells',
-    'data/pbmc/10x/cd14_monocytes',
-    'data/pbmc/10x/cd4_t_helper',
-    'data/pbmc/10x/cd56_nk',
-    'data/pbmc/10x/cytotoxic_t',
-    'data/pbmc/10x/memory_t',
-    'data/pbmc/10x/regulatory_t',
+    'data/pbmc/68k'
+]
+
 ]
 
 def plot(X, title, labels, bold=None):
@@ -136,26 +132,26 @@ if __name__ == '__main__':
     # gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
     #
-    # filename='gsGridTest_clustcounts_nonwt'
-    # iter=1
-    # gsGridTestParams = {
-    #  'opt_grid':[False],
-    #  'gridSize': np.arange(start=1,stop=0.01,step=-0.01).tolist()
-    # }
-    #
-    # gsGridTests = ['max_min_dist','time','cluster_counts']
-    #
-    # gsLSH_gridTest = try_params(X_dimred, 'gsLSH',
-    #  params=gsGridTestParams,
-    #  tests=gsGridTests,
-    #  n_seeds=3,
-    #  cell_labels=cell_labels,
-    #  cluster_labels = labels,
-    #  weighted=False,
-    #  Ns=[1000]
-    #  )
-    #
-    # gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+    filename='pbmc_gsGridTest_clustcounts_nonwt'
+    iter=1
+    gsGridTestParams = {
+     'opt_grid':[False],
+     'gridSize': np.arange(start=1,stop=0.01,step=-0.01).tolist()
+    }
+
+    gsGridTests = ['max_min_dist','time','cluster_counts', 'maxCounts']
+
+    gsLSH_gridTest = try_params(X_dimred, 'gsLSH',
+     params=gsGridTestParams,
+     tests=gsGridTests,
+     n_seeds=3,
+     cell_labels=cell_labels,
+     cluster_labels = labels,
+     weighted=False,
+     Ns=[1000]
+     )
+
+    gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
     # # experiment_gs(
     # #     X_dimred, NAMESPACE, cell_labels=cell_labels,
     #     kmeans=False, visualize_orig=False
@@ -185,7 +181,7 @@ if __name__ == '__main__':
     # )
 
 
-    filename='gridLSHTest_clustcounts'
+    filename='pbmc_gridLSHTest_clustcounts'
     iter=1
     gsGridTestParams = {
      'randomize_origin':[False],
