@@ -118,7 +118,7 @@ if __name__ == '__main__':
     iter=1
     gsGridTestParams = {
      'opt_grid':[False],
-     'gridSize': [0.3]
+     'gridSize': [0.3, 0.4, 0.5]
     }
 
     gsGridTests = ['max_min_dist','time','cluster_counts']
@@ -126,7 +126,7 @@ if __name__ == '__main__':
     gsLSH_gridTest = try_params(X_dimred, 'gsLSH',
      params=gsGridTestParams,
      tests=gsGridTests,
-     n_seeds=1,
+     n_seeds=3,
      cell_labels=cell_labels,
      cluster_labels = labels,
      weighted=True,
