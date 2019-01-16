@@ -141,7 +141,7 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
                         for lab in labels:
                             counts = sum([type==lab for type in types])
                             #print(sum(sum(types==i)))
-                            results[label].append(counts)
+                            results[lab].append(counts)
                             print(results)
                     elif t == 'lastCounts':
                         results['lastCounts'].append(downsampler.getMeanCounts())
