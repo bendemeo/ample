@@ -217,7 +217,7 @@ class gsLSH(LSH):
 
             if n_iter >= self.max_iter:
                 # Should rarely get here.
-                sys.stderr.write('WARNING: Max iterations reached, try increasing '
+                print('WARNING: Max iterations reached, try increasing '
                                  ' alpha parameter.\n')
                 break
             n_iter += 1
