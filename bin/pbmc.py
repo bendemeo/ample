@@ -114,11 +114,11 @@ if __name__ == '__main__':
     #     lsh=True, optimize_grid_size=False,
     #     weighted = True, alpha = alpha)
 
-    filename='gsGridTest_clustcounts'
+    filename='gsGridTest_clustcounts_wt'
     iter=1
     gsGridTestParams = {
      'opt_grid':[False],
-     'gridSize':[0.1, 0.2, 0.3]
+     'gridSize': [0.3]
     }
 
     gsGridTests = ['max_min_dist','time','cluster_counts']
@@ -126,11 +126,33 @@ if __name__ == '__main__':
     gsLSH_gridTest = try_params(X_dimred, 'gsLSH',
      params=gsGridTestParams,
      tests=gsGridTests,
-     n_seeds=10,
+     n_seeds=1,
      cell_labels=cell_labels,
      cluster_labels = labels,
      weighted=True,
-     Ns=np.arange(start=10,stop=100,step=10).tolist()
+     Ns=[1000]
+     )
+
+    gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+
+
+    filename='gsGridTest_clustcounts_nonwt'
+    iter=1
+    gsGridTestParams = {
+     'opt_grid':[False],
+     'gridSize': np.arange(start=1,stop=0.01,step=-0.01).tolist()
+    }
+
+    gsGridTests = ['max_min_dist','time','cluster_counts']
+
+    gsLSH_gridTest = try_params(X_dimred, 'gsLSH',
+     params=gsGridTestParams,
+     tests=gsGridTests,
+     n_seeds=3,
+     cell_labels=cell_labels,
+     cluster_labels = labels,
+     weighted=False,
+     Ns=[1000]
      )
 
     gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
