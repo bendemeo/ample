@@ -194,7 +194,7 @@ if __name__ == '__main__':
      n_seeds=3,
      cell_labels=cell_labels,
      cluster_labels = labels,
-     weighted=True,
+     weighted=False,
      Ns=[1000]
      )
 
@@ -215,7 +215,7 @@ if __name__ == '__main__':
      n_seeds=3,
      cell_labels=cell_labels,
      cluster_labels = labels,
-     weighted=True,
+     weighted=False,
      Ns=[1000]
      )
 
