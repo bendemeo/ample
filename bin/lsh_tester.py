@@ -131,7 +131,7 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
                     elif t == 'cluster_counts':
                         cell_labels = kwargs['cell_labels']
                         cluster_labels = kwargs['cluster_labels']
-                        types = cell_labels[sample_idx]
+                        types = cell_labels[samp_idx]
                         for i in range(len(cluster_labels)):
                             label = cluster_labels[i]
                             results[label].append(sum(types == i))
