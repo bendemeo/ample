@@ -61,6 +61,7 @@ if __name__ == '__main__':
     cell_labels = le.transform(labels)
 
     print('labels is a {} of shape {}'.format(type(labels),labels.shape))
+    print(labels)
     viz_genes = []
 
     # experiment(gs_gap, X_dimred, NAMESPACE, filename='orig_fn', cell_labels=cell_labels,
