@@ -5,13 +5,14 @@ from LSH import *
 from test_file import *
 from utils import *
 from time import time
+import random
 
 
 
 class gridLSH(LSH):
     """just bins coordinates to make an orthogonal grid"""
 
-    def __init__(self,data,gridSize, replace=False, target=10):
+    def __init__(self,data,gridSize, replace=False, target=10, randomize_origin = True):
         numBands = 1
         bandSize = 1
         numHashes = 1
@@ -33,6 +34,10 @@ class gridLSH(LSH):
         #make dict mapping grid squares to points in it
         for i in range(self.numObs):
             coords = X[i,:]
+            if(randomize_origin): #shift data by random vector
+                for x in coords:
+                    x += random.uniform(0,gridSize)
+
 
             gridsquare = tuple(np.floor(coords / float(self.gridSize)).astype(int))
 
