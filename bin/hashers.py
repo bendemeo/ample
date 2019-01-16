@@ -19,6 +19,7 @@ class gridLSH(LSH):
         LSH.__init__(self,data, numHashes=numHashes, numBands=numBands, bandSize=bandSize,
         replace=replace, target=target)
         self.gridSize=gridSize
+        self.randomize_origin= randomize_origin
 
     def makeHash(self):
 
@@ -31,12 +32,19 @@ class gridLSH(LSH):
 
         grid = {}
 
+
+        if(self.randomize_origin):
+            for i in range(self.numFeatures):
+                shift = random.uniform(0,self.gridSize)
+                for j in range(self.numObs):
+                    X[j,i] += shift
+
         #make dict mapping grid squares to points in it
         for i in range(self.numObs):
             coords = X[i,:]
-            if(randomize_origin): #shift data by random vector
-                for x in coords:
-                    x += random.uniform(0,gridSize)
+            # if(randomize_origin): #shift data by random vector
+            #     for x in coords:
+            #         x += random.uniform(0,self.gridSize)
 
 
             gridsquare = tuple(np.floor(coords / float(self.gridSize)).astype(int))
