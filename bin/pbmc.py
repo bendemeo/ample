@@ -46,7 +46,7 @@ if __name__ == '__main__':
     X_dimred = U[:, :k] * s[:k]
 
     labels = (
-        open('data/cell_labels/pbmc_facs_cluster.txt')
+        open('data/cell_labels/pbmc_68k_cluster.txt')
         .read().rstrip().split()
     )
 
