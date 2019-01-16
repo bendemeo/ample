@@ -139,7 +139,7 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
 
                         labels = sorted(set(cluster_labels))
                         for lab in labels:
-                            counts = sum(types==lab)
+                            counts = sum([type==lab for type in types])
                             #print(sum(sum(types==i)))
                             results[label].append(counts)
                             print(results)
