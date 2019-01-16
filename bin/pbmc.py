@@ -82,6 +82,8 @@ if __name__ == '__main__':
     #         lsh=True, optimize_grid_size=True,
     #         weighted = True, alpha = alpha)
 
+    print('cell labels originally: ')
+    print(cell_labels)
 
     downsampler = gsLSH(X_dimred, target='N')
     alpha=2
