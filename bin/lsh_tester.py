@@ -62,7 +62,7 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
         if len(params[p])==1:
             params[p]=params[p]*numSettings
 
-    print(params)
+    #print(params)
 
     if 'Ns' in kwargs:
         Ns=kwargs['Ns']
