@@ -62,7 +62,7 @@ if __name__ == '__main__':
         if 'short' in sys.argv:
             print('shortening it!')
             X_dimred = X_dimred[1:1000,:]
-            labels = labels[1:1000,:]
+            labels = labels[1:1000]
             ext = 'short'
 
         if 'pickleit' in sys.argv:
