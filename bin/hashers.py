@@ -13,7 +13,7 @@ import random
 class gridLSH(LSH):
     """just bins coordinates to make an orthogonal grid"""
 
-    def __init__(self,data,gridSize, replace=False, target=10, randomize_origin = True):
+    def __init__(self,data,gridSize, replace=False, target=10, randomize_origin = True, cell_labels=None, cluster_labels=None, record_counts=False):
         numBands = 1
         bandSize = 1
         numHashes = 1
@@ -21,6 +21,8 @@ class gridLSH(LSH):
         replace=replace, target=target)
         self.gridSize=gridSize
         self.randomize_origin= randomize_origin
+        self.cell_labels = cell_labels
+        self.cluster_labels = cluster_labels
 
     def makeHash(self):
 
@@ -61,6 +63,24 @@ class gridLSH(LSH):
             if gridsquare not in grid:
                 grid[gridsquare]=set()
             grid[gridsquare].add(i)
+
+
+            if record_counts:
+                cluster_labels = self.cluster_labels
+                counts = {}
+                scores = {}
+                labels = sorted(set(self.cluster_labels))
+                print('labels: {}'.format(labels))
+
+                for lab in labels:
+                    counts=[len([i if self.cluster_labels[i] == lab for i in square]) for square in grid.values()]
+                    counts = [count for count in counts if counts > 0]
+                    print(counts)
+
+                    score = mean([count^2 for count in counts])
+                    scores[lab] = score
+                self.clustScores = score
+                print(scores)
 
         #enumerate grid squares, and assign each obs to its square index
         keys = list(grid.keys())
