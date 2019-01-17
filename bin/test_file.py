@@ -25,7 +25,7 @@ def gauss_test(n=[100], d=1, m=1, stdev=[1]):
         result = numpy.concatenate((result,
                                     numpy.random.normal(c, stdev[i], (n[i], d))),
                                     axis = 0)
-    return result
+    return resut
 
 
 
@@ -50,7 +50,7 @@ if __name__ == '__main__':
     # downsampler_2 = deepcopy(downsampler)
     #
     # downsampler = times(downsampler, downsampler_2)
-    # downsampler_2  = randomGridLSH(gauss2D, 0.1, 1,1,1)
+    # downsampler_2  =randomGridLSH(gauss2D, 0.1, 1,1,1)
     # #
     # # downsampler = plus(downsampler_1, downsampler_2)
     #
@@ -61,18 +61,27 @@ if __name__ == '__main__':
     #
     # print(downsampler_2.components)
 
-    alpha=1
-    experiment(downsampler, gauss2D, 'testpng2', filename = 'testpng2', cell_labels='grid',
-        gene_names=[], genes=[], gene_expr=gauss2D,
-        kmeans=False,
-        visualize_orig=False,
-        sample_type='gsLSH_wt',
-        lsh=True, optimize_grid_size=False,
-        weighted = True, alpha = alpha)
+    # alpha=1
+    #
+    # experiment(downsampler, gauss2D, 'testpng2', filename = 'testpng2', cell_labels='grid',
+    #     gene_names=[], genes=[], gene_expr=gauss2D,
+    #     kmeans=False,
+    #     visualize_orig=False,
+    #     sample_type='gsLSH_wt',
+    #     lsh=True, optimize_grid_size=False,
+    #     weighted = True, alpha = alpha)
+    #
+
+    downsampler = gridLSH(gauss2D, 0.1, randomize_origin = True)
+
 
     subInds = downsampler.downSample(50)
-    print(downsampler.gridLabels)
+    #print(downsampler.gridLabels)
+    mpl.scatter(gauss2D[:, 0], gauss2D[:, 1])
+    mpl.scatter(gauss2D[subInds, 0], gauss2D[subInds, 1], c='m')
 
+
+    mpl.show()
 
 
 
@@ -149,8 +158,7 @@ if __name__ == '__main__':
 
     #subInds = lshSketch(X=gauss2D, N=100, numHashes=3000, numBands=2, bandSize=500)
 
-    # mpl.scatter(gauss2D[subInds, 0], gauss2D[subInds, 1], c='m')
-    # mpl.show()#
+
 
     # counts = [10000, 20000, 30000, 40000]
     # for n in counts:

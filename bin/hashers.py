@@ -35,7 +35,16 @@ class gridLSH(LSH):
 
         if(self.randomize_origin):
             for i in range(self.numFeatures):
-                shift = random.uniform(0,self.gridSize)
+                print(X[:,i])
+                #determine how much you can shift without altering no. grid squares
+                shift_max = X[:,i].min()
+                shift_min = X[:,i].max() - (self.gridSize * (np.floor(X[:,i].max()/float(self.gridSize))) + 1)
+
+                print('min: {}'.format(shift_min))
+                print('max: {}'.format(shift_max))
+
+
+                shift = random.uniform(shift_min, shift_max)
                 for j in range(self.numObs):
                     X[j,i] += shift
 
@@ -306,7 +315,7 @@ class gsLSH(LSH):
                     del sizes[grid_cell]
 
 
-
+                #update weights
                 weights = [1/(np.power(size,alpha)) for size in sizes.values()]
 
                 total = sum(weights)

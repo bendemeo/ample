@@ -10,6 +10,7 @@ from process import load_names
 from utils import *
 from LSH import *
 from hashers import *
+import sys
 
 
 NAMESPACE = 'pbmc_facs'
@@ -28,6 +29,9 @@ def plot(X, title, labels, bold=None):
     plt.savefig('{}.png'.format(title))
 
 if __name__ == '__main__':
+
+
+
     datasets, genes_list, n_cells = load_names(data_names, norm=False)
     datasets, genes = merge_datasets(datasets, genes_list)
     X = vstack(datasets)
@@ -49,6 +53,10 @@ if __name__ == '__main__':
         open('data/cell_labels/pbmc_68k_cluster.txt')
         .read().rstrip().split()
     )
+
+    if len(sys.argv) > 1 and sys.argv(1) == 'short':
+        X_dimred = X_dimred[1:1000,:]
+        labels = labels[1:1000,:]
 
 
     le = LabelEncoder().fit(labels)

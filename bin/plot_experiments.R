@@ -248,7 +248,7 @@ gs_weighted = fread('target/experiments/gsGridTest_weighted.txt.2')
 
 gs_weighted %>% filter(N==500) %>%
   ggplot(aes(x=gridSize, y=max_min_dist))+
-  geom_line()
+  geom_boxplot(aes(group = cut_width(gridSize,0.01)))
 
 
 gs_weighted %>% ggplot(aes(x=gridSize,y=rare)) +
@@ -297,3 +297,44 @@ compare_all$sampler[which(is.na(compare_all$maxCounts))] <- 'gsLSH_wt'
 compare_all %>% group_by(sampler, N) %>% summarize(best_size=gridSize[which(rare==max(rare))[1]], best_rare = mean(rare[gridSize==best_size]),
                                                    mean_counts=mean(maxCounts), max_min_dist=mean(max_min_dist)) %>% View()
 
+
+
+
+######## PBMC ##########
+pbmc_nonwt = fread('target/experiments/gsGridTest_clustcounts_nonwt.txt.1')
+pbmc_nonwt_2 = fread('target/experiments/pbmc_gsGridTest_clustcounts_nonwt.txt.1')
+pbmc_wt = fread('target/experiments/gsGridTest_clustcounts_wt.txt.1')
+pbmc_grid_nonrandom = fread('target/experiments/pbmc_gridLSHTest_clustcounts.txt.1')
+
+pbmc_nonwt = melt(pbmc_nonwt, id.vars=c('gridSize','max_min_dist', 'time'), measure.vars=c('b_cells','cd14_monocytes', "cd4_t_helper",   "cd56_nk",       
+                                                                     "cytotoxic_t",    "memory_t",       "regulatory_t"))
+
+pbmc_wt = melt(pbmc_wt, id.vars=c('gridSize','max_min_dist', 'time'), measure.vars=c('b_cells','cd14_monocytes', "cd4_t_helper",   "cd56_nk",       
+                                                                                           "cytotoxic_t",    "memory_t",       "regulatory_t"))
+pbmc_grid_nonrandom = melt(pbmc_grid_nonrandom, id.vars=c("max_min_dist","time","maxCounts","randomize_origin","gridSize"), 
+                           measure.vars = c("CD14+_Monocyte","CD19+_B","CD4+/CD25_T_Reg","CD4+/CD45RA+/CD25-_Naive_T","CD4+/CD45RO+_Memory",
+                                            "CD4+_T_Helper2","CD56+_NK","CD8+/CD45RA+_Naive_Cytotoxic","CD8+_Cytotoxic_T","Dendritic"))
+pbmc_nonwt_2 = melt(pbmc_nonwt_2, id.vars=c("max_min_dist","time","maxCounts","gridSize"), 
+                           measure.vars = c("CD14+_Monocyte","CD19+_B","CD4+/CD25_T_Reg","CD4+/CD45RA+/CD25-_Naive_T","CD4+/CD45RO+_Memory",
+                                            "CD4+_T_Helper2","CD56+_NK","CD8+/CD45RA+_Naive_Cytotoxic","CD8+_Cytotoxic_T","Dendritic"))
+
+
+
+pdf('plots/pbmc_gridLSH_nonrandom_size_vs_clustCounts.pdf', 15, 8)
+pbmc_grid_nonrandom %>% ggplot(aes(x=gridSize, y=value, color=variable))+
+acet_wrap(~variable)+
+  geom_smooth(span=0.1)
+dev.off()
+
+pdf('plots/pbmc_gridLSH_nonrandom_size_vs_clustCounts_all.pdf', 10, 6)
+pbmc_grid_nonrandom %>% ggplot(aes(x=gridSize, y=value, color=variable))+
+  geom_smooth(span=0.1)
+dev.off()
+
+
+pdf('plots/pbmc_grid_vs_clustcounts.pdf', 8,5)
+ggplot(pbmc_nonwt, aes(x=gridSize, y=value, color=variable))+
+  facet_wrap(~variable)+
+  geom_smooth(span=0.1)
+  geom_boxplot(aes(group= paste0(variable,cut_width(gridSize,0.03))))
+dev.off()
