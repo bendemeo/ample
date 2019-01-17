@@ -83,11 +83,11 @@ class gridLSH(LSH):
                 counts=[len([i  for i in square if self.cluster_labels[i] == lab]) for square in grid.values()]
                 #print('counts: {}'.format(counts))
                 counts = [count for count in counts if count > 0]
-                print(counts)
+                #print(counts)
 
                 score = sum([count**2 for count in counts])/len(counts)
                 scores[lab] = score
-            self.clustScores = score
+            self.clustScores = scores
             print(scores)
         #enumerate grid squares, and assign each obs to its square index
         keys = list(grid.keys())
