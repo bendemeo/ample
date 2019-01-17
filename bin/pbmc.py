@@ -207,27 +207,27 @@ if __name__ == '__main__':
     # )
 
     #
-    # filename='pbmc_gridLSHTest_clustcounts'
-    # iter=1
-    # gsGridTestParams = {
-    #  'randomize_origin':[False],
-    #  'gridSize': np.arange(start=1,stop=0.01,step=-0.02).tolist()
-    # }
-    #
-    # gsGridTests = ['max_min_dist','time','cluster_counts', 'maxCounts']
-    #
-    # gsLSH_gridTest = try_params(X_dimred,'gridLSH',
-    #  params=gsGridTestParams,
-    #  tests=gsGridTests,
-    #  n_seeds=3,
-    #  cell_labels=cell_labels,
-    #  cluster_labels = labels,
-    #  weighted=False,
-    #  Ns=[100]
-    #  )
-    #
-    # gsLSH_gridTest.to_csv('target/experiments/{}_{}.txt.{}'.format(filename, ext, iter), sep='\t')
-    #
+    filename='pbmc_gridLSHTest_clustcounts'
+    iter=1
+    gsGridTestParams = {
+     'randomize_origin':[False],
+     'gridSize': np.arange(start=1,stop=0.01,step=-0.02).tolist()
+    }
+
+    gsGridTests = ['max_min_dist','time','cluster_counts', 'maxCounts']
+
+    gsLSH_gridTest = try_params(X_dimred,'gridLSH',
+     params=gsGridTestParams,
+     tests=gsGridTests,
+     n_seeds=3,
+     cell_labels=cell_labels,
+     cluster_labels = labels,
+     weighted=False,
+     Ns=[100]
+     )
+
+    gsLSH_gridTest.to_csv('target/experiments/{}_{}.txt.{}'.format(filename, ext, iter), sep='\t')
+
     filename='pbmc_gridLSHTest_clustcounts_randomorigin'
     iter=1
     gsGridTestParams = {
