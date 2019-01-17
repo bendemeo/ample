@@ -92,7 +92,7 @@ class gridLSH(LSH):
                 counts.sort(reverse=True)
                 pct_covered = [sum(counts[:(i+1)]) for i in range(len(counts))]
                 print(pct_covered)
-                good_inds = [i for i in pct_covered if i>0.5]
+                good_inds = [i for i in range(len(pct_covered)) if pct_covered[i]>0.5]
                 score = min(good_inds)
 
                 # score = sum([count for count in counts])/len(counts)
