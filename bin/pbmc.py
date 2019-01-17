@@ -253,8 +253,8 @@ if __name__ == '__main__':
     gsGridTestParams = {
      'randomize_origin':[False],
      'gridSize': np.arange(start=1,stop=0.01,step=-0.02).tolist(),
-     'cell_labels': cell_labels,
-     'cluster_labels': labels
+     'cell_labels': [cell_labels],
+     'cluster_labels': [labels]
     }
 
     gsGridTests = ['max_min_dist','time','cluster_counts', 'maxCounts']
