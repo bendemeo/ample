@@ -34,6 +34,7 @@ if __name__ == '__main__':
     if 'pickle_short' in sys.argv:
         X_dimred = pickle.load(open('pickles/pbmcshort', 'rb'))
         labels = pickle.load(open('pickles/pbmclabelsshort', 'rb'))
+        ext='short'
     elif 'pickle' in sys.argv:
         X_dimred = pickle.load(open('pickles/pbmc', 'rb'))
         labels = pickle.load(open('pickles/pbmclabels', 'rb'))
@@ -64,8 +65,9 @@ if __name__ == '__main__':
         ext = ''
         if 'short' in sys.argv:
             print('shortening it!')
-            X_dimred = X_dimred[1:1000,:]
-            labels = labels[1:1000]
+            inds = np.random.choice(range(X_dimred.shape[0]), 1000)
+            X_dimred = X_dimred[inds,:]
+            labels = labels[inds]
             ext = 'short'
 
         if 'pickleit' in sys.argv:
@@ -223,8 +225,8 @@ if __name__ == '__main__':
      weighted=False,
      Ns=[100]
      )
-    #
-    # gsLSH_gridTest.to_csv('target/experiments/{}_{}.txt.{}'.format(filename, ext, iter), sep='\t')
+
+    gsLSH_gridTest.to_csv('target/experiments/{}_{}.txt.{}'.format(filename, ext, iter), sep='\t')
     #
     # filename='pbmc_gridLSHTest_clustcounts_randomorigin'
     # iter=1
