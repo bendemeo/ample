@@ -74,6 +74,8 @@ class gridLSH(LSH):
                 print('labels: {}'.format(labels))
 
                 for lab in labels:
+                    print(len(grid.values()))
+                    print(grid.values())
                     counts=[len([i  for i in square if self.cluster_labels[i] == lab]) for square in grid.values()]
                     print('counts: {}'.format(counts))
                     counts = [count for count in counts if count > 0]
