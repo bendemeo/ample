@@ -85,7 +85,7 @@ class gridLSH(LSH):
                 counts = [count for count in counts if count > 0]
 
                 #normalize to percentages
-                counts = [count/sum(counts) for count in counts]
+                counts = [float(count)/sum(counts) for count in counts]
                 #print(counts)
 
                 counts.sort(reverse=True)
