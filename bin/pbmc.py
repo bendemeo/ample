@@ -32,8 +32,8 @@ def plot(X, title, labels, bold=None):
 if __name__ == '__main__':
 
     if 'pickle_short' in sys.argv:
-        X_dimred = pickle.load(open('pbmcshort'))
-        labels = pickle.load(open('pbmclabelsshort'))
+        X_dimred = pickle.load(open('pickles/pbmcshort'))
+        labels = pickle.load(open('pickles/pbmclabelsshort'))
     else:
 
         datasets, genes_list, n_cells = load_names(data_names, norm=False)
@@ -70,8 +70,8 @@ if __name__ == '__main__':
             numsamples = X_dimred.shape[0]
             picklename = 'pbmc{}'.format(ext) #short or nothing
             labelname = 'pbmclabels{}'.format(ext)
-            pickle.dump(X_dimred, open('{}'.format(picklename)))
-            pickle.dump(labels, open('{}'.format(labelname)))
+            pickle.dump(X_dimred, open('pickles/{}'.format(picklename), 'wb'))
+            pickle.dump(labels, open('pickles/{}'.format(labelname), 'wb'))
 
 
     le = LabelEncoder().fit(labels)
