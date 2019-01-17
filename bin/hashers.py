@@ -84,10 +84,10 @@ class gridLSH(LSH):
                 #print('counts: {}'.format(counts))
                 counts = [count for count in counts if count > 0]
 
-                print('counts: {}'.format(counts))
+                #print('counts: {}'.format(counts))
                 #normalize to percentages
                 counts = [float(count)/sum(counts) for count in counts]
-                print('counts: {}'.format(counts))
+                #print('counts: {}'.format(counts))
 
                 counts.sort(reverse=True)
                 pct_covered = [sum(counts[:(i+1)]) for i in range(len(counts))]
