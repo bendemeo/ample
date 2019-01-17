@@ -66,26 +66,29 @@ class gridLSH(LSH):
             grid[gridsquare].add(i)
 
 
-            if self.record_counts:
-                cluster_labels = self.cluster_labels
-                counts = {}
-                scores = {}
-                labels = sorted(set(self.cluster_labels))
-                print('labels: {}'.format(labels))
 
-                for lab in labels:
-                    print(len(grid.values()))
-                    print(grid.values())
-                    counts=[len([i  for i in square if self.cluster_labels[i] == lab]) for square in grid.values()]
-                    print('counts: {}'.format(counts))
-                    counts = [count for count in counts if count > 0]
-                    print(counts)
 
-                    score = mean([count**2 for count in counts])
-                    scores[lab] = score
-                self.clustScores = score
-                print(scores)
 
+
+        if self.record_counts:
+            cluster_labels = self.cluster_labels
+            counts = {}
+            scores = {}
+            labels = sorted(set(self.cluster_labels))
+            print('labels: {}'.format(labels))
+
+            for lab in labels:
+                print(len(grid.values()))
+                #print(grid.values())
+                counts=[len([i  for i in square if self.cluster_labels[i] == lab]) for square in grid.values()]
+                print('counts: {}'.format(counts))
+                counts = [count for count in counts if count > 0]
+                print(counts)
+
+                score = mean([count**2 for count in counts])
+                scores[lab] = score
+            self.clustScores = score
+            print(scores)
         #enumerate grid squares, and assign each obs to its square index
         keys = list(grid.keys())
         for square in range(len(keys)):
