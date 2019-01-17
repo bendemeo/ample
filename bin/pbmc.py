@@ -32,8 +32,11 @@ def plot(X, title, labels, bold=None):
 if __name__ == '__main__':
 
     if 'pickle_short' in sys.argv:
-        X_dimred = pickle.load(open('pickles/pbmcshort'))
-        labels = pickle.load(open('pickles/pbmclabelsshort'))
+        X_dimred = pickle.load(open('pickles/pbmcshort', 'rb'))
+        labels = pickle.load(open('pickles/pbmclabelsshort', 'rb'))
+    elif 'pickle' in sys.argv:
+        X_dimred = pickle.load(open('pickles/pbmc', 'rb'))
+        labels = pickle.load(open('pickles/pbmclabels', 'rb'))
     else:
 
         datasets, genes_list, n_cells = load_names(data_names, norm=False)
