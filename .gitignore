@@ -10,6 +10,7 @@ R/*
 ample.egg-info/
 build/
 data*
+target*
 dist/
 plots*
 temp*

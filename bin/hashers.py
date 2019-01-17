@@ -1,10 +1,11 @@
 from __future__ import division
 from scipy.stats import ortho_group
+from copy import deepcopy
 import numpy as np
 from LSH import *
 from test_file import *
 from utils import *
-from time import time
+from time import
 import random
 
 
@@ -31,7 +32,6 @@ class gridLSH(LSH):
         hashes = np.empty((self.numObs, 1))
 
         grid = {}
-
 
         if(self.randomize_origin):
             for i in range(self.numFeatures):

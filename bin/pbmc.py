@@ -208,7 +208,7 @@ if __name__ == '__main__':
 
     #
     filename='pbmc_gridLSHTest_clustcounts'
-    iter=1
+    iter=2
     gsGridTestParams = {
      'randomize_origin':[False],
      'gridSize': np.arange(start=1,stop=0.01,step=-0.02).tolist()
@@ -229,7 +229,7 @@ if __name__ == '__main__':
     gsLSH_gridTest.to_csv('target/experiments/{}_{}.txt.{}'.format(filename, ext, iter), sep='\t')
 
     filename='pbmc_gridLSHTest_clustcounts_randomorigin'
-    iter=1
+    iter=2
     gsGridTestParams = {
      'randomize_origin':[True],
      'gridSize': np.arange(start=1,stop=0.01,step=-0.01).tolist()
