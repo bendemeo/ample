@@ -252,7 +252,7 @@ if __name__ == '__main__':
     iter=3
     gsGridTestParams = {
      'randomize_origin':[False],
-     'gridSize': np.arange(start=0.08,stop=0.01,step=-0.02).tolist(),
+     'gridSize': np.arange(start=0.3,stop=0.01,step=-0.02).tolist(),
      'cell_labels': [cell_labels],
      'cluster_labels': [labels],
      'record_counts': [True]

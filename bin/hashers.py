@@ -85,7 +85,7 @@ class gridLSH(LSH):
                 counts = [count for count in counts if count > 0]
                 print(counts)
 
-                score = mean([count**2 for count in counts])
+                score = sum([count**2 for count in counts])/len(counts)
                 scores[lab] = score
             self.clustScores = score
             print(scores)
