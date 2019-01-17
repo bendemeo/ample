@@ -73,11 +73,11 @@ class gridLSH(LSH):
                 print('labels: {}'.format(labels))
 
                 for lab in labels:
-                    counts=[len([i if self.cluster_labels[i] == lab for i in square]) for square in grid.values()]
+                    counts=[len([i  for i in square if self.cluster_labels[i] == lab]) for square in grid.values()]
                     counts = [count for count in counts if counts > 0]
                     print(counts)
 
-                    score = mean([count^2 for count in counts])
+                    score = mean([count**2 for count in counts])
                     scores[lab] = score
                 self.clustScores = score
                 print(scores)
