@@ -23,6 +23,7 @@ class gridLSH(LSH):
         self.randomize_origin= randomize_origin
         self.cell_labels = cell_labels
         self.cluster_labels = cluster_labels
+        self.record_counts = record_counts
 
     def makeHash(self):
 
@@ -65,7 +66,7 @@ class gridLSH(LSH):
             grid[gridsquare].add(i)
 
 
-            if record_counts:
+            if self.record_counts:
                 cluster_labels = self.cluster_labels
                 counts = {}
                 scores = {}
