@@ -229,8 +229,9 @@ if __name__ == '__main__':
     #
     # gsLSH_gridTest.to_csv('target/experiments/{}_{}.txt.{}'.format(filename, ext, iter), sep='\t')
 
-    print('filename will be {}'.format('target/experiments/{}_{}.txt.{}'.format(filename, ext, iter)))
+
     filename='pbmc_gridLSHTest_clustcounts_randomorigin'
+    print('filename will be {}'.format('target/experiments/{}_{}.txt.{}'.format(filename, ext, iter)))
     iter=2
     gsGridTestParams = {
      'randomize_origin':[True],
