@@ -81,6 +81,11 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
         for lab in cluster_labels:
             results[lab]=[]
 
+    if 'cluster_scores' in tests:
+        cluster_labels = sorted(set(kwargs['cluster_labels']))
+        for lab in cluster_labels:
+            results['{}_score'.format(lab)]=[]
+
     results['sampler'] = [hasher]*numTests
     results['N']=[]
 
@@ -143,6 +148,12 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
                             #print(sum(sum(types==i)))
                             results[lab].append(counts)
                             #print(results)
+                    elif t == 'cluster_scores':
+                        labels = sorted(set(cluster_labels))
+                        for lab in labels:
+                            score = downsampler.clustScores[lab]
+                            #print(sum(sum(types==i)))
+                            results['{}_score'.format(lab)].append(score)
                     elif t == 'lastCounts':
                         results['lastCounts'].append(downsampler.getMeanCounts())
                     elif t == 'maxCounts':
