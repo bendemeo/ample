@@ -223,7 +223,7 @@ if __name__ == '__main__':
      cell_labels=cell_labels,
      cluster_labels = labels,
      weighted=False,
-     Ns=[100]
+     Ns=[500]
      )
 
     gsLSH_gridTest.to_csv('target/experiments/{}_{}.txt.{}'.format(filename, ext, iter), sep='\t')
@@ -244,7 +244,7 @@ if __name__ == '__main__':
      cell_labels=cell_labels,
      cluster_labels = labels,
      weighted=False,
-     Ns=[100]
+     Ns=[500]
      )
 
     gsLSH_gridTest.to_csv('target/experiments/{}_{}.txt.{}'.format(filename, ext, iter), sep='\t')
