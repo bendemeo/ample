@@ -11,6 +11,7 @@ from utils import *
 from LSH import *
 from hashers import *
 import sys
+import pickle
 
 
 NAMESPACE = 'pbmc_facs'
@@ -30,35 +31,45 @@ def plot(X, title, labels, bold=None):
 
 if __name__ == '__main__':
 
+    if 'pickle_short' in sys.argv:
+        X_dimred = pickle.load(open('pickles/pbmcshort'))
+        labels = pickle.load(open('pickles/pbmclabelsshort'))
+    else:
 
+        datasets, genes_list, n_cells = load_names(data_names, norm=False)
+        datasets, genes = merge_datasets(datasets, genes_list)
+        X = vstack(datasets)
 
-    datasets, genes_list, n_cells = load_names(data_names, norm=False)
-    datasets, genes = merge_datasets(datasets, genes_list)
-    X = vstack(datasets)
+        labels = []
+        names = []
+        curr_label = 0
+        for i, a in enumerate(datasets):
+            labels += list(np.zeros(a.shape[0]) + curr_label)
+            names.append(data_names[i])
+            curr_label += 1
+        labels = np.array(labels, dtype=int)
 
-    labels = []
-    names = []
-    curr_label = 0
-    for i, a in enumerate(datasets):
-        labels += list(np.zeros(a.shape[0]) + curr_label)
-        names.append(data_names[i])
-        curr_label += 1
-    labels = np.array(labels, dtype=int)
+        k = DIMRED
+        U, s, Vt = pca(normalize(X), k=k)
+        X_dimred = U[:, :k] * s[:k]
 
-    k = DIMRED
-    U, s, Vt = pca(normalize(X), k=k)
-    X_dimred = U[:, :k] * s[:k]
+        labels = (
+            open('data/cell_labels/pbmc_68k_cluster.txt')
+            .read().rstrip().split()
+        )
 
-    labels = (
-        open('data/cell_labels/pbmc_68k_cluster.txt')
-        .read().rstrip().split()
-    )
+        ext = ''
+        if 'short' in sys.argv:
+            X_dimred = X_dimred[1:1000,:]
+            labels = labels[1:1000,:]
+            ext = 'short'
 
-    ext = ''
-    if len(sys.argv) > 1 and sys.argv(1) == 'short':
-        X_dimred = X_dimred[1:1000,:]
-        labels = labels[1:1000,:]
-        ext = 'short'
+        if 'pickleit' in sys.argv:
+            numsamples = X_dimred.shape[0]
+            picklename = 'pbmc{}'.format(ext) #short or nothing
+            labelname = 'pbmclabels{}'.format(ext)
+            pickle.dump(X_dimred, open('pickles/{}'.format(picklename)))
+            pickle.dump(labels, open('pickles/{}'.format(labelname)))
 
 
     le = LabelEncoder().fit(labels)
