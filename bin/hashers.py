@@ -81,7 +81,7 @@ class gridLSH(LSH):
                 print(len(grid.values()))
                 #print(grid.values())
                 counts=[len([i  for i in square if self.cluster_labels[i] == lab]) for square in grid.values()]
-                print('counts: {}'.format(counts))
+                #print('counts: {}'.format(counts))
                 counts = [count for count in counts if count > 0]
                 print(counts)
 
