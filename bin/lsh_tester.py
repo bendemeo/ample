@@ -72,7 +72,7 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
     numTests = len(Ns)*n_seeds*numSettings
 
     #empty lists for all params and test values
-    results = {t:[] for t in tests if t != 'cluster_counts'}
+    results = {t:[] for t in tests if t not in ['cluster_counts', 'cluster_scores']}
     for p in params.keys():
         results[p]=[]
 

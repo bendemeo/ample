@@ -83,9 +83,13 @@ class gridLSH(LSH):
                 counts=[len([i  for i in square if self.cluster_labels[i] == lab]) for square in grid.values()]
                 #print('counts: {}'.format(counts))
                 counts = [count for count in counts if count > 0]
+
+                #normalize to percentages
+                counts = [count/sum(counts) for count in counts]
                 #print(counts)
 
-                score = sum([count**2 for count in counts])/len(counts)
+                # score = sum([count for count in counts])/len(counts)
+                score = max(counts)
                 scores[lab] = score
             self.clustScores = scores
             print(scores)
