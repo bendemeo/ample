@@ -78,7 +78,7 @@ class gridLSH(LSH):
             print('labels: {}'.format(labels))
 
             for lab in labels:
-                print(len(grid.values()))
+                #print(len(grid.values()))
                 #print(grid.values())
                 counts=[len([i  for i in square if self.cluster_labels[i] == lab]) for square in grid.values()]
                 #print('counts: {}'.format(counts))
@@ -88,8 +88,13 @@ class gridLSH(LSH):
                 counts = [count/sum(counts) for count in counts]
                 #print(counts)
 
+                counts.sort(reverse=True)
+                pct_covered = [sum(counts[:i]) for i in range(len(counts))]
+                good_inds = [i in pct_covered if i>0.5]
+                score = min(good_inds)
+
                 # score = sum([count for count in counts])/len(counts)
-                score = max(counts)
+                #score = max(counts)
                 scores[lab] = score
             self.clustScores = scores
             print(scores)

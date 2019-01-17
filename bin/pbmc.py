@@ -36,6 +36,7 @@ if __name__ == '__main__':
         labels = pickle.load(open('pickles/pbmclabelsshort', 'rb'))
         ext='short'
     elif 'pickle' in sys.argv:
+        ext = ''
         X_dimred = pickle.load(open('pickles/pbmc', 'rb'))
         labels = pickle.load(open('pickles/pbmclabels', 'rb'))
     else:
