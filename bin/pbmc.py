@@ -252,7 +252,7 @@ if __name__ == '__main__':
     iter=3
     gsGridTestParams = {
      'randomize_origin':[False],
-     'gridSize': np.arange(start=1,stop=0.01,step=-0.02).tolist(),
+     'gridSize': np.arange(start=0.8,stop=0.01,step=-0.02).tolist(),
      'cell_labels': [cell_labels],
      'cluster_labels': [labels],
      'record_counts': [True]
@@ -267,7 +267,7 @@ if __name__ == '__main__':
      cell_labels=cell_labels,
      cluster_labels = labels,
      weighted=False,
-     Ns=[500]
+     Ns=[100]
      )
 
     gsLSH_gridTest.to_csv('target/experiments/{}_{}.txt.{}'.format(filename, ext, iter), sep='\t')
