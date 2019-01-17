@@ -54,9 +54,11 @@ if __name__ == '__main__':
         .read().rstrip().split()
     )
 
+    ext = ''
     if len(sys.argv) > 1 and sys.argv(1) == 'short':
         X_dimred = X_dimred[1:1000,:]
         labels = labels[1:1000,:]
+        ext = 'short'
 
 
     le = LabelEncoder().fit(labels)
@@ -206,7 +208,7 @@ if __name__ == '__main__':
      Ns=[1000]
      )
 
-    gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+    gsLSH_gridTest.to_csv('target/experiments/{}_{}.txt.{}'.format(filename, ext, iter), sep='\t')
 
     filename='pbmc_gridLSHTest_clustcounts_randomorigin'
     iter=1
@@ -227,4 +229,4 @@ if __name__ == '__main__':
      Ns=[1000]
      )
 
-    gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+    gsLSH_gridTest.to_csv('target/experiments/{}_{}.txt.{}'.format(filename, short, iter), sep='\t')
