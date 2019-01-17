@@ -35,7 +35,7 @@ class gridLSH(LSH):
 
         if(self.randomize_origin):
             for i in range(self.numFeatures):
-                print(X[:,i])
+                #print(X[:,i])
                 #determine how much you can shift without altering no. grid squares
                 shift_max = X[:,i].min()
                 shift_min = X[:,i].max() - (self.gridSize * (np.floor(X[:,i].max()/float(self.gridSize))) + 1)
