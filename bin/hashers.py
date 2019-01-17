@@ -5,7 +5,7 @@ import numpy as np
 from LSH import *
 from test_file import *
 from utils import *
-from time import
+from time import time
 import random
 
 
