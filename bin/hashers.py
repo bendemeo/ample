@@ -81,7 +81,8 @@ class gridLSH(LSH):
 
 
 
-
+        print('grid length {}'.format(len(grid)))
+        print(grid.keys())
         self.occSquares = len(grid)
         if self.record_counts:
             cluster_labels = self.cluster_labels
