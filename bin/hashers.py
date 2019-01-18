@@ -40,8 +40,9 @@ class gridLSH(LSH):
             for i in range(self.numFeatures):
                 #print(X[:,i])
                 #determine how much you can shift without altering no. grid squares
-                shift_max = X[:,i].min()
-                shift_min = X[:,i].max() - (self.gridSize * (np.floor(X[:,i].max()/float(self.gridSize))) + 1)
+                shift_min = (-1)*X[:,i].min()
+                shift_max = (self.gridSize * (np.floor(X[:,i].max()/float(self.gridSize))) + 1) - X[:,i].max()
+                # shift_min = X[:,i].max() - (self.gridSize * (np.floor(X[:,i].max()/float(self.gridSize))) + 1)
 
                 # print('min: {}'.format(shift_min))
                 # print('max: {}'.format(shift_max))
