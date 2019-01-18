@@ -73,9 +73,9 @@ class gridLSH(LSH):
 
             if gridsquare not in grid:
                 grid[gridsquare]=set()
-                print(gridsquare)
-                print(coords)
-                print(i)
+                # print(gridsquare)
+                # print(coords)
+                # print(i)
             grid[gridsquare].add(i)
 
 
