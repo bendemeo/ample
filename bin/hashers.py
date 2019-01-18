@@ -56,8 +56,8 @@ class gridLSH(LSH):
                 for j in range(self.numObs):
                     X[j,i] += shift
 
-                # print('new data min: {}'.format(X[:,i].min()))
-                # print('new data max: {}'.format(X[:,i].max()))
+                print('new data min: {}'.format(X[:,i].min()))
+                print('new data max: {}'.format(X[:,i].max()))
 
 
         #make dict mapping grid squares to points in it
@@ -69,20 +69,15 @@ class gridLSH(LSH):
 
 
             gridsquare = tuple(np.floor(coords / float(self.gridSize)).astype(int))
-            # print(coords)
-            # print(gridsquare)
 
             if gridsquare not in grid:
                 grid[gridsquare]=set()
-                print(coords)
-                print(gridsquare)
             grid[gridsquare].add(i)
 
 
 
 
-        print('grid length {}'.format(len(grid)))
-        print(grid.keys())
+
         self.occSquares = len(grid)
         if self.record_counts:
             cluster_labels = self.cluster_labels
