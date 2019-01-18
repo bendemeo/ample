@@ -68,12 +68,14 @@ class gridLSH(LSH):
             #         x += random.uniform(0,self.gridSize)
 
 
-            gridsquare = tuple(np.floor(coords / float(self.gridSize)).astype(int))
-            print(coords)
-            print(gridsquare)
+            # gridsquare = tuple(np.floor(coords / float(self.gridSize)).astype(int))
+            # print(coords)
+            # print(gridsquare)
 
             if gridsquare not in grid:
                 grid[gridsquare]=set()
+                print(coords)
+                print(gridsquare)
             grid[gridsquare].add(i)
 
 
