@@ -68,7 +68,7 @@ class gridLSH(LSH):
             #         x += random.uniform(0,self.gridSize)
 
 
-            # gridsquare = tuple(np.floor(coords / float(self.gridSize)).astype(int))
+            gridsquare = tuple(np.floor(coords / float(self.gridSize)).astype(int))
             # print(coords)
             # print(gridsquare)
 
