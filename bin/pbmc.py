@@ -238,7 +238,7 @@ if __name__ == '__main__':
 
     gsGridTestParams = {
      'randomize_origin':[True],
-     'gridSize': np.arange(start=1,stop=0.1,step=-0.1).tolist()
+     'gridSize': np.arange(start=1,stop=0.99,step=-0.1).tolist()
     }
 
     gsGridTests = ['time','cluster_counts', 'maxCounts', 'remnants', 'occSquares']
