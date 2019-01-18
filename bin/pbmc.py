@@ -231,19 +231,22 @@ if __name__ == '__main__':
 
 
     filename='pbmc_gridLSHTest_clustcounts_randomorigin'
+
+    iter=4
     print('filename will be {}'.format('target/experiments/{}_{}.txt.{}'.format(filename, ext, iter)))
-    iter=3
+
+
     gsGridTestParams = {
      'randomize_origin':[True],
-     'gridSize': np.arange(start=1,stop=0.01,step=-0.02).tolist()
+     'gridSize': np.arange(start=1,stop=0.1,step=-0.1).tolist()
     }
 
-    gsGridTests = ['time','cluster_counts', 'maxCounts', 'remnants']
+    gsGridTests = ['time','cluster_counts', 'maxCounts', 'remnants', 'occSquares']
 
     gsLSH_gridTest = try_params(X_dimred, 'gridLSH',
      params=gsGridTestParams,
      tests=gsGridTests,
-     n_seeds=3,
+     n_seeds=1,
      cell_labels=cell_labels,
      cluster_labels = labels,
      weighted=False,

@@ -24,7 +24,7 @@ class gridLSH(LSH):
         self.cell_labels = cell_labels
         self.cluster_labels = cluster_labels
         self.record_counts = record_counts
-
+        self.occSquares = None
     def makeHash(self):
 
         #make positive and max 1
@@ -70,7 +70,7 @@ class gridLSH(LSH):
 
 
 
-
+        self.occSquares = len(grid)
         if self.record_counts:
             cluster_labels = self.cluster_labels
             counts = {}
@@ -184,6 +184,7 @@ class gsLSH(LSH):
         self.verbose = verbose
         self.max_iter = max_iter
         self.opt_grid = opt_grid
+        self.occSquares = None
 
         print('target: {}'.format(self.target))
 
@@ -284,6 +285,8 @@ class gsLSH(LSH):
             n_iter += 1
 
 
+
+        self.occSquares = len(grid)
 
         #enumerate grid squares, and assign each obs to its square index
         keys = list(grid.keys())

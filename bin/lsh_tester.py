@@ -154,6 +154,8 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
                             score = downsampler.clustScores[lab]
                             #print(sum(sum(types==i)))
                             results['{}_score'.format(lab)].append(score)
+                    elif t == 'occSquares':
+                        results['occSquares'].append(downsampler.occSquares)
                     elif t == 'lastCounts':
                         results['lastCounts'].append(downsampler.getMeanCounts())
                     elif t == 'maxCounts':
