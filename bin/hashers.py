@@ -44,8 +44,8 @@ class gridLSH(LSH):
                 shift_max = (self.gridSize * (np.floor(X[:,i].max()/float(self.gridSize))) + 1) - X[:,i].max()
                 # shift_min = X[:,i].max() - (self.gridSize * (np.floor(X[:,i].max()/float(self.gridSize))) + 1)
 
-                # print('min: {}'.format(shift_min))
-                # print('max: {}'.format(shift_max))
+                print('min: {}'.format(shift_min))
+                print('max: {}'.format(shift_max))
 
 
                 shift = random.uniform(shift_min, shift_max)
