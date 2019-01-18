@@ -49,6 +49,8 @@ class gridLSH(LSH):
 
 
                 shift = random.uniform(shift_min, shift_max)
+
+                print('shift: {}'.format(shift))
                 for j in range(self.numObs):
                     X[j,i] += shift
 
