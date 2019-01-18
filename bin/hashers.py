@@ -44,10 +44,10 @@ class gridLSH(LSH):
                 shift_max = (self.gridSize * (np.floor(X[:,i].max()/float(self.gridSize))) + 1) - X[:,i].max()
                 # shift_min = X[:,i].max() - (self.gridSize * (np.floor(X[:,i].max()/float(self.gridSize))) + 1)
 
-                print('data min: {}'.format(X[:,i].min()))
-                print('data max: {}'.format(X[:,i].max()))
-                print('min: {}'.format(shift_min))
-                print('max: {}'.format(shift_max))
+                # print('data min: {}'.format(X[:,i].min()))
+                # print('data max: {}'.format(X[:,i].max()))
+                # print('min: {}'.format(shift_min))
+                # print('max: {}'.format(shift_max))
 
 
                 shift = random.uniform(shift_min, shift_max)
@@ -56,8 +56,8 @@ class gridLSH(LSH):
                 for j in range(self.numObs):
                     X[j,i] += shift
 
-                print('new data min: {}'.format(X[:,i].min()))
-                print('new data max: {}'.format(X[:,i].max()))
+                # print('new data min: {}'.format(X[:,i].min()))
+                # print('new data max: {}'.format(X[:,i].max()))
 
 
         #make dict mapping grid squares to points in it
@@ -69,6 +69,8 @@ class gridLSH(LSH):
 
 
             gridsquare = tuple(np.floor(coords / float(self.gridSize)).astype(int))
+            print(coords)
+            print(gridsquare)
 
             if gridsquare not in grid:
                 grid[gridsquare]=set()
