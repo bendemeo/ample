@@ -56,6 +56,10 @@ class gridLSH(LSH):
                 for j in range(self.numObs):
                     X[j,i] += shift
 
+                print('new data min: {}'.format(X[:,i].min()))
+                print('new data max: {}'.format(X[:,i].max()))
+
+
         #make dict mapping grid squares to points in it
         for i in range(self.numObs):
             coords = X[i,:]
