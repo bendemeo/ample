@@ -58,6 +58,7 @@ class gridLSH(LSH):
 
                 print('new data min: {}'.format(X[:,i].min()))
                 print('new data max: {}'.format(X[:,i].max()))
+                print('data: {}'.format(X[:,i]))
 
 
         #make dict mapping grid squares to points in it
