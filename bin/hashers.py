@@ -52,13 +52,13 @@ class gridLSH(LSH):
 
                 shift = random.uniform(shift_min, shift_max)
 
-                print('shift: {}'.format(shift))
+                # print('shift: {}'.format(shift))
                 for j in range(self.numObs):
                     X[j,i] += shift
 
-                print('new data min: {}'.format(X[:,i].min()))
-                print('new data max: {}'.format(X[:,i].max()))
-                print('data: {}'.format(X[:,i]))
+                # print('new data min: {}'.format(X[:,i].min()))
+                # print('new data max: {}'.format(X[:,i].max()))
+                # print('data: {}'.format(X[:,i]))
 
 
         #make dict mapping grid squares to points in it
