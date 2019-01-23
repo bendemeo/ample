@@ -54,10 +54,12 @@ class treeLSH(LSH):
         result = np.empty(data.shape)
         result[:,0]= hashes[:,0]
 
-        print('there are {} splits'.format(len(np.unique(hashes))))
+        if len(np.unique(hashes)) > 1:
+            print('splitting into {}'.format(len(np.unique(hashes))))
+        #print('there are {} splits'.format(len(np.unique(hashes))))
         for val in np.unique(hashes):
             inds = [i for i in range(len(hashes)) if hashes[i] == val]
-            print('recursing')
+            #print('recursing')
             subframe = treeLSH.dimHash(data[inds, 1:], splitSize, children, max_splits)
 
             result[inds, 1:]=subframe
