@@ -56,7 +56,7 @@ class treeLSH(LSH):
 
         for val in np.unique(hashes):
             inds = [i for i in range(len(hashes)) if hashes[i] == val]
-
+            print('recursing')
             subframe = treeLSH.dimHash(data[inds, 1:], splitSize, children, max_splits)
 
             result[inds, 1:]=subframe
