@@ -32,12 +32,13 @@ class treeLSH(LSH):
         """converts arrays of values to which quantile division they belong to"""
         diam = max(vals) - min(vals)
 
-        print('diameter is {}'.format(diam))
+
         # print('vals {}'.format(vals))
         # print('diameter {}'.format(diam))
         if diam < splitSize:
             return([0]*len(vals))
 
+        print('diameter is {}'.format(diam))
         splits = min(np.ceil(diam / float(splitSize)), max_splits)
 
         return pd.qcut(vals, int(splits), labels=False)
