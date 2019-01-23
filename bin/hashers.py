@@ -45,7 +45,7 @@ class treeLSH(LSH):
     @staticmethod
     def dimHash(data, splitSize, children, max_splits):
 
-        print('data has size {}'.format(data.shape[0]))
+        #print('data has size {}'.format(data.shape[0]))
         hashes = np.empty([data.shape[0],1])
         hashes[:,0] = np.array(treeLSH.quantilate(data[:,0], splitSize, max_splits = max_splits))
 
