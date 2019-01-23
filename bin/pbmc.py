@@ -291,7 +291,7 @@ if __name__ == '__main__':
      'children': [2,3,4,5]
     }
 
-    gsGridTests = ['time','cluster_counts', 'maxCounts', 'remnants', 'occSquares', 'max_min_dist']
+    gsGridTests = ['time','max_min_dist']
 
     gsLSH_gridTest = try_params(X_dimred, 'treeLSH',
      params=TestParams,
