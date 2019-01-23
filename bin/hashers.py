@@ -52,6 +52,7 @@ class treeLSH(LSH):
         if data.shape[1] == 1:
             return hashes
         if data.shape[0] == 1:
+            hashes = np.empty(data.shape)
             hashes [0,:] = [0]*data.shape[1]
             return hashes
 
