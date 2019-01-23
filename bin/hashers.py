@@ -10,6 +10,96 @@ import random
 
 
 
+class treeLSH(LSH):
+    """rp-tree like hashing scheme"""
+
+
+    def __init__(self, data, splitSize, max_splits=2, levels=None, children=2):
+        numBands = 1
+        bandSize = 1
+        numHashes = 1
+
+        LSH.__init__(self,data, numHashes=numHashes, numBands=numBands, bandSize=bandSize)
+
+        self.data = data
+        self.levels = levels
+        self.children = children
+        self.splitSize = splitSize
+        self.max_splits = max_splits
+
+    @staticmethod
+    def quantilate(vals, splitSize, max_splits = 2):
+        """converts arrays of values to which quantile division they belong to"""
+        diam = max(vals) - min(vals)
+
+        # print('vals {}'.format(vals))
+        # print('diameter {}'.format(diam))
+        if diam < splitSize:
+            return([0]*len(vals))
+
+        splits = min(np.ceil(diam / float(splitSize)), max_splits)
+
+        return pd.qcut(vals, int(splits), labels=False)
+
+
+    @staticmethod
+    def dimHash(data, splitSize, children, max_splits):
+
+        hashes = np.empty([data.shape[0],1])
+        hashes[:,0] = np.array(treeLSH.quantilate(data[:,0], splitSize, max_splits = max_splits))
+
+        if data.shape[1] == 1:
+            return hashes
+
+        result = np.empty(data.shape)
+        result[:,0]= hashes[:,0]
+
+        for val in np.unique(hashes):
+            inds = [i for i in range(len(hashes)) if hashes[i] == val]
+
+            subframe = treeLSH.dimHash(data[inds, 1:], splitSize, children, max_splits)
+
+            result[inds, 1:]=subframe
+        print(result)
+        return(result)
+
+
+    def makeHash(self):
+        hash =  treeLSH.dimHash(self.data, self.splitSize, max_splits = self.max_splits, children = self.children)
+
+        result = np.empty((self.numObs, 1))
+
+        hash_dict = {} # make a grid from it
+
+        for i in range(self.numObs):
+            k = tuple(hash[i,:].astype(int))
+
+            if k in hash_dict:
+                hash_dict[k].append(i)
+            else:
+                hash_dict[k] = [i]
+
+        keys = list(hash_dict.keys())
+        for square in range(len(keys)):
+            for idx in hash_dict[keys[square]]:
+                result[idx,0] = square
+        #
+        # result = np.empty([num_obs,1])
+        #
+        # for i in range(num_obs):
+        #     result[i,0] = tuple(result[i,:])
+        #
+
+        #result = np.array([tuple(x) for x in result])
+        print(result)
+
+        self.hash = result
+        """ assumes dimensions are sorted by variance, ala PCA"""
+
+        self.data[1,:]
+
+
+
 class gridLSH(LSH):
     """just bins coordinates to make an orthogonal grid"""
 
@@ -25,6 +115,7 @@ class gridLSH(LSH):
         self.cluster_labels = cluster_labels
         self.record_counts = record_counts
         self.occSquares = None
+
     def makeHash(self):
 
         #make positive and max 1

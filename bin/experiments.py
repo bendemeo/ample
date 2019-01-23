@@ -159,7 +159,7 @@ def experiment(sampling_fn, X_dimred, name, cell_labels=None,
 
     # Downsample while preserving structure and visualize.
 
-    Ns = [5000, 10000, 20000]
+    Ns = [1000]
 
     for N in Ns:
         if N >= X_dimred.shape[0]:
@@ -208,6 +208,8 @@ def experiment(sampling_fn, X_dimred, name, cell_labels=None,
 
             cell_types = [ str(ct) for ct in sorted(set(cell_labels)) ]
 
+        print('visualizing...')
+        print('filename is {}'.format(filename + '_{}'.format(N)))
         visualize([ X_dimred[samp_idx, :] ], cell_labels[samp_idx],
                   filename + '_{}'.format(N), cell_types,
                   gene_names=gene_names, gene_expr=expr, genes=genes,

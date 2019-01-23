@@ -234,8 +234,9 @@ class LSH:
                 included = [False]*self.numObs
                 for i in available:
                     included[i] = True
-
-
+            # 
+            # print('available left')
+            # print(len(available))
             next = numpy.random.choice(available)
             sample.append(next)
             valid_sample[next] = False

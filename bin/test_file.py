@@ -1,5 +1,6 @@
 # for testing stuff
-import numpy
+import numpy as np
+import pandas as pd
 import timeit
 import math
 from time import time
@@ -25,7 +26,13 @@ def gauss_test(n=[100], d=1, m=1, stdev=[1]):
         result = numpy.concatenate((result,
                                     numpy.random.normal(c, stdev[i], (n[i], d))),
                                     axis = 0)
-    return resut
+    return result
+
+
+def get_cmap(n, name='hsv'):
+    '''Returns a function that maps each index in 0, 1, ..., n-1 to a distinct
+    RGB color; the keyword argument name must be a standard mpl colormap name.'''
+    return plt.cm.get_cmap(name, n)
 
 
 
@@ -42,43 +49,37 @@ if __name__ == '__main__':
 
     sizes=[100,200,500,1000]
     N=sum(sizes)
-    gauss2D = gauss_test(sizes, 2, 4, [1, 0.5, 0.4, 0.2])
-    #mpl.scatter(gauss2D[:, 0], gauss2D[:, 1])
+    gauss2D = gauss_test(sizes, 2, 4, [1, 1, 1, 1])
+    gauss2D_2 = gauss_test([5000, 2000],2,2,[2, 1])
+    print(gauss2D)
+
+    downsampler = treeLSH(gauss2D_2, splitSize=0.1, max_splits=3)
+
+    #downsampler = gridLSH(gauss2D_2, gridSize=0.1)
+
+    downsampler.makeHash()
+    print('this is the hash')
+    print(downsampler.hash)
 
 
-    downsampler = gsLSH(gauss2D, target = int(math.sqrt(N)))
-    # downsampler_2 = deepcopy(downsampler)
+    experiment(downsampler, gauss2D_2, 'aprilpug.png', cell_labels='grid', kmeans=False,
+    downsample = False, lsh=True, visualize_orig = False)
+
+    # print(downsampler.data)
+    # print(quantilate(downsampler.data[:,0], 0.1, 3))
+
+
+
+
+    # downsampler.makeHash()
+    # print(downsampler.hash)
     #
-    # downsampler = times(downsampler, downsampler_2)
-    # downsampler_2  =randomGridLSH(gauss2D, 0.1, 1,1,1)
-    # #
-    # # downsampler = plus(downsampler_1, downsampler_2)
+    # subInds = downsampler.downSample(10)
     #
-    # downsampler = times(downsampler_1, downsampler_2)
-    # downsampler_2 = downsampler
-    # for n in range(2):
-    #     downsampler_2=times(downsampler_2, downsampler)
-    #
-    # print(downsampler_2.components)
-
-    # alpha=1
-    #
-    # experiment(downsampler, gauss2D, 'testpng2', filename = 'testpng2', cell_labels='grid',
-    #     gene_names=[], genes=[], gene_expr=gauss2D,
-    #     kmeans=False,
-    #     visualize_orig=False,
-    #     sample_type='gsLSH_wt',
-    #     lsh=True, optimize_grid_size=False,
-    #     weighted = True, alpha = alpha)
-    #
-
-    downsampler = gridLSH(gauss2D, 0.1, randomize_origin = True)
-
-
-    subInds = downsampler.downSample(50)
-    #print(downsampler.gridLabels)
-    mpl.scatter(gauss2D[:, 0], gauss2D[:, 1])
-    mpl.scatter(gauss2D[subInds, 0], gauss2D[subInds, 1], c='m')
+    # print(downsampler.lastCounts)
+    # #print(downsampler.gridLabels)
+    # mpl.scatter(gauss2D[:, 0], gauss2D[:, 1])
+    # mpl.scatter(gauss2D[subInds, 0], gauss2D[subInds, 1], c='m')
 
 
     mpl.show()
@@ -109,6 +110,36 @@ if __name__ == '__main__':
     #
     # N=50
 
+    #mpl.scatter(gauss2D[:, 0], gauss2D[:, 1])
+
+
+    # downsampler = gsLSH(gauss2D, target = int(math.sqrt(N)))
+    # downsampler_2 = deepcopy(downsampler)
+    #
+    # downsampler = times(downsampler, downsampler_2)
+    # downsampler_2  =randomGridLSH(gauss2D, 0.1, 1,1,1)
+    # #
+    # # downsampler = plus(downsampler_1, downsampler_2)
+    #
+    # downsampler = times(downsampler_1, downsampler_2)
+    # downsampler_2 = downsampler
+    # for n in range(2):
+    #     downsampler_2=times(downsampler_2, downsampler)
+    #
+    # print(downsampler_2.components)
+
+    # alpha=1
+    #
+    # experiment(downsampler, gauss2D, 'testpng2', filename = 'testpng2', cell_labels='grid',
+    #     gene_names=[], genes=[], gene_expr=gauss2D,
+    #     kmeans=False,
+    #     visualize_orig=False,
+    #     sample_type='gsLSH_wt',
+    #     lsh=True, optimize_grid_size=False,
+    #     weighted = True, alpha = alpha)
+    #
+
+    # downsampler = gridLSH(gauss2D, 0.1, randomize_origin = True)
 
 
     # rg = randomGridLSH(gauss2D, numHashes = 5, numBands = 3, bandSize = 1, gridSize = 0.01)
@@ -170,3 +201,36 @@ if __name__ == '__main__':
     #     #     scheme.findCandidates(i)
     #     print('points: ' + str(n))
     #     print('time: ' + str(time.time()-start))
+
+
+# def quantilate(vals, splitSize, max_splits = 2):
+#     """converts arrays of values to which quantile division they belong to"""
+#     diam = max(vals) - min(vals)
+#
+#     if diam < splitSize:
+#         return([0]*len(vals))
+#
+#     splits = min(np.ceil(diam / float(splitSize)), max_splits)
+#
+#     return pd.qcut(vals, splits, labels=False)
+#     # split_quants = np.arange(0, 101, 100./splits)
+#     #
+#     # quantiles = np.percentile(vals, split_quants)
+#     # print(quantiles)
+#     #
+#     # result = [None]*len(vals)
+#     #
+#     # for i in range(len(quantiles))[:-1]:
+#     #     print(i)
+#     #     print('quantiles is {}'.format(quantiles))
+#     #     inds = [j for j in range(len(vals)) if vals[j] >= quantiles[i] and
+#     #         vals[j] <= quantiles[i+1]]
+#     #
+#     #     print(inds)
+#     #     for ind in inds:
+#     #         result[ind] = i
+#     #
+#     # unclassified = [vals[i] for i in range(len(vals)) if result[i] is None]
+#     #
+#     # print('unclassified values: {}'.format(unclassified))
+#     # return result

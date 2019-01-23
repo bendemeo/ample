@@ -228,32 +228,32 @@ if __name__ == '__main__':
     #  )
     #
     # gsLSH_gridTest.to_csv('target/experiments/{}_{}.txt.{}'.format(filename, ext, iter), sep='\t')
-
-
-    filename='pbmc_gridLSHTest_clustcounts_randomorigin'
-
-    iter=4
-    print('filename will be {}'.format('target/experiments/{}_{}.txt.{}'.format(filename, ext, iter)))
-
-
-    gsGridTestParams = {
-     'randomize_origin':[True],
-     'gridSize': np.arange(start=1,stop=0,step=-0.1).tolist()
-    }
-
-    gsGridTests = ['time','cluster_counts', 'maxCounts', 'remnants', 'occSquares']
-
-    gsLSH_gridTest = try_params(X_dimred, 'gridLSH',
-     params=gsGridTestParams,
-     tests=gsGridTests,
-     n_seeds=1,
-     cell_labels=cell_labels,
-     cluster_labels = labels,
-     weighted=False,
-     Ns=[1000]
-     )
-
-    gsLSH_gridTest.to_csv('target/experiments/{}_{}.txt.{}'.format(filename, ext, iter), sep='\t')
+    #
+    #
+    # filename='pbmc_gridLSHTest_clustcounts_randomorigin'
+    #
+    # iter=4
+    # print('filename will be {}'.format('target/experiments/{}_{}.txt.{}'.format(filename, ext, iter)))
+    #
+    #
+    # gsGridTestParams = {
+    #  'randomize_origin':[True],
+    #  'gridSize': np.arange(start=1,stop=0,step=-0.1).tolist()
+    # }
+    #
+    # gsGridTests = ['time','cluster_counts', 'maxCounts', 'remnants', 'occSquares']
+    #
+    # gsLSH_gridTest = try_params(X_dimred, 'gridLSH',
+    #  params=gsGridTestParams,
+    #  tests=gsGridTests,
+    #  n_seeds=1,
+    #  cell_labels=cell_labels,
+    #  cluster_labels = labels,
+    #  weighted=False,
+    #  Ns=[1000]
+    #  )
+    #
+    # gsLSH_gridTest.to_csv('target/experiments/{}_{}.txt.{}'.format(filename, ext, iter), sep='\t')
     # filename='pbmc_gridLSHTest_clustcounts'
     # iter=3
     # gsGridTestParams = {
@@ -277,3 +277,30 @@ if __name__ == '__main__':
     #  )
     #
     # gsLSH_gridTest.to_csv('target/experiments/{}_{}.txt.{}'.format(filename, ext, iter), sep='\t')
+
+
+    filename='pbmc_treeLSHTest_clustcounts'
+
+    iter=1
+    print('filename will be {}'.format('target/experiments/{}_{}.txt.{}'.format(filename, ext, iter)))
+
+
+    TestParams = {
+     'max_splits': [2,3,4,5],
+     'splitSize':[0.1]*4,
+     'children': [2,3,4,5]
+    }
+
+    gsGridTests = ['time','cluster_counts', 'maxCounts', 'remnants', 'occSquares', 'max_min_dist']
+
+    gsLSH_gridTest = try_params(X_dimred, 'treeLSH',
+     params=TestParams,
+     tests=gsGridTests,
+     n_seeds=3,
+     cell_labels=cell_labels,
+     cluster_labels = labels,
+     weighted=False,
+     Ns=[100,300, 500, 700, 1000]
+     )
+
+    gsLSH_gridTest.to_csv('target/experiments/{}_{}.txt.{}'.format(filename, ext, iter), sep='\t')
