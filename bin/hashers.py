@@ -60,7 +60,7 @@ class treeLSH(LSH):
             subframe = treeLSH.dimHash(data[inds, 1:], splitSize, children, max_splits)
 
             result[inds, 1:]=subframe
-        print(result)
+        #print(result)
         return(result)
 
 
@@ -91,7 +91,7 @@ class treeLSH(LSH):
         #
 
         #result = np.array([tuple(x) for x in result])
-        print(result)
+        #print(result)
 
         self.hash = result
         """ assumes dimensions are sorted by variance, ala PCA"""
