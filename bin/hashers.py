@@ -32,6 +32,7 @@ class treeLSH(LSH):
         """converts arrays of values to which quantile division they belong to"""
         diam = max(vals) - min(vals)
 
+        print('diameter is {}'.format(diam))
         # print('vals {}'.format(vals))
         # print('diameter {}'.format(diam))
         if diam < splitSize:
