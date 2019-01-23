@@ -54,6 +54,7 @@ class treeLSH(LSH):
         result = np.empty(data.shape)
         result[:,0]= hashes[:,0]
 
+        print('there are {} splits'.format(len(np.unique(hashes))))
         for val in np.unique(hashes):
             inds = [i for i in range(len(hashes)) if hashes[i] == val]
             print('recursing')
