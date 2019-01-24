@@ -50,6 +50,7 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
     #each param should have either 1 value (recycled for all) or k values
     paramLengths = [len(params[j]) for j in params.keys()]
     uniqueLengths = np.unique(paramLengths)
+    print(uniqueLengths)
     assert(len(uniqueLengths)<=2)
     if len(uniqueLengths)==2:
         assert(1 in uniqueLengths)
