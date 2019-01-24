@@ -46,6 +46,7 @@ class treeLSH(LSH):
 
     @staticmethod
     def dimHash(data, splitSize, children, max_splits):
+        print('shape is {}'.format(data.shape))
 
         #print('data has size {}'.format(data.shape[0]))
         hashes = np.empty([data.shape[0],1])
@@ -71,7 +72,7 @@ class treeLSH(LSH):
 
             result[inds, 1:]=subframe
         #print(result)
-        return(result)
+        return(result bb        dfjlkj
 
 
     def makeHash(self):
