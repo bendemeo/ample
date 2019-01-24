@@ -342,8 +342,8 @@ if __name__ == '__main__':
     print('filename will be {}'.format('target/experiments/{}.txt.{}'.format(filename,iter)))
 
 
-    splitSizes = np.repeat(np.arange(0.1, 0.5, 0.02), 4)
-    children = [2,3,4,5]*len(np.arange(0.1, 0.5, 0.02))
+    splitSizes = np.repeat(np.arange(0.01, 1, 0.02), 4)
+    children = [2,3,4,5]*len(np.arange(0.01, 1, 0.02))
 
     TestParams = {
      'splitSize': splitSizes,
