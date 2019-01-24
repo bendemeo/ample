@@ -36,7 +36,7 @@ class angleSampler(sampler):
                 else:
                     angles[j]=math.atan(float(x)/math.sqrt(mag - x**2))
 
-            wts[i] = mean(angles)
+            wts[i] = sum(angles)/len(angles)
 
         wts = [float(1) / (w ** self.strength) for w in wts]
 
