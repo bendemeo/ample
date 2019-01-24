@@ -339,7 +339,7 @@ if __name__ == '__main__':
     filename='293t_treeLSHTest_clustcounts'
 
     iter=1
-    print('filename will be {}'.format('target/experiments/{}_{}.txt.{}'.format(filename, ext, iter)))
+    print('filename will be {}'.format('target/experiments/{}.txt.{}'.format(filename,iter)))
 
 
     splitSizes = np.repeat(np.arange(0.1, 0.5, 0.02), 4)
