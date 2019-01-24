@@ -46,7 +46,7 @@ class treeLSH(LSH):
 
     @staticmethod
     def dimHash(data, splitSize, children, max_splits):
-        print('shape is {}'.format(data.shape))
+        #print('shape is {}'.format(data.shape))
 
         #print('data has size {}'.format(data.shape[0]))
         hashes = np.empty([data.shape[0],1])
@@ -66,11 +66,13 @@ class treeLSH(LSH):
             print('splitting into {}'.format(len(np.unique(hashes))))
         #print('there are {} splits'.format(len(np.unique(hashes))))
         for val in np.unique(hashes):
+            print('recursing started...')
             inds = [i for i in range(len(hashes)) if hashes[i] == val]
             #print('recursing')
             subframe = treeLSH.dimHash(data[inds, 1:], splitSize, children, max_splits)
 
             result[inds, 1:]=subframe
+            print('recursing ended')
         #print(result)
         return(result)
 
