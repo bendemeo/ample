@@ -96,6 +96,7 @@ class treeLSH(LSH):
             print('updated dict has length {}'.format(len(cur_dict)))
 
 
+        self.occSquares = len(cur_dict)
 
         keys = list(cur_dict.keys())
         for square in range(len(keys)):
