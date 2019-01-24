@@ -6,11 +6,12 @@ from LSH import *
 from test_file import *
 from utils import *
 from time import time
+from sampler import *
 import random
 
 
 class angleSampler(sampler):
-"""weights points by the mean angle with an axis"""
+    """weights points by the mean angle with an axis"""
 
     def __init__(self, data, replace=False, strength = 1):
         #translate to first quadrant and normalize
@@ -21,12 +22,19 @@ class angleSampler(sampler):
         self.strength = strength
 
     def downsample(self, sampleSize):
-        wts = None * self.numObs
+        wts = [None] * self.numObs
         for i in range(self.numObs):
-            mag = sum([x^2 for x in self.data[i,:]])
+            mag = sum([x**2 for x in self.data[i,:]])
 
-            angles = [math.atan(float(x)/math.sqrt(mag - x^2))
-                for x in self.data[i,:]]
+            print(mag)
+
+            angles = [None]*self.numFeatures
+            for j in range(self.numFeatures):
+                x = self.data[i,j]
+                if math.sqrt(mag-x**2) == 0:
+                    angles[j] = math.pi/2
+                else:
+                    angles[j]=math.atan(float(x)/math.sqrt(mag - x**2))
 
             wts[i] = mean(angles)
 

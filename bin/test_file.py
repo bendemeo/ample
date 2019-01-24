@@ -53,17 +53,28 @@ if __name__ == '__main__':
     gauss2D_2 = gauss_test([5000, 2000],2,1,[10])
     print(gauss2D)
 
-    downsampler = treeLSH(gauss2D_2, splitSize=0.1, children=4)
+    # downsampler = treeLSH(gauss2D_2, splitSize=0.1, children=4)
 
     #downsampler = gridLSH(gauss2D_2, gridSize=0.1)
 
-    downsampler.makeHash()
-    print('this is the hash')
-    print(downsampler.hash)
+    downsampler = angleSampler(gauss2D, strength=5)
 
 
-    experiment(downsampler, gauss2D_2, 'aprilpug.png', cell_labels='grid', kmeans=False,
-    downsample = False, lsh=True, visualize_orig = False)
+    subInds = downsampler.downsample(100)
+
+
+    mpl.scatter(gauss2D[subInds, 0], gauss2D[subInds, 1], c='m')
+
+
+
+
+    # downsampler.makeHash()
+    # print('this is the hash')
+    # print(downsampler.hash)
+    #
+    #
+    # experiment(downsampler, gauss2D_2, 'aprilpug.png', cell_labels='grid', kmeans=False,
+    # downsample = False, lsh=True, visualize_orig = False)
 
     # print(downsampler.data)
     # print(quantilate(downsampler.data[:,0], 0.1, 3))

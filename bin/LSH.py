@@ -2,6 +2,7 @@
 import numpy
 import sys
 import math
+from sampler import *
 from time import time
 from utils import *
 import itertools
