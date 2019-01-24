@@ -15,8 +15,8 @@ class angleSampler(sampler):
 
     def __init__(self, data, replace=False, strength = 1):
         #translate to first quadrant and normalize
-        for i in range(data.shape[0]):
-            data[i,:] -= data[i,:].min(0)
+        for i in range(data.shape[1]):
+            data[:,i] -= data[:,i].min(0)
         data /= data.max()
         sampler.__init__(self, data, replace)
         self.strength = strength
@@ -36,7 +36,10 @@ class angleSampler(sampler):
                 else:
                     angles[j]=math.atan(float(x)/math.sqrt(mag - x**2))
 
-            wts[i] = sum(angles)/len(angles)
+            print(angles)
+            #wts[i] = sum(angles)/len(angles)
+            wts[i] = min(angles)
+            print(wts[i])
 
         wts = [float(1) / (w ** self.strength) for w in wts]
 
@@ -45,7 +48,7 @@ class angleSampler(sampler):
 
         print(wts)
 
-        return(np.random.choice(range(self.numObs,p=wts)))
+        return(np.random.choice(range(self.numObs), sampleSize, p=wts))
 
 
 
