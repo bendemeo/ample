@@ -375,8 +375,9 @@ if __name__ == '__main__':
     children = [float("inf")]*len(np.arange(0.01, 1, 0.02))
 
     TestParams = {
-     'splitSize': splitSizes,
-     'children': children
+     'splitSize': splitSizes*3,
+     'children': children*3,
+     'minPoints': np.repeat([10,20,100],len(splitSizes))
     }
 
     gsGridTests = ['time','max_min_dist', 'occSquares','cluster_counts', 'rare']
