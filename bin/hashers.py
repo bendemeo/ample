@@ -22,10 +22,8 @@ class treeLSH(LSH):
         LSH.__init__(self,data, numHashes=numHashes, numBands=numBands, bandSize=bandSize)
 
         self.data = data
-        self.levels = levels
         self.children = children
         self.splitSize = splitSize
-        self.max_splits = max_splits
 
     @staticmethod
     def quantilate(vals, splitSize, children = 2):
@@ -83,55 +81,56 @@ class treeLSH(LSH):
 
         cur_dict = {}
         cur_dict[tuple([])] = range(self.numObs) #start: everything in empty square
-        for i in range(table.shape[1])
+        for i in range(table.shape[1]):
             new_dict = {}
             for k in cur_dict.keys():
                 inds = cur_dict[k] # which indices have this signature
-                new_keys = treeLSH.quantilate(self.data[inds,i])
+                new_keys = treeLSH.quantilate(self.data[inds,i], self.splitSize, self.children)
                 for nk in np.unique(new_keys):
-                    new_dict[k + tuple([nk])] = [j for j in inds if new_keys[j] == nk]
+                    new_dict[k + tuple([nk])] = [inds[j] for j in range(len(inds)) if new_keys[j] == nk]
             cur_dict = new_dict
             print(cur_dict)
-        
+            print(len(cur_dict))
+
             #
             # for q in np.unique(table[:,i]):
             #     cur_dict[tuple([q])] = [i for i in range(self.numObs) if table[i,0] == q]
 
 
 
-    def makeHash(self):
-        hash =  treeLSH.dimHash(self.data, self.splitSize, max_splits = self.max_splits, children = self.children)
-
-        result = np.empty((self.numObs, 1))
-
-        hash_dict = {} # make a grid from it
-
-        for i in range(self.numObs):
-            k = tuple(hash[i,:].astype(int))
-
-            if k in hash_dict:
-                hash_dict[k].append(i)
-            else:
-                hash_dict[k] = [i]
-
-        keys = list(hash_dict.keys())
-        for square in range(len(keys)):
-            for idx in hash_dict[keys[square]]:
-                result[idx,0] = square
-        #
-        # result = np.empty([num_obs,1])
-        #
-        # for i in range(num_obs):
-        #     result[i,0] = tuple(result[i,:])
-        #
-
-        #result = np.array([tuple(x) for x in result])
-        #print(result)
-
-        self.hash = result
-        """ assumes dimensions are sorted by variance, ala PCA"""
-
-        self.data[1,:]
+    # def makeHash(self):
+    #     hash =  treeLSH.dimHash(self.data, self.splitSize, max_splits = self.max_splits, children = self.children)
+    #
+    #     result = np.empty((self.numObs, 1))
+    #
+    #     hash_dict = {} # make a grid from it
+    #
+    #     for i in range(self.numObs):
+    #         k = tuple(hash[i,:].astype(int))
+    #
+    #         if k in hash_dict:
+    #             hash_dict[k].append(i)
+    #         else:
+    #             hash_dict[k] = [i]
+    #
+    #     keys = list(hash_dict.keys())
+    #     for square in range(len(keys)):
+    #         for idx in hash_dict[keys[square]]:
+    #             result[idx,0] = square
+    #     #
+    #     # result = np.empty([num_obs,1])
+    #     #
+    #     # for i in range(num_obs):
+    #     #     result[i,0] = tuple(result[i,:])
+    #     #
+    #
+    #     #result = np.array([tuple(x) for x in result])
+    #     #print(result)
+    #
+    #     self.hash = result
+    #     """ assumes dimensions are sorted by variance, ala PCA"""
+    #
+    #     self.data[1,:]
 
 
 

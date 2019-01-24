@@ -53,7 +53,7 @@ if __name__ == '__main__':
     gauss2D_2 = gauss_test([5000, 2000],2,2,[2, 1])
     print(gauss2D)
 
-    downsampler = treeLSH(gauss2D_2, splitSize=0.1, max_splits=3)
+    downsampler = treeLSH(gauss2D_2, splitSize=0.1, children=3)
 
     #downsampler = gridLSH(gauss2D_2, gridSize=0.1)
 
@@ -62,8 +62,8 @@ if __name__ == '__main__':
     print(downsampler.hash)
 
 
-    experiment(downsampler, gauss2D_2, 'aprilpug.png', cell_labels='grid', kmeans=False,
-    downsample = False, lsh=True, visualize_orig = False)
+    # experiment(downsampler, gauss2D_2, 'aprilpug.png', cell_labels='grid', kmeans=False,
+    # downsample = False, lsh=True, visualize_orig = False)
 
     # print(downsampler.data)
     # print(quantilate(downsampler.data[:,0], 0.1, 3))
