@@ -85,10 +85,10 @@ class treeLSH(LSH):
             new_dict = {}
             for k in cur_dict.keys():
                 #print('partition {}'.format(k))
-                nds = cur_dict[k] # which indices have this signature
+                inds = cur_dict[k] # which indices have this signature
                 new_keys = treeLSH.quantilate(self.data[inds,i], self.splitSize, self.children)
                 if len(np.unique(new_keys)) == 1:
-                    continue
+                    continue #no partitioning to do, so don't bother
                 for nk in np.unique(new_keys):
                     new_dict[k + tuple([nk])] = [inds[j] for j in range(len(inds)) if new_keys[j] == nk]
             cur_dict = new_dict
