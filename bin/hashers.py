@@ -84,7 +84,7 @@ class treeLSH(LSH):
             print('dealing with dimension {}'.format(i))
             new_dict = {}
             for k in cur_dict.keys():
-                print('partition {}'.format(k))
+                #print('partition {}'.format(k))
                 inds = cur_dict[k] # which indices have this signature
                 new_keys = treeLSH.quantilate(self.data[inds,i], self.splitSize, self.children)
                 for nk in np.unique(new_keys):
