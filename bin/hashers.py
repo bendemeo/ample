@@ -74,14 +74,13 @@ class treeLSH(LSH):
 
 
     def makeHash(self):
-        table = np.empty(self.data.shape) #contains quantile separations for each
-
+        result = np.empty((self.numObs, 1))
         # #fill first column of table
         # table[:,0] = treeLSH.quantilate(self.data[:,0], self.splitSize, self.children)
 
         cur_dict = {}
         cur_dict[tuple([])] = range(self.numObs) #start: everything in empty square
-        for i in range(table.shape[1]):
+        for i in range(self.data.shape[1]):
             new_dict = {}
             for k in cur_dict.keys():
                 inds = cur_dict[k] # which indices have this signature
@@ -93,7 +92,14 @@ class treeLSH(LSH):
             print(len(cur_dict))
             print(cur_dict.keys())
 
-            #
+
+
+        keys = list(cur_dict.keys())
+        for square in range(len(keys)):
+            for idx in cur_dict[keys[square]]:
+                result[idx,0] = square
+
+        self.hash = result
             # for q in np.unique(table[:,i]):
             #     cur_dict[tuple([q])] = [i for i in range(self.numObs) if table[i,0] == q]
 
