@@ -372,7 +372,7 @@ if __name__ == '__main__':
 
 
     splitSizes = np.arange(0.01, 1, 0.02)
-    children = [Inf]*len(np.arange(0.01, 1, 0.02))
+    children = [float("inf")]*len(np.arange(0.01, 1, 0.02))
 
     TestParams = {
      'splitSize': splitSizes,
