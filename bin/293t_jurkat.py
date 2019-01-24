@@ -367,7 +367,7 @@ if __name__ == '__main__':
 
     filename='293t_treeLSHTest_clustcounts'
 
-    iter=2
+    iter=3
     print('filename will be {}'.format('target/experiments/{}.txt.{}'.format(filename,iter)))
 
 
