@@ -36,7 +36,7 @@ class treeLSH(LSH):
         if diam < splitSize:
             return([0]*len(vals))
 
-        print('diameter is {}'.format(diam))
+        #print('diameter is {}'.format(diam))
         splits = min(np.ceil(diam / float(splitSize)), children)
 
         return pd.qcut(vals, int(splits), labels=False)
@@ -81,16 +81,16 @@ class treeLSH(LSH):
         cur_dict = {}
         cur_dict[tuple([])] = range(self.numObs) #start: everything in empty square
         for i in range(self.data.shape[1]):
+            print('dealing with dimension {}'.format(i))
             new_dict = {}
             for k in cur_dict.keys():
+                print('partition {}'.format(k))
                 inds = cur_dict[k] # which indices have this signature
                 new_keys = treeLSH.quantilate(self.data[inds,i], self.splitSize, self.children)
                 for nk in np.unique(new_keys):
                     new_dict[k + tuple([nk])] = [inds[j] for j in range(len(inds)) if new_keys[j] == nk]
             cur_dict = new_dict
-            print(cur_dict)
-            print(len(cur_dict))
-            print(cur_dict.keys())
+            print('updated dict has length {}'.format(len(cur_dict)))
 
 
 
