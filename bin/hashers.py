@@ -91,6 +91,7 @@ class treeLSH(LSH):
             cur_dict = new_dict
             print(cur_dict)
             print(len(cur_dict))
+            print(cur_dict.keys())
 
             #
             # for q in np.unique(table[:,i]):
