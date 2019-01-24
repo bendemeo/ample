@@ -312,30 +312,57 @@ if __name__ == '__main__':
     #
     # gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
-    filename='gsGridTest_clustcounts_wt'
+    # filename='gsGridTest_clustcounts_wt'
+    # iter=1
+    # gsGridTestParams = {
+    #  'opt_grid':[False],
+    #  'gridSize': [0.3]
+    # }
+    #
+    # gsGridTests = ['max_min_dist','time','cluster_counts']
+    #
+    # gsLSH_gridTest = try_params(X_dimred, 'gsLSH',
+    #  params=gsGridTestParams,
+    #  tests=gsGridTests,
+    #  n_seeds=1,
+    #  cell_labels=cell_labels,
+    #  cluster_labels = labels,
+    #  weighted=True,
+    #  Ns=[1000]
+    #  )
+    #
+    # gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+    #
+    # exit()
+
+
+    filename='293t_treeLSHTest_clustcounts'
+
     iter=1
-    gsGridTestParams = {
-     'opt_grid':[False],
-     'gridSize': [0.3]
+    print('filename will be {}'.format('target/experiments/{}_{}.txt.{}'.format(filename, ext, iter)))
+
+
+    splitSizes = np.repeat(np.arange(0.1, 0.5, 0.02), 4)
+    children = [2,3,4,5]*len(splitSizes)
+
+    TestParams = {
+     'splitSize': splitSizes,
+     'children': children
     }
 
-    gsGridTests = ['max_min_dist','time','cluster_counts']
+    gsGridTests = ['time','max_min_dist', 'occSquares','cluster_counts']
 
-    gsLSH_gridTest = try_params(X_dimred, 'gsLSH',
-     params=gsGridTestParams,
+    gsLSH_gridTest = try_params(X_dimred, 'treeLSH',
+     params=TestParams,
      tests=gsGridTests,
-     n_seeds=1,
+     n_seeds=3,
      cell_labels=cell_labels,
      cluster_labels = labels,
-     weighted=True,
-     Ns=[1000]
+     weighted=False,
+     Ns=[100,300, 500, 700, 1000]
      )
 
-    gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
-
-    exit()
-
-
+    gsLSH_gridTest.to_csv('target/experiments/{}_{}.txt.{}'.format(filename, ext, iter), sep='\t')
 
     # Ns=[500]
     # bandSizes=np.arange(10,20,1)
