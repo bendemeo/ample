@@ -14,7 +14,7 @@ class treeLSH(LSH):
     """rp-tree like hashing scheme"""
 
 
-    def __init__(self, data, splitSize, max_splits=2, levels=None, children=2):
+    def __init__(self, data, splitSize, children=2):
         numBands = 1
         bandSize = 1
         numHashes = 1
@@ -28,7 +28,7 @@ class treeLSH(LSH):
         self.max_splits = max_splits
 
     @staticmethod
-    def quantilate(vals, splitSize, max_splits = 2):
+    def quantilate(vals, splitSize, children = 2):
         """converts arrays of values to which quantile division they belong to"""
         diam = max(vals) - min(vals)
 
@@ -39,7 +39,7 @@ class treeLSH(LSH):
             return([0]*len(vals))
 
         print('diameter is {}'.format(diam))
-        splits = min(np.ceil(diam / float(splitSize)), max_splits)
+        splits = min(np.ceil(diam / float(splitSize)), children)
 
         return pd.qcut(vals, int(splits), labels=False)
 
@@ -66,15 +66,37 @@ class treeLSH(LSH):
             print('splitting into {}'.format(len(np.unique(hashes))))
         #print('there are {} splits'.format(len(np.unique(hashes))))
         for val in np.unique(hashes):
-            print('recursing started...')
             inds = [i for i in range(len(hashes)) if hashes[i] == val]
             #print('recursing')
             subframe = treeLSH.dimHash(data[inds, 1:], splitSize, children, max_splits)
 
             result[inds, 1:]=subframe
-            print('recursing ended')
         #print(result)
         return(result)
+
+
+    def makeHash(self):
+        table = np.empty(self.data.shape) #contains quantile separations for each
+
+        # #fill first column of table
+        # table[:,0] = treeLSH.quantilate(self.data[:,0], self.splitSize, self.children)
+
+        cur_dict = {}
+        cur_dict[tuple([])] = range(self.numObs) #start: everything in empty square
+        for i in range(table.shape[1])
+            new_dict = {}
+            for k in cur_dict.keys():
+                inds = cur_dict[k] # which indices have this signature
+                new_keys = treeLSH.quantilate(self.data[inds,i])
+                for nk in np.unique(new_keys):
+                    new_dict[k + tuple([nk])] = [j for j in inds if new_keys[j] == nk]
+            cur_dict = new_dict
+            print(cur_dict)
+        
+            #
+            # for q in np.unique(table[:,i]):
+            #     cur_dict[tuple([q])] = [i for i in range(self.numObs) if table[i,0] == q]
+
 
 
     def makeHash(self):
