@@ -371,7 +371,7 @@ if __name__ == '__main__':
     print('filename will be {}'.format('target/experiments/{}.txt.{}'.format(filename,iter)))
 
 
-    splitSizes = np.arange(0.01, 1, 0.02)
+    splitSizes = np.arange(0.01, 1, 0.02).tolist()
     children = [float("inf")]*len(np.arange(0.01, 1, 0.02))
 
     TestParams = {
