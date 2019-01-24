@@ -193,9 +193,10 @@ class LSH:
             self.target = sampleSize
 
 
-        #randomly make new hashes for each downsampling
-        self.makeHash()
-        self.makeFinder()
+        if self.hash is None:
+            self.makeHash()
+        if self.finder is None:
+            self.makeFinder()
 
 
         available = range(self.numObs)
@@ -234,7 +235,7 @@ class LSH:
                 included = [False]*self.numObs
                 for i in available:
                     included[i] = True
-            # 
+            #
             # print('available left')
             # print(len(available))
             next = numpy.random.choice(available)
