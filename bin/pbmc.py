@@ -286,8 +286,7 @@ if __name__ == '__main__':
 
 
     TestParams = {
-     'max_splits': [2,3,4,5],
-     'splitSize':[0.5]*4,
+     'splitSize':[0.3]*4,
      'children': [2,3,4,5]
     }
 
