@@ -72,7 +72,7 @@ class treeLSH(LSH):
 
             result[inds, 1:]=subframe
         #print(result)
-        return(result bb        dfjlkj
+        return(result)
 
 
     def makeHash(self):
