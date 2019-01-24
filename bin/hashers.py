@@ -9,6 +9,38 @@ from time import time
 import random
 
 
+class angleSampler(sampler):
+"""weights points by the mean angle with an axis"""
+
+    def __init__(self, data, replace=False, strength = 1):
+        #translate to first quadrant and normalize
+        for i in range(data.shape[0]):
+            data[i,:] -= data[i,:].min(0)
+        data /= data.max()
+        sampler.__init__(self, data, replace)
+        self.strength = strength
+
+    def downsample(self, sampleSize):
+        wts = None * self.numObs
+        for i in range(self.numObs):
+            mag = sum([x^2 for x in self.data[i,:]])
+
+            angles = [math.atan(float(x)/math.sqrt(mag - x^2))
+                for x in self.data[i,:]]
+
+            wts[i] = mean(angles)
+
+        wts = [float(1) / (w ** self.strength) for w in wts]
+
+        total = sum(wts)
+        wts = [float(w)/total for w in wts]
+
+        print(wts)
+
+        return(np.random.choice(range(self.numObs,p=wts)))
+
+
+
 
 class treeLSH(LSH):
     """rp-tree like hashing scheme"""

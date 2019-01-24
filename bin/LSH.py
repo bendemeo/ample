@@ -10,7 +10,7 @@ import itertools
         #
 # adding stuff for git
 # adding more stuff
-class LSH:
+class LSH(sampler):
     '''class to construct a random projection of data'''
 
     def __init__(self, data, numHashes, numBands, bandSize, replace=False, keepStats=True, target = 'auto',
@@ -187,7 +187,7 @@ class LSH:
     def getRemnants(self):
         return self.remnants
 
-    def downSample(self, sampleSize, replace = False):
+    def downsample(self, sampleSize, replace = False):
 
         if self.target == 'N':
             self.target = sampleSize

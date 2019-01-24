@@ -123,7 +123,7 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
                 if weighted:
                     samp_idx = downsampler.downsample_weighted(N, alpha=alpha)
                 else:
-                    samp_idx=downsampler.downSample(N)
+                    samp_idx=downsampler.downsample(N)
 
                 t1 = time()
                 log('sampling {} done'.format(hasher))
