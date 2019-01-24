@@ -347,7 +347,7 @@ if __name__ == '__main__':
 
     TestParams = {
      'splitSize': [0.1],
-     'children': [1,2,3,4]
+     'children': [2,3]
     }
 
     gsGridTests = ['time','max_min_dist', 'occSquares','cluster_counts', 'rare']
@@ -363,7 +363,7 @@ if __name__ == '__main__':
      Ns=[100,300, 500, 700, 1000]
      )
 
-    gsLSH_gridTest.to_csv('target/experiments/{}_{}.txt.{}'.format(filename, ext, iter), sep='\t')
+    gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
     # Ns=[500]
     # bandSizes=np.arange(10,20,1)
