@@ -346,17 +346,18 @@ if __name__ == '__main__':
     children = [2,3,4,5]*len(np.arange(0.01, 1, 0.02))
 
     TestParams = {
-     'splitSize': splitSizes,
-     'children': children
+     'splitSize': [0.1],
+     'children': [1,2,3,4]
     }
 
-    gsGridTests = ['time','max_min_dist', 'occSquares','cluster_counts']
+    gsGridTests = ['time','max_min_dist', 'occSquares','cluster_counts', 'rare']
 
     gsLSH_gridTest = try_params(X_dimred, 'treeLSH',
      params=TestParams,
      tests=gsGridTests,
      n_seeds=3,
      cell_labels=cell_labels,
+     rare_label = rare_label,
      cluster_labels = labels,
      weighted=False,
      Ns=[100,300, 500, 700, 1000]
