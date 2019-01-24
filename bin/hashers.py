@@ -14,7 +14,7 @@ class treeLSH(LSH):
     """rp-tree like hashing scheme"""
 
 
-    def __init__(self, data, splitSize, children=2):
+    def __init__(self, data, splitSize, children=2, minPoints = 0):
         numBands = 1
         bandSize = 1
         numHashes = 1
@@ -24,6 +24,7 @@ class treeLSH(LSH):
         self.data = data
         self.children = children
         self.splitSize = splitSize
+        self.minPoints = minPoints
 
     @staticmethod
     def quantilate(vals, splitSize, children = 2):
@@ -86,6 +87,11 @@ class treeLSH(LSH):
             for k in cur_dict.keys():
                 #print('partition {}'.format(k))
                 inds = cur_dict[k] # which indices have this signature
+                if len(inds) <= self.minPoints:
+                    #don't partition
+                    new_dict[k] = inds
+                    continue
+
                 new_keys = treeLSH.quantilate(self.data[inds,i], self.splitSize, self.children)
                 if len(np.unique(new_keys)) == 1:
                     new_dict[k] = inds
