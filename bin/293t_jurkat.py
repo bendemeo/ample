@@ -343,7 +343,7 @@ if __name__ == '__main__':
 
 
     splitSizes = np.repeat(np.arange(0.1, 0.5, 0.02), 4)
-    children = [2,3,4,5]*len(splitSizes)
+    children = [2,3,4,5]*len(np.arange(0.1, 0.5, 0.02))
 
     TestParams = {
      'splitSize': splitSizes,
