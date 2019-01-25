@@ -409,7 +409,7 @@ if __name__ == '__main__':
 
     gsGridTests = ['time','max_min_dist','cluster_counts', 'rare']
 
-    gsLSH_gridTest = try_params(X_dimred, 'treeLSH',
+    gsLSH_gridTest = try_params(X_dimred, 'angleSampler',
      params=TestParams,
      tests=gsGridTests,
      n_seeds=3,
