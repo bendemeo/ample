@@ -26,7 +26,7 @@ class angleSampler(weightedSampler):
         for i in range(self.numObs):
             mag = sum([x**2 for x in self.data[i,:]])
 
-            print(mag)
+            #print(mag)
 
             angles = [None]*self.numFeatures
             for j in range(self.numFeatures):
@@ -36,7 +36,7 @@ class angleSampler(weightedSampler):
                 else:
                     angles[j]=math.atan(float(x)/math.sqrt(mag - x**2))
 
-            print(angles)
+            #print(angles)
             wts[i] = sum(angles)/len(angles)
             # wts[i] = min(angles)
             # print(wts[i])
@@ -45,7 +45,7 @@ class angleSampler(weightedSampler):
 
         total = sum(wts)
         wts = [float(w)/total for w in wts]
-        print(wts[1:10])
+        # print(wts[1:10])
         self.wts = wts
 
 
