@@ -11,10 +11,30 @@ class sampler:
         self.numObs, self.numFeatures = data.shape
         self.replace = replace
         self.data = data
+        self.embedding = None
 
 
     def downsample(self, sampleSize):
-        return np.random.choice(range(self.numObs), sampleSize)
+        self.sample = np.random.choice(range(self.numObs), sampleSize)
+        return self.sample
+
+
+    def vizSample(self, file=None, full=True, **kwargs):
+
+        if self.embedding is None:
+            tsne = sk.manifold.TSNE(**kwargs)
+            fit = tsne.fit(self.data)
+            self.embedding = tsne.embedding_
+
+        if(full):
+            mpl.scatter(self.embedding[:,0], self.embedding[:,1])
+
+        mpl.scatter(self.embedding[self.sample, 0], self.embedding[self.sample,1], c='m')
+
+        if file is not None:
+            mpl.savefig('{}.png'.format(file))
+
+        mpl.show()
 
 class weightedSampler(sampler):
     def __init__(self, data, strength=1, replace=False):
@@ -26,10 +46,13 @@ class weightedSampler(sampler):
         self.wts = [float(1)/self.numObs]*self.numObs
 
     def downsample(self, sampleSize):
+        print('doing weighted downsampling')
+        print(self.wts)
         if self.wts is None:
             self.makeWeights()
 
-        return(np.random.choice(range(self.numObs), sampleSize, p=self.wts, replace = self.replace))
+        self.sample = np.random.choice(range(self.numObs), sampleSize, p=self.wts, replace = self.replace)
+        return(self.sample)
 
     def vizWeights(self, log=True, file = None, **kwargs):
         tsne = sk.manifold.TSNE(**kwargs)
