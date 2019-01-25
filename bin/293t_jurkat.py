@@ -401,7 +401,9 @@ if __name__ == '__main__':
     iter=1
     print('filename will be {}'.format('target/experiments/{}.txt.{}'.format(filename,iter)))
 
-
+    downsampler = angleSampler(X_dimred, strength=3)
+    downsampler.makeWeights()
+    downsampler.vizWeights(file='293t_weights')
 
     TestParams = {
         'strength':[1,2,3]

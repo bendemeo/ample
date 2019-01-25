@@ -45,6 +45,7 @@ class angleSampler(weightedSampler):
 
         total = sum(wts)
         wts = [float(w)/total for w in wts]
+        print(wts[1:10])
         self.wts = wts
 
 

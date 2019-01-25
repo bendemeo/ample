@@ -31,7 +31,7 @@ class weightedSampler(sampler):
 
         return(np.random.choice(range(self.numObs), sampleSize, p=self.wts, replace = self.replace))
 
-    def vizWeights(self, log=True, **kwargs):
+    def vizWeights(self, log=True, file = None, **kwargs):
         tsne = sk.manifold.TSNE(**kwargs)
 
         fit = tsne.fit(self.data)
@@ -42,6 +42,11 @@ class weightedSampler(sampler):
         else:
             colors = self.wts
         mpl.scatter(embedding[:,0], embedding[:,1], c = colors, cmap='viridis')
+
+        if file is not None:
+            mpl.savefig('{}.png'.format(file))
+
+
         mpl.show()
 
 
