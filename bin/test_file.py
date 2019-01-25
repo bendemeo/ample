@@ -47,9 +47,9 @@ if __name__ == '__main__':
 
     #start_experiment('pug', ['height','weight'],['fat','size'])
 
-    sizes=[100,200,500,1000]
+    sizes=[100,200,500,1000, 200]
     N=sum(sizes)
-    gauss2D = gauss_test(sizes, 50, 4, [1, 1, 1, 1])
+    gauss2D = gauss_test(sizes*2, 10, 10, [1]*10)
     gauss2D_2 = gauss_test([5000, 2000],2,1,[10])
     print(gauss2D)
 
@@ -57,14 +57,17 @@ if __name__ == '__main__':
 
     #downsampler = gridLSH(gauss2D_2, gridSize=0.1)
 
-    downsampler = angleSampler(gauss2D, strength=50)
+    downsampler = angleSampler(gauss2D, strength=2)
 
+    downsampler.makeWeights()
 
-    subInds = downsampler.downsample(100)
-    print(subInds)
+    downsampler.vizWeights()
 
-    mpl.scatter(gauss2D[:, 0], gauss2D[:, 1])
-    mpl.scatter(gauss2D[subInds, 0], gauss2D[subInds, 1], c='m')
+    # subInds = downsampler.downsample(100)
+    # print(subInds)
+    #
+    # mpl.scatter(gauss2D[:, 0], gauss2D[:, 1])
+    # mpl.scatter(gauss2D[subInds, 0], gauss2D[subInds, 1], c='m')
 
 
 

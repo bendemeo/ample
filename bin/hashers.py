@@ -10,7 +10,7 @@ from sampler import *
 import random
 
 
-class angleSampler(sampler):
+class angleSampler(weightedSampler):
     """weights points by the mean angle with an axis"""
 
     def __init__(self, data, replace=False, strength = 1):
@@ -18,10 +18,10 @@ class angleSampler(sampler):
         for i in range(data.shape[1]):
             data[:,i] -= data[:,i].min(0)
         data /= data.max()
-        sampler.__init__(self, data, replace)
-        self.strength = strength
 
-    def downsample(self, sampleSize):
+        weightedSampler.__init__(self, data, strength, replace)
+
+    def makeWeights(self):
         wts = [None] * self.numObs
         for i in range(self.numObs):
             mag = sum([x**2 for x in self.data[i,:]])
@@ -37,18 +37,17 @@ class angleSampler(sampler):
                     angles[j]=math.atan(float(x)/math.sqrt(mag - x**2))
 
             print(angles)
-            #wts[i] = sum(angles)/len(angles)
-            wts[i] = min(angles)
-            print(wts[i])
+            wts[i] = sum(angles)/len(angles)
+            # wts[i] = min(angles)
+            # print(wts[i])
 
-        wts = [float(1) / (w ** self.strength) for w in wts]
+        wts = [float(1) / (w ** self.strength) if w > 0 else 1000 for w in wts]
 
         total = sum(wts)
         wts = [float(w)/total for w in wts]
+        self.wts = wts
 
-        print(wts)
 
-        return(np.random.choice(range(self.numObs), sampleSize, p=wts))
 
 
 

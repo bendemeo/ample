@@ -364,23 +364,50 @@ if __name__ == '__main__':
     #  )
     #
     # gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+    #
+    # filename='293t_treeLSHTest_clustcounts'
+    #
+    # iter=3
+    # print('filename will be {}'.format('target/experiments/{}.txt.{}'.format(filename,iter)))
+    #
+    #
+    # splitSizes = np.arange(0.01, 1, 0.02).tolist()
+    # children = [float("inf")]*len(np.arange(0.01, 1, 0.02))
+    #
+    # TestParams = {
+    #  'splitSize': splitSizes*3,
+    #  'children': children*3,
+    #  'minPoints': np.repeat([10,20,100],len(splitSizes))
+    # }
+    #
+    # gsGridTests = ['time','max_min_dist', 'occSquares','cluster_counts', 'rare']
+    #
+    # gsLSH_gridTest = try_params(X_dimred, 'treeLSH',
+    #  params=TestParams,
+    #  tests=gsGridTests,
+    #  n_seeds=3,
+    #  cell_labels=cell_labels,
+    #  rare_label = rare_label,
+    #  cluster_labels = labels,
+    #  weighted=False,
+    #  Ns=[100,300, 500, 700, 1000]
+    #  )
+    #
+    # gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
-    filename='293t_treeLSHTest_clustcounts'
 
-    iter=3
+    filename='293t_angleSampler_clustcounts'
+
+    iter=1
     print('filename will be {}'.format('target/experiments/{}.txt.{}'.format(filename,iter)))
 
 
-    splitSizes = np.arange(0.01, 1, 0.02).tolist()
-    children = [float("inf")]*len(np.arange(0.01, 1, 0.02))
 
     TestParams = {
-     'splitSize': splitSizes*3,
-     'children': children*3,
-     'minPoints': np.repeat([10,20,100],len(splitSizes))
+        'strength':[1,2,3]
     }
 
-    gsGridTests = ['time','max_min_dist', 'occSquares','cluster_counts', 'rare']
+    gsGridTests = ['time','max_min_dist','cluster_counts', 'rare']
 
     gsLSH_gridTest = try_params(X_dimred, 'treeLSH',
      params=TestParams,
