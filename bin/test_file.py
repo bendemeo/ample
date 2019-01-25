@@ -61,7 +61,7 @@ if __name__ == '__main__':
 
     downsampler.makeWeights()
 
-    downsampler.vizWeights(file='plots/weights')
+    #downsampler.vizWeights(file='plots/weights')
 
     sample = downsampler.downsample(100)
     downsampler.vizSample(file='plots/sample')

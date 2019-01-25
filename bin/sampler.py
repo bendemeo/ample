@@ -55,6 +55,8 @@ class weightedSampler(sampler):
         return(self.sample)
 
     def vizWeights(self, log=True, file = None, **kwargs):
+        print('wts at time of viz')
+        print(self.wts)
         tsne = sk.manifold.TSNE(**kwargs)
 
         fit = tsne.fit(self.data)
