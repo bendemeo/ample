@@ -404,6 +404,7 @@ if __name__ == '__main__':
     downsampler = angleSampler(X_dimred, strength=3)
     downsampler.makeWeights()
     downsampler.vizWeights(file='figs/293t_angleWeights_{}'.format(iter))
+    downsampler.vizSample(file = 'figs/293t_sample_{}'.format(iter))
     #
     # TestParams = {
     #     'strength':[1,2,3]
