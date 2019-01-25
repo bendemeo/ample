@@ -403,7 +403,7 @@ if __name__ == '__main__':
 
     downsampler = angleSampler(X_dimred, strength=3)
     downsampler.makeWeights()
-    downsampler.vizWeights(file='293t_weights')
+    downsampler.vizWeights(file='target/experiments/293t_weights')
 
     TestParams = {
         'strength':[1,2,3]
