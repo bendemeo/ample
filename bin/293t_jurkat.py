@@ -403,26 +403,26 @@ if __name__ == '__main__':
 
     downsampler = angleSampler(X_dimred, strength=3)
     downsampler.makeWeights()
-    downsampler.vizWeights(file='target/experiments/293t_weights')
-
-    TestParams = {
-        'strength':[1,2,3]
-    }
-
-    gsGridTests = ['time','max_min_dist','cluster_counts', 'rare']
-
-    gsLSH_gridTest = try_params(X_dimred, 'angleSampler',
-     params=TestParams,
-     tests=gsGridTests,
-     n_seeds=3,
-     cell_labels=cell_labels,
-     rare_label = rare_label,
-     cluster_labels = labels,
-     weighted=False,
-     Ns=[100,300, 500, 700, 1000]
-     )
-
-    gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+    downsampler.vizWeights(file='figs/293t_angleWeights')
+    #
+    # TestParams = {
+    #     'strength':[1,2,3]
+    # }
+    #
+    # gsGridTests = ['time','max_min_dist','cluster_counts', 'rare']
+    #
+    # gsLSH_gridTest = try_params(X_dimred, 'angleSampler',
+    #  params=TestParams,
+    #  tests=gsGridTests,
+    #  n_seeds=3,
+    #  cell_labels=cell_labels,
+    #  rare_label = rare_label,
+    #  cluster_labels = labels,
+    #  weighted=False,
+    #  Ns=[100,300, 500, 700, 1000]
+    #  )
+    #
+    # gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
     # Ns=[500]
