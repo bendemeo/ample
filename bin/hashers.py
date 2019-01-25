@@ -43,8 +43,8 @@ class angleSampler(weightedSampler):
             # print(wts[i])
 
         #normalize to be between 0 and 1
-        wts -= wts.min()
-        wts /= wts.max()
+        wts -= min(wts)
+        wts /= max(wts)
 
         wts = [float(1) / (w ** self.strength) if w > 0 else 1000 for w in wts]
 
