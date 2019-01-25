@@ -22,6 +22,7 @@ class angleSampler(weightedSampler):
         weightedSampler.__init__(self, data, strength, replace)
 
     def makeWeights(self):
+        print('making angle weights')
         wts = [None] * self.numObs
         for i in range(self.numObs):
             mag = sum([x**2 for x in self.data[i,:]])
@@ -37,8 +38,8 @@ class angleSampler(weightedSampler):
                     angles[j]=math.atan(float(x)/math.sqrt(mag - x**2))
 
             #print(angles)
-            wts[i] = sum(angles)/len(angles)
-            # wts[i] = min(angles)
+            #wts[i] = sum(angles)/len(angles)
+            wts[i] = min(angles)
             # print(wts[i])
 
         wts = [float(1) / (w ** self.strength) if w > 0 else 1000 for w in wts]

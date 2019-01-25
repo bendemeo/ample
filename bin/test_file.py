@@ -49,7 +49,7 @@ if __name__ == '__main__':
 
     sizes=[100,200,50,100, 200]
     N=sum(sizes)
-    gauss2D = gauss_test(sizes*2, 3, 10, [1]*10)
+    gauss2D = gauss_test(sizes*2, 10, 10, [1]*10)
     gauss2D_2 = gauss_test([5000, 2000],2,1,[10])
     print(gauss2D)
 
@@ -61,7 +61,7 @@ if __name__ == '__main__':
 
     downsampler.makeWeights()
 
-    #downsampler.vizWeights(file='plots/weights')
+    downsampler.vizWeights(file='plots/weights')
 
     sample = downsampler.downsample(100)
     downsampler.vizSample(file='plots/sample')
