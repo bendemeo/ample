@@ -38,9 +38,13 @@ class angleSampler(weightedSampler):
                     angles[j]=math.atan(float(x)/math.sqrt(mag - x**2))
 
             #print(angles)
-            #wts[i] = sum(angles)/len(angles)
-            wts[i] = min(angles)
+            wts[i] = sum(angles)/len(angles)
+            #wts[i] = min(angles)
             # print(wts[i])
+
+        #normalize to be between 0 and 1
+        wts -= wts.min()
+        wts /= wts.max()
 
         wts = [float(1) / (w ** self.strength) if w > 0 else 1000 for w in wts]
 

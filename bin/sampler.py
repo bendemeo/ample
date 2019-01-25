@@ -35,6 +35,7 @@ class sampler:
             mpl.savefig('{}.png'.format(file))
 
         mpl.show()
+        mpl.close()
 
 class weightedSampler(sampler):
     def __init__(self, data, strength=1, replace=False):
@@ -46,8 +47,8 @@ class weightedSampler(sampler):
         self.wts = [float(1)/self.numObs]*self.numObs
 
     def downsample(self, sampleSize):
-        print('doing weighted downsampling')
-        print(self.wts)
+        #print('doing weighted downsampling')
+        #print(self.wts)
         if self.wts is None:
             self.makeWeights()
 
@@ -56,7 +57,7 @@ class weightedSampler(sampler):
 
     def vizWeights(self, log=True, file = None, **kwargs):
         print('wts at time of viz')
-        print(self.wts)
+        #print(self.wts)
         tsne = sk.manifold.TSNE(**kwargs)
 
         fit = tsne.fit(self.data)
@@ -73,6 +74,7 @@ class weightedSampler(sampler):
 
 
         mpl.show()
+        mpl.close()
 
 
 
