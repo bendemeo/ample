@@ -142,6 +142,7 @@ class splitLSH(LSH):
                 hashDict[tuple(table[i,:])].append(i)
             else:
                 hashDict[tuple(table[i,:])] = [i]
+                print(len(hashDict))
 
         self.occSquares = len(hashDict)
 
