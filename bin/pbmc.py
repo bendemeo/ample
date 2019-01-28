@@ -279,7 +279,8 @@ if __name__ == '__main__':
     # gsLSH_gridTest.to_csv('target/experiments/{}_{}.txt.{}'.format(filename, ext, iter), sep='\t')
 
     downsampler = splitLSH(X_dimred, minDiam=0.35)
-    downsampler.makeHash()
+    downsampler.makeHash
+    print('vizualizing...')
     downsampler.vizHash('splithash_pbmc')
 
     # filename='pbmc_treeLSHTest_clustcounts'
