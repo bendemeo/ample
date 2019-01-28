@@ -153,6 +153,7 @@ class splitLSH(LSH):
         result = np.empty([self.numObs, 1])
 
         for square in range(len(keys)):
+            print(square)
             for idx in hashDict[keys[square]]:
                 result[idx,0] = square
 
