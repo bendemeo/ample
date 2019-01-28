@@ -54,10 +54,16 @@ class LSH(sampler):
     def getHash(self):
         return self.hash
 
-    def vizHash(self, file=None, **kwargs):
+    def vizHash(self, file=None, maxPoints=float("inf"),**kwargs):
         if self.embedding is None:
             tsne = sk.manifold.TSNE(**kwargs)
-            fit = tsne.fit(self.data)
+
+            if self.numObs > maxPoints:
+                inds = np.random.choice(self.numObs, maxPoints, replace=False)
+            else:
+                inds = range(self.numObs)
+
+            fit = tsne.fit(self.data[inds,:])
             self.embedding = tsne.embedding_
 
         if self.numHashes > 1:

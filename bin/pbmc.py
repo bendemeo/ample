@@ -281,7 +281,7 @@ if __name__ == '__main__':
     downsampler = splitLSH(X_dimred, minDiam=0.35)
     downsampler.makeHash()
     print('vizualizing...')
-    downsampler.vizHash('splithash_pbmc')
+    downsampler.vizHash('splithash_pbmc', maxPoints=1000)
 
     # filename='pbmc_treeLSHTest_clustcounts'
     #
