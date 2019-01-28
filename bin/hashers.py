@@ -118,7 +118,8 @@ class splitLSH(LSH):
         diam = max(X) - min(X)
         if diam < minDiam:
             return [0]*len(X)
-
+        else:
+            print('splitting...')
 
         Y = sorted(X) #sort on dimension
         gaps = np.subtract(Y[1:],Y[:-1]) # hopefully vectorized
