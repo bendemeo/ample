@@ -2,6 +2,7 @@
 import numpy
 import sys
 import math
+import sklearn as sk
 from sampler import *
 from time import time
 from utils import *
@@ -18,12 +19,12 @@ class LSH(sampler):
     allowRepeats = True, verbose = True):
         ''' numHashes is number of random projections it makes'''
         ''' dim is number of dimensions '''
+
+
+        sampler.__init__(self,data)
         self.numHashes = numHashes
-        self.data = data
         self.numBands = numBands
         self.bandSize = bandSize
-        self.replace = replace
-        self.numObs, self.numFeatures = self.data.shape
         self.lastCounts = []  # how many sampled before reset
         self.remnants = None  # how many are still fair game after sampling
         self.keepStats = keepStats
@@ -53,6 +54,23 @@ class LSH(sampler):
     def getHash(self):
         return self.hash
 
+    def vizHash(self, file=None, **kwargs):
+        if self.embedding is None:
+            tsne = sk.manifold.TSNE(**kwargs)
+            fit = tsne.fit(self.data)
+            self.embedding = tsne.embedding_
+
+        if self.numHashes > 1:
+            log('too many hashes to vizualize; visualiing only first hash')
+
+        cols = self.hash[:,0]
+        mpl.scatter(self.embedding[:, 0], self.embedding[:,1], c=cols)
+
+        if file is not None:
+            mpl.savefig('{}.png'.format(file))
+
+        mpl.show()
+        mpl.close()
 
 
 
@@ -283,7 +301,8 @@ class LSH(sampler):
         if sampleSize != 'auto':
             assert(len(sample)==sampleSize)
 
-        return sorted(numpy.unique(sample))
+        self.sample = sorted(numpy.unique(sample))
+        return(self.sample)
 
     def optimize_param(self, param, inverted=False, step = 1, binary = True, max_iter = 200, verbose = True, tolerance = 0.001):
 

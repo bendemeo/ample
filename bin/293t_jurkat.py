@@ -401,14 +401,18 @@ if __name__ == '__main__':
     iter=1
     print('filename will be {}'.format('target/experiments/{}.txt.{}'.format(filename,iter)))
 
-    downsampler = angleSampler(X_dimred, strength=3)
-    downsampler.makeWeights()
-    downsampler.downsample(100)
-    downsampler.vizWeights(file='figs/293t_angleWeights_{}'.format(iter))
-    downsampler.vizSample(file = 'figs/293t_sample_{}'.format(iter))
+
+    downsampler = splitLSH(X_dimred)
+    downsampler.makeHash()
+    downsampler.vizHash('splithash')
+    # downsampler = angleSampler(X_dimred, strength=3)
+    # downsampler.makeWeights()
+    # downsampler.downsample(100)
+    # downsampler.vizWeights(file='figs/293t_angleWeights_{}'.format(iter))
+    # downsampler.vizSample(file = 'figs/293t_sample_{}'.format(iter))
     #
     # TestParams = {
-    #     'strength':[1,2,3]
+    #     'strength':[1,2,3
     # }
     #
     # gsGridTests = ['time','max_min_dist','cluster_counts', 'rare']

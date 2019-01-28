@@ -37,6 +37,42 @@ class sampler:
         mpl.show()
         mpl.close()
 
+class rankSampler(sampler):
+    """any sampler that ranks the cells in an order and samples deterministically"""
+
+
+    def __init__(self,data, replace=False):
+        sampler.__init__(self, data, replace)
+        self.ranking = None
+        self.embedding=None
+
+
+    def rank(self):
+        self.ranking = range(len(self.numObs))
+
+    def downsample(self, sampleSize):
+        inds = self.ranking[0:sampleSize]
+        self.sample = inds
+        return(inds)
+
+    def embed(self, **kwargs):
+        tsne = sk.manifold.TSNE(**kwargs)
+        fit = tsne.fit(self.data)
+        self.embedding = tsne.embedding_
+
+    def vizRanking(self, file=None, **kwargs):
+        if self.embedding is None:
+            self.embed(**kwargs)
+
+        mpl.scatter(self.embedding[:,0], self.embedding[:,1], c = self.ranking, cmap='viridis')
+
+        if file is not None:
+            mpl.savefig('{}.png'.format(file))
+
+        mpl.show()
+
+
+
 class weightedSampler(sampler):
     def __init__(self, data, strength=1, replace=False):
         sampler.__init__(self, data, replace)

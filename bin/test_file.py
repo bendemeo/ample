@@ -49,22 +49,39 @@ if __name__ == '__main__':
 
     sizes=[100,200,50,100, 200]
     N=sum(sizes)
-    gauss2D = gauss_test(sizes*2, 10, 10, [1]*10)
+    gauss2D = gauss_test(sizes*2, 2, 10, [1]*10)
     gauss2D_2 = gauss_test([5000, 2000],2,1,[10])
     print(gauss2D)
 
-    # downsampler = treeLSH(gauss2D_2, splitSize=0.1, children=4)
+    # downsampler = treeLSH(gauss2D_2, splitSize=0.1, children=4
+
 
     #downsampler = gridLSH(gauss2D_2, gridSize=0.1)
 
-    downsampler = angleSampler(gauss2D, strength=2)
+    downsampler = splitLSH(gauss2D)
 
-    downsampler.makeWeights()
+    downsampler.makeHash()
+    print(downsampler.hash)
 
-    downsampler.vizWeights(file='plots/weights')
+    downsampler.downsample(100)
+    downsampler.vizHash()
 
-    sample = downsampler.downsample(100)
-    downsampler.vizSample(file='plots/sample')
+    # downsampler = pRankSampler(gauss2D)
+    #
+    # downsampler.rank()
+    # print(downsampler.ranking)
+    # downsampler.vizRanking()
+    #
+    # downsampler.downsample(100)
+    # downsampler.vizSample()
+    # downsampler = angleSampler(gauss2D, strength=3)
+    #
+    # downsampler.makeWeights()
+    #
+    # downsampler.vizWeights(file='plots/weights', log=False)
+    #
+    # sample = downsampler.downsample(100)
+    # downsampler.vizSample(file='plots/sample')
 
     # subInds = downsampler.downsample(100)
     # print(subInds)

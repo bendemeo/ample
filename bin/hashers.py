@@ -1,5 +1,5 @@
 from __future__ import division
-from scipy.stats import ortho_group
+from scipy.stats import norm, rankdata, ortho_group
 from copy import deepcopy
 import numpy as np
 from LSH import *
@@ -8,6 +8,38 @@ from utils import *
 from time import time
 from sampler import *
 import random
+
+
+
+class pRankSampler(rankSampler):
+
+    def rank(self):
+
+        gene_means = np.mean(self.data, axis=0)
+        gene_vars = np.var(self.data, axis=0)
+        gene_sigs = np.empty(self.data.shape)
+
+        print('means: {}'.format(gene_means))
+        print('vars: {}'.format(gene_vars))
+
+
+        for i in range(self.numObs):
+            for j in range(self.numFeatures):
+
+                gene_sigs[i,j]=np.abs(self.data[i,j]-gene_means[j])
+                # P = norm.cdf(self.data[i,j], loc = gene_means[j], scale = gene_vars[j])
+                # print(P)
+                # P = min([P, 1-P])
+                #
+                # gene_sigs[i,j] = P
+
+        print(gene_sigs)
+        cell_sigs = np.max(gene_sigs, axis=1)
+        print(min(cell_sigs))
+        print(max(cell_sigs))
+        print('cell sigs: {}'.format(cell_sigs))
+        self.ranking = np.argsort(cell_sigs)
+
 
 
 class angleSampler(weightedSampler):
@@ -38,21 +70,90 @@ class angleSampler(weightedSampler):
                     angles[j]=math.atan(float(x)/math.sqrt(mag - x**2))
 
             #print(angles)
-            wts[i] = sum(angles)/len(angles)
+            wts[i]=sum([a<(math.pi/30) for a in angles])
+            #wts[i] = sum(angles)/len(angles)
             #wts[i] = min(angles)
             # print(wts[i])
 
-        #normalize to be between 0 and 1
-        wts -= min(wts)
-        wts /= max(wts)
 
-        wts = [float(1) / (w ** self.strength) if w > 0 else 1000 for w in wts]
 
+        # wts = [math.pi/2 - w for w in wts]
+        #
+        # # #normalize to be between 0 and 1
+        # lowest = min(wts)
+        # wts =[w - lowest for w in wts]
+        # highest = max(wts)
+        # wts = [w/highest for w in wts]
+
+
+        print(wts[1:10])
+        #
+        #
+        #
+        #
+        # wts = [float(1) / (w ** self.strength) if w > 0 else 1000 for w in wts]
+
+        wts =[w**self.strength for w in wts]
         total = sum(wts)
         wts = [float(w)/total for w in wts]
-        # print(wts[1:10])
+        print(wts[1:10])
         self.wts = wts
 
+
+
+
+class splitLSH(LSH):
+    def __init__(self, data, maxSplits=2, minDiam=0, replace=False):
+        numBands = 1
+        bandSize = 1
+        numHashes = 1
+
+        LSH.__init__(self, data, numHashes, numBands, bandSize, replace)
+        self.replace = replace
+        self.maxSplits = maxSplits
+        self.minDiam = minDiam
+
+    @staticmethod
+    def splitDim(X, maxSplits, minDiam):
+        diam = max(X) - min(X)
+        if diam < minDiam:
+            return [0]*len(X)
+
+
+        Y = sorted(X) #sort on dimension
+        gaps = np.subtract(Y[1:],Y[:-1]) # hopefully vectorized
+
+        ind = gaps.tolist().index(max(gaps))
+
+        split = Y[ind]
+
+        return([int(x>split) for x in X])
+
+    def makeHash(self):
+        table = np.empty(self.data.shape)
+        for i in range(self.numFeatures):
+            table[:,i] = splitLSH.splitDim(self.data[:,i], self.maxSplits, self.minDiam)
+
+
+        hashDict = {}
+        for i in range(self.numObs):
+            if tuple(table[i,:]) in hashDict:
+                hashDict[tuple(table[i,:])].append(i)
+            else:
+                hashDict[tuple(table[i,:])] = [i]
+
+        self.occSquares = len(hashDict)
+
+        keys = list(hashDict.keys())
+
+
+        result = np.empty([self.numObs, 1])
+
+        for square in range(len(keys)):
+            for idx in hashDict[keys[square]]:
+                result[idx,0] = square
+
+        self.hash = result
 
 
 
@@ -730,15 +831,17 @@ def times(*args):
     return(result)
 
 if __name__ == '__main__':
-    gauss2D = gauss_test([10,20,100,200], 2, 4, [0.1, 1, 0.01, 2])
-    mpl.scatter(gauss2D[:, 0], gauss2D[:, 1])
 
-    # downsampler = gridLSH(gauss2D,0.1)
-    downsampler = projLSH(gauss2D, 10, 2, 5, 0.05)
-
-    subInds = downsampler.downSample(50)
-
-    print(subInds)
-
-    mpl.scatter(gauss2D[subInds, 0], gauss2D[subInds, 1], c='m')
-    mpl.show()
+    print(splitLSH.splitDim([1,2, 10, 3, 11, 5, 12],2, 0))
+    # gauss2D = gauss_test([10,20,100,200], 2, 4, [0.1, 1, 0.01, 2])
+    # mpl.scatter(gauss2D[:, 0], gauss2D[:, 1])
+    #
+    # # downsampler = gridLSH(gauss2D,0.1)
+    # downsampler = projLSH(gauss2D, 10, 2, 5, 0.05)
+    #
+    # subInds = downsampler.downSample(50)
+    #
+    # print(subInds)
+    #
+    # mpl.scatter(gauss2D[subInds, 0], gauss2D[subInds, 1], c='m')
+    # mpl.show()
