@@ -138,6 +138,7 @@ class splitLSH(LSH):
 
         hashDict = {}
         for i in range(self.numObs):
+            print(i)
             if tuple(table[i,:]) in hashDict:
                 hashDict[tuple(table[i,:])].append(i)
             else:
