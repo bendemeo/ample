@@ -69,7 +69,7 @@ class LSH(sampler):
         if self.numHashes > 1:
             log('too many hashes to vizualize; visualiing only first hash')
 
-        cols = self.hash[:,0]
+        cols = self.hash[inds,0]
         mpl.scatter(self.embedding[:, 0], self.embedding[:,1], c=cols)
 
         if file is not None:
