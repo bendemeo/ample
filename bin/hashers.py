@@ -8,6 +8,7 @@ from utils import *
 from time import time
 from sampler import *
 import random
+import sklearn as sk
 from fbpca import pca
 
 
@@ -23,13 +24,14 @@ class svdSampler(seqSampler):
         if len(self.sample)==0:
             self.sample.append(np.random.choice(self.numObs))
         else:
+            self.normalized = sk.preprocessing.normalize(self.data, axis=1)
             size = min([self.batch, len(self.avail)]) # how many to check
             candidates = np.random.choice(self.avail, size, replace=False)
             dets = []
             for c in candidates:
                 subset = self.sample + [c]
-                kernel = np.matmul(self.data[subset,:],
-                                   np.transpose(self.data[subset,:]))
+                kernel = np.matmul(self.normalized[subset,:],
+                                   np.transpose(self.normalized[subset,:]))
 
                 t0 = time()
                 dets.append(np.linalg.det(kernel))
