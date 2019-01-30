@@ -94,9 +94,9 @@ if __name__ == '__main__':
         )
         results.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
-
+        downsampler = diverseLSH(X_dimred, numCenters = 2, batch=1000)
     for k in range(2,20):
-        downsampler = diverseLSH(X_dimred, numCenters = k, batch=1000)
+        downsampler.numCenters=k
         downsampler.makeHash()
         downsampler.vizHash(file='293t_diverseLSH_vizhash_{}'.format(k))
         print('k={} done'.format(k))
