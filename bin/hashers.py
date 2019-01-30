@@ -102,11 +102,15 @@ class diverseLSH(LSH):
         for i in range(self.numObs):
             centerDists = []
             for c in centers:
-                centerDists.append(np.linalg.norm(self.data[i,:]
-                                                  -self.data[c,:]))
+                centerDists.append(abs(np.sum(self.data[i,:]
+                                                  -self.data[c,:])))
+                print(centerDists)
             hashes[i,0] = centers[centerDists.index(min(centerDists))]
 
         self.hash = hashes
+
+class ballLSH(diverseLSH):
+    """like diverseLSH but uses epsilon-balls around each center"""
 
 class pRankSampler(rankSampler):
 
