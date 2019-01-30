@@ -104,7 +104,7 @@ class diverseLSH(LSH):
             for c in centers:
                 centerDists.append(abs(np.sum(self.data[i,:]
                                                   -self.data[c,:])))
-                print(centerDists)
+                #print(centerDists)
             hashes[i,0] = centers[centerDists.index(min(centerDists))]
 
         self.hash = hashes
