@@ -58,6 +58,7 @@ if __name__ == '__main__':
 
     downsampler = diverseLSH(gauss2D, numCenters=5)
     downsampler.makeHash()
+    downsampler.vizHash()
 
 
     # downsampler = treeLSH(gauss2D_2, splitSize=0.1, children=4

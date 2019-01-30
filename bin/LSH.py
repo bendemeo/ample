@@ -59,17 +59,19 @@ class LSH(sampler):
             tsne = sk.manifold.TSNE(**kwargs)
 
             if self.numObs > maxPoints:
-                inds = np.random.choice(self.numObs, maxPoints, replace=False)
+                self.embeddingInds = np.random.choice(self.numObs, maxPoints, replace=False)
             else:
-                inds = range(self.numObs)
+                self.embeddingInds = range(self.numObs)
 
-            fit = tsne.fit(self.data[inds,:])
+            fit = tsne.fit(self.data[self.embeddingInds,:])
             self.embedding = tsne.embedding_
 
+        else:
+            self.embeddingInds=range(self.numObs)
         if self.numHashes > 1:
             log('too many hashes to vizualize; visualiing only first hash')
 
-        cols = self.hash[inds,0]
+        cols = self.hash[self.embeddingInds,0]
         mpl.scatter(self.embedding[:, 0], self.embedding[:,1], c=cols)
 
         if file is not None:
