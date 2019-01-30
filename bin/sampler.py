@@ -24,6 +24,13 @@ class sampler:
         fit = tsne.fit(self.data)
         self.embedding = tsne.embedding_
 
+    def normalize(self, method='l2'):
+        """normalize observations, default by L2 norm"""
+        self.data = sk.preprocessing.normalize(self.data, axis=1, norm='l2')
+
+
+
+
     def vizSample(self, file=None, full=True, c='m', cmap='viridis',**kwargs):
 
         if self.embedding is None:

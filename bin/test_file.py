@@ -49,7 +49,7 @@ if __name__ == '__main__':
 
     sizes=[1000,200,10,5, 15]
     N=sum(sizes)
-    gauss2D = gauss_test(sizes, 10, 5, [1]*5)
+    gauss2D = gauss_test(sizes, 2, 5, [1]*5)
     gauss2D_2 = gauss_test([5000, 200],2,1,[10])
     print(gauss2D)
 
@@ -58,16 +58,17 @@ if __name__ == '__main__':
 
     #downsampler = gridLSH(gauss2D_2, gridSize=0.1)
 
-    downsampler = svdSampler(gauss2D, batch=500)
+    downsampler = svdSampler(gauss2D, batch=100)
+    downsampler.normalize()
 
     # downsampler.makeHash()
     # print(downsampler.hash)
 
     t0 = time()
-    downsampler.downsample(200)
+    downsampler.downsample(100)
     t1=time()
     print('it took {} seconds'.format(t1-t0))
-    downsampler.vizSample(c=range(200), cmap='hot')
+    downsampler.vizSample(c=range(100), cmap='hot')
 
     # downsampler = pRankSampler(gauss2D)
     #
