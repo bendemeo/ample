@@ -88,13 +88,25 @@ if __name__ == '__main__':
     viz_genes = []
 
 
-    size=1000
+    size=500
     downsampler = svdSampler(X_dimred, batch=500)
     # downsampler.normalize()
     downsampler.downsample(size)
     print('visualizing...')
     downsampler.vizSample(file='pbmc_downsample_{}'.format(size),
                           c=list(range(99)), cmap='hot', anno=True, full=False)
+
+
+
+
+    filename='pbmc_svdTest_500'
+    experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels='grid',
+        gene_names=viz_genes, genes=genes, gene_expr=vstack(datasets),
+        kmeans=False,
+        visualize_orig=False,
+        sample_type='gsLSH_wt',
+        lsh=True, optimize_grid_size=False,
+        weighted = True, alpha = alpha)
 
     # experiment(gs_gap, X_dimred, NAMESPACE, filename='orig_fn', cell_labels=cell_labels,
     #             gene_names=viz_genes, genes=genes, gene_expr=vstack(datasets),
@@ -124,13 +136,7 @@ if __name__ == '__main__':
     # alpha=2
     # filename='pbmc_gsLSHTest_N_gridviz_weighted_{}'.format(alpha)
     #
-    # experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels='grid',
-    #     gene_names=viz_genes, genes=genes, gene_expr=vstack(datasets),
-    #     kmeans=False,
-    #     visualize_orig=False,
-    #     sample_type='gsLSH_wt',
-    #     lsh=True, optimize_grid_size=False,
-    #     weighted = True, alpha = alpha)
+
     #
     #
     #

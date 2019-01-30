@@ -159,7 +159,7 @@ def experiment(sampling_fn, X_dimred, name, cell_labels=None,
 
     # Downsample while preserving structure and visualize.
 
-    Ns = [1000]
+    Ns = [500]
 
     for N in Ns:
         if N >= X_dimred.shape[0]:
