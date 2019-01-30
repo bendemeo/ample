@@ -95,10 +95,17 @@ if __name__ == '__main__':
         results.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
-    downsampler = svdSampler(X_dimred, batch=500)
-    # downsampler.normalize()
-    downsampler.downsample(99)
-    downsampler.vizSample(file='293t_svdsample_99', c=list(range(99)), cmap='hot', anno=True)
+    for k in range(20):
+        downsampler = diverseLSH(X_dimred, batch=1000)
+        downsampler.makeHash()
+        downsampler.vizHash(file='293t_diverseLSH_vizhash_{}'.format(k))
+        print('k={} done'.format(k))
+
+
+    # downsampler = svdSampler(X_dimred, batch=500)
+    # # downsampler.normalize()
+    # downsampler.downsample(99)
+    # downsampler.vizSample(file='293t_svdsample_99', c=list(range(99)), cmap='hot', anno=True)
 
     # testresults_proj = try_params(X_dimred, 'projLSH',
     #     params={

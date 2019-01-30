@@ -56,22 +56,26 @@ if __name__ == '__main__':
     gauss2D_2 = gauss_test([5000, 200],2,1,[10])
     print(gauss2D)
 
+    downsampler = diverseLSH(gauss2D, numCenters=5)
+    downsampler.makeHash()
+    downsampler.vizHash(file='293t_diverseLSH_vizhash_{}'.format(numCenters))
+
     # downsampler = treeLSH(gauss2D_2, splitSize=0.1, children=4
 
 
     #downsampler = gridLSH(gauss2D_2, gridSize=0.1)
 
-    downsampler = svdSampler(gauss2D, batch=100)
-    #downsampler.normalize(method='l1')
-
-    # downsampler.makeHash()
-    # print(downsampler.hash)
-    size=5
-    t0 = time()
-    downsampler.downsample(size)
-    t1=time()
-    print('it took {} seconds'.format(t1-t0))
-    downsampler.vizSample(c=range(size), cmap='hot', anno=True, full=True)
+    # downsampler = svdSampler(gauss2D, batch=100)
+    # #downsampler.normalize(method='l1')
+    #
+    # # downsampler.makeHash()
+    # # print(downsampler.hash)
+    # size=5
+    # t0 = time()
+    # downsampler.downsample(size)
+    # t1=time()
+    # print('it took {} seconds'.format(t1-t0))
+    # downsampler.vizSample(c=range(size), cmap='hot', anno=True, full=True)
 
     # downsampler = pRankSampler(gauss2D)
     #

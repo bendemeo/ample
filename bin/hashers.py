@@ -12,32 +12,33 @@ import sklearn as sk
 from fbpca import pca
 
 
-class svdSampler(seqSampler):
+class detSampler(seqSampler):
     """adds point which makes determinant of kernel matrix better"""
+
     def __init__(self, data, batch=100, replace=False):
         seqSampler.__init__(self, data, replace)
         self.batch = batch
         self.kernel = None
 
-
-
     def addSample(self, viz=False, file=None, **kwargs):
-        if len(self.sample)==0:
+        if len(self.sample) == 0:
             self.sample.append(np.random.choice(self.numObs))
-            self.kernel = np.matrix(np.matmul(self.data[self.sample,:],
-                               np.transpose(self.data[self.sample,:])))
+            self.kernel = np.matrix(np.matmul(self.data[self.sample, :],
+                                              np.transpose(self.data[self.sample, :])))
         else:
             #self.normalized = sk.preprocessing.normalize(self.data, axis=1)
-            size = min([self.batch, len(self.avail)]) # how many to check
+            size = min([self.batch, len(self.avail)])  # how many to check
             candidates = np.random.choice(self.avail, size, replace=False)
             dets = []
             # kernel = np.matrix(np.matmul(self.data[self.sample,:],
             #                    np.transpose(self.data[self.sample,:])))
 
             for c in candidates:
-                newrow = np.matmul(self.data[c,:], np.transpose(self.data[self.sample,:]))
+                newrow = np.matmul(self.data[c, :], np.transpose(
+                    self.data[self.sample, :]))
 
-                newcol = list(newrow) +[np.matmul(self.data[c,:],np.transpose(self.data[c,:]))]
+                newcol = list(
+                    newrow) + [np.matmul(self.data[c, :], np.transpose(self.data[c, :]))]
                 # print(newcol)
                 # print(newrow)
                 # print(kernel)
@@ -46,26 +47,28 @@ class svdSampler(seqSampler):
 
                 # print(newKernel)
                 # print(np.matrix(np.transpose(newcol)))
-                newKernel = np.hstack([newKernel, np.transpose(np.matrix(newcol))])
+                newKernel = np.hstack(
+                    [newKernel, np.transpose(np.matrix(newcol))])
 
                 t0 = time()
                 dets.append(np.linalg.det(newKernel))
-                t1=time()
-
+                t1 = time()
 
                 # k=min([subset, self.numFeatures])
                 # U,s,vt = pca(self.data[subset,:], k=k)
                 # print(s)
                 # dets.append(np.prod(s))
 
-            print('det size {} took {}'.format(len(self.sample),t1-t0))
+            print('det size {} took {}'.format(len(self.sample), t1 - t0))
             print(self.kernel.shape)
 
             ind = dets.index(max(dets))
             new = candidates[ind]
 
-            newrow = np.matmul(self.data[new,:], np.transpose(self.data[self.sample,:]))
-            newcol = list(newrow) +[np.matmul(self.data[new,:],np.transpose(self.data[new,:]))]
+            newrow = np.matmul(self.data[new, :], np.transpose(
+                self.data[self.sample, :]))
+            newcol = list(
+                newrow) + [np.matmul(self.data[new, :], np.transpose(self.data[new, :]))]
             newKernel = np.vstack([self.kernel, np.matrix(newrow)])
             newKernel = np.hstack([newKernel, np.transpose(np.matrix(newcol))])
             self.kernel = newKernel
@@ -75,6 +78,35 @@ class svdSampler(seqSampler):
             self.sample.append(new)
 
 
+class diverseLSH(LSH):
+    """uses a DPP-like process to select diverse centers,
+     then assigns points to their nearest one"""
+
+    def __init__(self, data, numCenters=10, batch=100, replace=False):
+        numBands = 1
+        bandSize = 1
+        numHashes = 1
+
+        LSH.__init__(self, data, numHashes=numHashes, numBands=numBands, bandSize=bandSize,
+                     replace=replace)
+
+        self.numCenters = numCenters
+        self.batch=batch
+
+    def makeHash(self):
+        centerSampler = detSampler(self.data, self.batch, self.replace)
+        centers = centerSampler.downsample(self.numCenters)
+
+        hashes = np.empty([self.numObs,1])
+
+        for i in range(self.numObs):
+            centerDists = []
+            for c in centers:
+                centerDists.append(np.linalg.norm(self.data[i,:]
+                                                  -self.data[c,:]))
+            hashes[i,0] = centers[centerDists.index(min(centerDists))]
+
+        self.hash = hashes
 
 class pRankSampler(rankSampler):
 

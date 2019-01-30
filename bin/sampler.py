@@ -121,6 +121,8 @@ class seqSampler(sampler):
         if viz and (len(self.sample) % 10) == 0:
             self.vizSample(file=file, **kwargs)
 
+        return(self.sample)
+
 
 class weightedSampler(sampler):
     def __init__(self, data, strength=1, replace=False):
