@@ -96,7 +96,7 @@ if __name__ == '__main__':
 
 
     downsampler = svdSampler(X_dimred, batch=500)
-    downsampler.normalize()
+    # downsampler.normalize()
     downsampler.downsample(99)
     downsampler.vizSample(file='293t_svdsample_99', c=list(range(99)), cmap='hot')
 

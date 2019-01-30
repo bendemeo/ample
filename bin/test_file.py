@@ -59,7 +59,7 @@ if __name__ == '__main__':
     #downsampler = gridLSH(gauss2D_2, gridSize=0.1)
 
     downsampler = svdSampler(gauss2D, batch=100)
-    downsampler.normalize(method='l1')
+    #downsampler.normalize(method='l1')
 
     # downsampler.makeHash()
     # print(downsampler.hash)
