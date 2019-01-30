@@ -77,7 +77,7 @@ class seqSampler(sampler):
     def __init__(self, data, replace=False):
         sampler.__init__(self,data, replace)
         self.sample = []
-        self.avail = range(self.numObs)
+        self.avail = list(range(self.numObs))s
 
     def addSample(self):
         self.sample.append(np.random.choice([x for x in range(self.numObs)
