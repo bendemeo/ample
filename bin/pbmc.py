@@ -94,7 +94,7 @@ if __name__ == '__main__':
     downsampler.downsample(size)
     print('visualizing...')
     downsampler.vizSample(file='pbmc_downsample_{}'.format(size),
-                          c=list(range(99)), cmap='hot', anno=True, full=False)
+                          c=list(range(size)), cmap='hot', anno=True, full=False)
 
 
 

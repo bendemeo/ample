@@ -28,13 +28,25 @@ class svdSampler(seqSampler):
             size = min([self.batch, len(self.avail)]) # how many to check
             candidates = np.random.choice(self.avail, size, replace=False)
             dets = []
+            kernel = np.matrix(np.matmul(self.data[self.sample,:],
+                               np.transpose(self.data[self.sample,:])))
+
             for c in candidates:
-                subset = self.sample + [c]
-                kernel = np.matmul(self.data[subset,:],
-                                   np.transpose(self.data[subset,:]))
+                newrow = np.matmul(self.data[c,:], np.transpose(self.data[self.sample,:]))
+
+                newcol = list(newrow) +[np.matmul(self.data[c,:],np.transpose(self.data[c,:]))]
+                # print(newcol)
+                # print(newrow)
+                # print(kernel)
+
+                newKernel = np.vstack([kernel, np.matrix(newrow)])
+
+                # print(newKernel)
+                # print(np.matrix(np.transpose(newcol)))
+                newKernel = np.hstack([newKernel, np.transpose(np.matrix(newcol))])
 
                 t0 = time()
-                dets.append(np.linalg.det(kernel))
+                dets.append(np.linalg.det(newKernel))
                 t1=time()
 
 
@@ -42,8 +54,14 @@ class svdSampler(seqSampler):
                 # U,s,vt = pca(self.data[subset,:], k=k)
                 # print(s)
                 # dets.append(np.prod(s))
-            print('det size {} took {}'.format(len(subset),t1-t0))
+
+            ind = dets.index(max(dets))
+            new = candidates[ind]
+
+            print('det size {} took {}'.format(len(self.sample),t1-t0))
             print(kernel.shape)
+
+
             ind = dets.index(max(dets))
             new = candidates[ind]
             del self.avail[ind]

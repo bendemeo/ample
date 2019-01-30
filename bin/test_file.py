@@ -66,7 +66,7 @@ if __name__ == '__main__':
 
     # downsampler.makeHash()
     # print(downsampler.hash)
-    size=6
+    size=100
     t0 = time()
     downsampler.downsample(size)
     t1=time()
