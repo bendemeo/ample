@@ -97,7 +97,7 @@ if __name__ == '__main__':
 
     downsampler = svdSampler(X_dimred, batch=100)
     downsampler.downsample(100)
-    downsampler.vizSample(file='293t_svdsample_100')
+    downsampler.vizSample(file='293t_svdsample_100', c=list(range(100)), cmap='hot')
 
     # testresults_proj = try_params(X_dimred, 'projLSH',
     #     params={
