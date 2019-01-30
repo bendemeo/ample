@@ -10,7 +10,6 @@ from sampler import *
 import random
 import sklearn as sk
 from fbpca import pca
-import scipy
 
 
 class detSampler(seqSampler):
@@ -103,8 +102,8 @@ class diverseLSH(LSH):
         for i in range(self.numObs):
             centerDists = []
             for c in centers:
-                centerDists.append(scipy.spatial.distance.cosine(self.data[i,:],
-                                                  self.data[c,:]))
+                centerDists.append(np.linalg.norm(self.data[i,:]
+                                                  -self.data[c,:], ord=float('inf')))
             hashes[i,0] = centers[centerDists.index(min(centerDists))]
 
         self.hash = hashes
