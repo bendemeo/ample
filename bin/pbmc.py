@@ -283,6 +283,8 @@ if __name__ == '__main__':
     print('vizualizing...')
     downsampler.vizHash('splithash_pbmc', maxPoints=10000)
 
+
+
     # filename='pbmc_treeLSHTest_clustcounts'
     #
     # iter=1

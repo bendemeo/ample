@@ -24,17 +24,23 @@ from utils import *
 from test_file import *
 from experiments import *
 import pickle
+import tests
+
 
 def err_exit(param_name):
     sys.stderr.write('Needs `{}\' param.\n'.format(param_name))
     exit(1)
 
+
 def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], inverted=[], weighted=False, alpha=1, pickle_it=True, **kwargs):
     """version where params is a dict to be unpacked"""
 
-    #make sure all needed params are provided
+    # make sure all needed params are provided
     if 'cell_labels' not in kwargs:
-        cantCompute=[i for i in ['entropy','rare','kl_divergence','kmeans_ami','louvain_ami', 'cluster_counts'] if i in tests]
+        cantCompute = [i for i in
+                       ['entropy', 'rare', 'kl_divergence',
+                        'kmeans_ami', 'louvain_ami', 'cluster_counts']
+                       if i in tests]
 
         if len(cantCompute) > 0:
             err_exit('cell_labels')
@@ -47,75 +53,73 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
         if 'cluster_counts' in tests:
             err_exit('cluster_labels')
 
-    #each param should have either 1 value (recycled for all) or k values
+    # each param should have either 1 value (recycled for all) or k values
     paramLengths = [len(params[j]) for j in params.keys()]
     uniqueLengths = np.unique(paramLengths)
     print(paramLengths)
-    assert(len(uniqueLengths)<=2)
-    if len(uniqueLengths)==2:
+    assert(len(uniqueLengths) <= 2)
+    if len(uniqueLengths) == 2:
         assert(1 in uniqueLengths)
 
-    #how many different parameter settings to try
+    # how many different parameter settings to try
     numSettings = max(paramLengths)
 
-    #recycle if length 1
+    # recycle if length 1
     for p in params:
-        if len(params[p])==1:
-            params[p]=params[p]*numSettings
+        if len(params[p]) == 1:
+            params[p] = params[p] * numSettings
 
-    #print(params)
+    # print(params)
 
     if 'Ns' in kwargs:
-        Ns=kwargs['Ns']
+        Ns = kwargs['Ns']
     else:
         Ns = [100]
 
-    numTests = len(Ns)*n_seeds*numSettings
+    numTests = len(Ns) * n_seeds * numSettings
 
-    #empty lists for all params and test values
-    results = {t:[] for t in tests if t not in ['cluster_counts', 'cluster_scores']}
+    # empty lists for all params and test values
+    results = {t: []
+               for t in tests if t not in ['cluster_counts', 'cluster_scores']}
     for p in params.keys():
-        results[p]=[]
+        results[p] = []
 
     if 'cluster_counts' in tests:
         cluster_labels = sorted(set(kwargs['cluster_labels']))
         for lab in cluster_labels:
-            results[lab]=[]
+            results[lab] = []
 
     if 'cluster_scores' in tests:
         cluster_labels = sorted(set(kwargs['cluster_labels']))
         for lab in cluster_labels:
-            results['{}_score'.format(lab)]=[]
+            results['{}_score'.format(lab)] = []
 
-    results['sampler'] = [hasher]*numTests
-    results['N']=[]
+    results['sampler'] = [hasher] * numTests
+    results['N'] = []
 
     for i in range(numSettings):
-        currentParams={p:val[i] for (p,val) in params.items()}
-
+        currentParams = {p: val[i] for (p, val) in params.items()}
 
         hasherfunc = getattr(hashers, hasher)
         downsampler = hasherfunc(X_dimred, **currentParams)
 
         for N in Ns:
-            #optimize params that need to be optimized
+            # optimize params that need to be optimized
             for k in range(len(optimizeParams)):
                 p = optimizeParams[k]
                 print('optimizing {}'.format(optimizeParams[k]))
 
-
-                downsampler.optimize_param(p,inverted = inverted[k])
+                downsampler.optimize_param(p, inverted=inverted[k])
 
                 currentParams[p] = getattr(downsampler, p)
 
-
             for seed in range(n_seeds):
 
-                #store current parameters
+                # store current parameters
                 for p in currentParams.keys():
                     results[p].append(currentParams[p])
 
-                #print(currentParams)
+                # print(currentParams)
                 log('sampling {} from {}'.format(N, hasher))
 
                 #log('grid size: {}'.format(getattr(downsampler, 'gridSize')))
@@ -123,42 +127,43 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
                 if weighted:
                     samp_idx = downsampler.downsample_weighted(N, alpha=alpha)
                 else:
-                    samp_idx=downsampler.downsample(N)
+                    samp_idx = downsampler.downsample(N)
 
                 t1 = time()
                 log('sampling {} done'.format(hasher))
 
-                #record N
+                # record N
                 results['N'].append(N)
 
-                #record all test values
+                # record all test values
                 for t in tests:
                     if t == 'time':
-                        results['time'].append(t1-t0)
+                        results['time'].append(t1 - t0)
                     elif t == 'cluster_counts':
 
                         cell_labels = kwargs['cell_labels']
                         cluster_labels = kwargs['cluster_labels']
                         types = [cluster_labels[i] for i in samp_idx]
                         # print('types:')
-                        #print(types)
+                        # print(types)
 
                         labels = sorted(set(cluster_labels))
                         for lab in labels:
-                            counts = sum([type==lab for type in types])
-                            #print(sum(sum(types==i)))
+                            counts = sum([type == lab for type in types])
+                            # print(sum(sum(types==i)))
                             results[lab].append(counts)
-                            #print(results)
+                            # print(results)
                     elif t == 'cluster_scores':
                         labels = sorted(set(cluster_labels))
                         for lab in labels:
                             score = downsampler.clustScores[lab]
-                            #print(sum(sum(types==i)))
+                            # print(sum(sum(types==i)))
                             results['{}_score'.format(lab)].append(score)
                     elif t == 'occSquares':
                         results['occSquares'].append(downsampler.occSquares)
                     elif t == 'lastCounts':
-                        results['lastCounts'].append(downsampler.getMeanCounts())
+                        results['lastCounts'].append(
+                            downsampler.getMeanCounts())
                     elif t == 'maxCounts':
                         results['maxCounts'].append(downsampler.getMaxCounts())
                     elif t == 'remnants':
@@ -175,7 +180,8 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
                         cell_labels = kwargs['cell_labels']
                         rare_label = kwargs['rare_label']
                         cluster_labels = cell_labels[samp_idx]
-                        results['rare'].append(sum(cluster_labels == rare_label))
+                        results['rare'].append(
+                            sum(cluster_labels == rare_label))
                     elif t == 'entropy':
                         cell_labels = kwargs['cell_labels']
                         cluster_labels = cell_labels[samp_idx]
@@ -185,7 +191,8 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
                         for c in range(max_cluster + 1):
                             if c in clusters:
                                 cluster_hist[c] = np.sum(cluster_labels == c)
-                        results['entropy'].append(normalized_entropy(cluster_hist))
+                        results['entropy'].append(
+                            normalized_entropy(cluster_hist))
                     elif t == 'kl_divergence':
                         cell_labels = kwargs['cell_labels']
                         expected = kwargs['expected']
@@ -197,7 +204,8 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
                             if c in clusters:
                                 cluster_hist[c] = np.sum(cluster_labels == c)
                         cluster_hist /= np.sum(cluster_hist)
-                        results['kl_divergence'].append(scipy.stats.entropy(expected, cluster_hist))
+                        results['kl_divergence'].append(
+                            scipy.stats.entropy(expected, cluster_hist))
                     elif t == 'max_min_dist':
                         dist = pairwise_distances(
                             X_dimred[samp_idx, :], X_dimred, n_jobs=-1
@@ -210,9 +218,11 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
                         km = KMeans(n_clusters=k, n_init=1, random_state=seed)
                         km.fit(X_dimred[samp_idx, :])
 
-                        full_labels = label_approx(X_dimred, X_dimred[samp_idx, :], km.labels_)
+                        full_labels = label_approx(
+                            X_dimred, X_dimred[samp_idx, :], km.labels_)
 
-                        ami = adjusted_mutual_info_score(cell_labels, full_labels)
+                        ami = adjusted_mutual_info_score(
+                            cell_labels, full_labels)
 
                         results['kmeans_ami'].append(ami)
                     elif t == 'kmeans_bami':
@@ -221,7 +231,8 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
                         km = KMeans(n_clusters=k, n_init=1, random_state=seed)
                         km.fit(X_dimred[samp_idx, :])
 
-                        full_labels = label_approx(X_dimred, X_dimred[samp_idx, :], km.labels_)
+                        full_labels = label_approx(
+                            X_dimred, X_dimred[samp_idx, :], km.labels_)
 
                         bami = adjusted_mutual_info_score(
                             cell_labels, full_labels, dist='balanced'
@@ -232,13 +243,16 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
 
                         adata = AnnData(X=X_dimred[samp_idx, :])
                         sc.pp.neighbors(adata, use_rep='X')
-                        sc.tl.louvain(adata, resolution=1., key_added='louvain')
+                        sc.tl.louvain(adata, resolution=1.,
+                                      key_added='louvain')
                         louv_labels = np.array(adata.obs['louvain'].tolist())
 
-                        full_labels = label_approx(X_dimred, X_dimred[samp_idx, :], louv_labels)
+                        full_labels = label_approx(
+                            X_dimred, X_dimred[samp_idx, :], louv_labels)
 
                         if t == 'louvain_ami':
-                            ami = adjusted_mutual_info_score(cell_labels, full_labels)
+                            ami = adjusted_mutual_info_score(
+                                cell_labels, full_labels)
                             results['louvain_ami'].append(ami)
                         elif t == 'louvain_bami':
                             bami = adjusted_mutual_info_score(
@@ -247,12 +261,12 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
                             results['louvain_bami'].append(bami)
 
     print(results)
-    lengths={k:len(v) for (k,v) in results.items()}
+    lengths = {k: len(v) for (k, v) in results.items()}
 
     print(lengths)
 
     # return(results)
-    #print(results)
+    # print(results)
     return pd.DataFrame.from_dict(results)
 
 # #tweaks band number until number of candidates is about right
@@ -260,31 +274,28 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
 #
 
 
-
 if __name__ == '__main__':
-    testdata = gauss_test([10,20,100,200], 2, 4, [0.1,1,0.01,2])
+    testdata = gauss_test([10, 20, 100, 200], 2, 4, [0.1, 1, 0.01, 2])
 
     params = {
-        'numHashes':[1000],
-        'numBands':[10,5,1,1,3,4],
-        'bandSize':[10,20,100,1000,200,100]
+        'numHashes': [1000],
+        'numBands': [10, 5, 1, 1, 3, 4],
+        'bandSize': [10, 20, 100, 1000, 200, 100]
     }
-
 
     params2 = {
-        'gridSize':[0.01,0.1,0.2,0.001],
+        'gridSize': [0.01, 0.1, 0.2, 0.001],
     }
 
-    testresults = try_params(testdata,'cosineLSH',params, ['guess','actual','error','lastCounts'],
-    Ns=[100, 200, 300])
+    testresults = try_params(testdata, 'cosineLSH', params, ['guess', 'actual', 'error', 'lastCounts'],
+                             Ns=[100, 200, 300])
 
-    testresults2 = try_params(testdata, 'gridLSH', params2, ['max_min_dist','time','lastCounts','remnants','guess','actual','error'], Ns=[100,200])
-
+    testresults2 = try_params(testdata, 'gridLSH', params2, [
+                              'max_min_dist', 'time', 'lastCounts', 'remnants', 'guess', 'actual', 'error'], Ns=[100, 200])
 
     testresults = pd.DataFrame.from_dict(testresults)
     testresults2 = pd.DataFrame.from_dict(testresults2)
 
-
     print(testresults)
-    #print(testresults2)
+    # print(testresults2)
     #print(pd.concat([testresults, testresults2]))

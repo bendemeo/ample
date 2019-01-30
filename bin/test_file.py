@@ -47,10 +47,10 @@ if __name__ == '__main__':
 
     #start_experiment('pug', ['height','weight'],['fat','size'])
 
-    sizes=[100,200,50,100, 200]
+    sizes=[1000,200,10,5, 15]
     N=sum(sizes)
-    gauss2D = gauss_test(sizes*2, 2, 10, [1]*10)
-    gauss2D_2 = gauss_test([5000, 2000],2,1,[10])
+    gauss2D = gauss_test(sizes, 10, 5, [1]*5)
+    gauss2D_2 = gauss_test([5000, 200],2,1,[10])
     print(gauss2D)
 
     # downsampler = treeLSH(gauss2D_2, splitSize=0.1, children=4
@@ -58,13 +58,16 @@ if __name__ == '__main__':
 
     #downsampler = gridLSH(gauss2D_2, gridSize=0.1)
 
-    downsampler = splitLSH(gauss2D)
+    downsampler = svdSampler(gauss2D, batch=500)
 
-    downsampler.makeHash()
-    print(downsampler.hash)
+    # downsampler.makeHash()
+    # print(downsampler.hash)
 
-    downsampler.downsample(100)
-    downsampler.vizHash()
+    t0 = time()
+    downsampler.downsample(200)
+    t1=time()
+    print('it took {} seconds'.format(t1-t0))
+    downsampler.vizSample(c=range(200), cmap='hot')
 
     # downsampler = pRankSampler(gauss2D)
     #

@@ -19,17 +19,21 @@ class sampler:
         return self.sample
 
 
-    def vizSample(self, file=None, full=True, **kwargs):
+    def embed(self, **kwargs):
+        tsne = sk.manifold.TSNE(**kwargs)
+        fit = tsne.fit(self.data)
+        self.embedding = tsne.embedding_
+
+    def vizSample(self, file=None, full=True, c='m', cmap='viridis',**kwargs):
 
         if self.embedding is None:
-            tsne = sk.manifold.TSNE(**kwargs)
-            fit = tsne.fit(self.data)
-            self.embedding = tsne.embedding_
+            self.embed()
 
         if(full):
             mpl.scatter(self.embedding[:,0], self.embedding[:,1])
 
-        mpl.scatter(self.embedding[self.sample, 0], self.embedding[self.sample,1], c='m')
+        print(c)
+        mpl.scatter(self.embedding[self.sample, 0], self.embedding[self.sample,1], c=c, cmap=cmap)
 
         if file is not None:
             mpl.savefig('{}.png'.format(file))
@@ -55,10 +59,6 @@ class rankSampler(sampler):
         self.sample = inds
         return(inds)
 
-    def embed(self, **kwargs):
-        tsne = sk.manifold.TSNE(**kwargs)
-        fit = tsne.fit(self.data)
-        self.embedding = tsne.embedding_
 
     def vizRanking(self, file=None, **kwargs):
         if self.embedding is None:
@@ -71,6 +71,23 @@ class rankSampler(sampler):
 
         mpl.show()
 
+class seqSampler(sampler):
+    """anything that iteratively adds to the sample based on some criterion"""
+
+    def __init__(self, data, replace=False):
+        sampler.__init__(self,data, replace)
+        self.sample = []
+        self.avail = range(self.numObs)
+
+    def addSample(self):
+        self.sample.append(np.random.choice([x for x in range(self.numObs)
+                                             if not(x in self.sample)]))
+    def downsample(self, sampleSize, viz=False, file=None, **kwargs):
+        while(len(self.sample) < sampleSize):
+            self.addSample()
+
+        if viz and (len(self.sample) % 10) == 0:
+            self.vizSample(file=file, **kwargs)
 
 
 class weightedSampler(sampler):

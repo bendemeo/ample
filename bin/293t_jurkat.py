@@ -95,6 +95,9 @@ if __name__ == '__main__':
         results.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
+    downsampler = svdSampler(X_dimred, batch=100)
+    downsampler.downsample(100)
+    downsampler.vizSample(file='293t_svdsample_100')
 
     # testresults_proj = try_params(X_dimred, 'projLSH',
     #     params={
@@ -396,15 +399,17 @@ if __name__ == '__main__':
     # gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
-    filename='293t_angleSampler_clustcounts'
+    # filename='293t_angleSampler_clustcounts'
+    #
+    # iter=1
+    # print('filename will be {}'.format('target/experiments/{}.txt.{}'.format(filename,iter)))
+    #
+    #
+    # downsampler = splitLSH(X_dimred)
+    # downsampler.makeHash()
+    # downsampler.vizHash('splithash')
 
-    iter=1
-    print('filename will be {}'.format('target/experiments/{}.txt.{}'.format(filename,iter)))
 
-
-    downsampler = splitLSH(X_dimred)
-    downsampler.makeHash()
-    downsampler.vizHash('splithash')
     # downsampler = angleSampler(X_dimred, strength=3)
     # downsampler.makeWeights()
     # downsampler.downsample(100)
