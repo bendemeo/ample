@@ -92,21 +92,57 @@ class diverseLSH(LSH):
 
         self.numCenters = numCenters
         self.batch=batch
+        self.centers=None
 
     def makeHash(self):
         centerSampler = detSampler(self.data, self.batch, self.replace)
-        centers = centerSampler.downsample(self.numCenters)
+        self.centers = centerSampler.downsample(self.numCenters)
 
         hashes = np.empty([self.numObs,1])
 
         for i in range(self.numObs):
             centerDists = []
-            for c in centers:
+            for c in self.centers:
                 centerDists.append(np.linalg.norm(self.data[i,:]
                                                   -self.data[c,:], ord=float('inf')))
-            hashes[i,0] = centers[centerDists.index(min(centerDists))]
+            hashes[i,0] = self.centers[centerDists.index(min(centerDists))]
 
         self.hash = hashes
+
+    def vizHash(self,file=None, maxPoints=float("inf"), plotCenters=True,anno=False, **kwargs):
+        if self.embedding is None:
+            tsne = sk.manifold.TSNE(**kwargs)
+
+            if self.numObs > maxPoints:
+                self.embeddingInds = np.random.choice(self.numObs, maxPoints, replace=False)
+            else:
+                self.embeddingInds = range(self.numObs)
+
+            fit = tsne.fit(self.data[self.embeddingInds,:])
+            self.embedding = tsne.embedding_
+
+        else:
+            self.embeddingInds=range(self.numObs)
+        if self.numHashes > 1:
+            log('too many hashes to vizualize; visualiing only first hash')
+
+        cols = self.hash[self.embeddingInds,0]
+        mpl.scatter(self.embedding[:, 0], self.embedding[:,1], c=cols)
+
+        if plotCenters:
+            mpl.scatter(self.embedding[self.centers,0],self.embedding[self.centers,1], c='r')
+
+
+        if(anno):
+            for i, h in enumerate(self.hash[self.embeddingInds,0]):
+                mpl.annotate(int(h), (self.embedding[self.embeddingInds[i],0],
+                                 self.embedding[self.embeddingInds[i],1]))
+
+        if file is not None:
+            mpl.savefig('{}.png'.format(file))
+
+        mpl.show()
+        mpl.close()
 
 class ballLSH(diverseLSH):
     """like diverseLSH but uses epsilon-balls around each center"""

@@ -54,7 +54,7 @@ class LSH(sampler):
     def getHash(self):
         return self.hash
 
-    def vizHash(self, file=None, maxPoints=float("inf"),**kwargs):
+    def vizHash(self, file=None, maxPoints=float("inf"),anno=False, **kwargs):
         if self.embedding is None:
             tsne = sk.manifold.TSNE(**kwargs)
 
@@ -73,6 +73,10 @@ class LSH(sampler):
 
         cols = self.hash[self.embeddingInds,0]
         mpl.scatter(self.embedding[:, 0], self.embedding[:,1], c=cols)
+        if(anno):
+            for i, h in enumerate(self.hash[self.embeddingInds,0]):
+                mpl.annotate(int(h), (self.embedding[self.embeddingInds[i],0],
+                                 self.embedding[self.embeddingInds[i],1]))
 
         if file is not None:
             mpl.savefig('{}.png'.format(file))
