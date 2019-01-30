@@ -17,19 +17,22 @@ class svdSampler(seqSampler):
     def __init__(self, data, batch=100, replace=False):
         seqSampler.__init__(self, data, replace)
         self.batch = batch
+        self.kernel = None
 
 
 
     def addSample(self, viz=False, file=None, **kwargs):
         if len(self.sample)==0:
             self.sample.append(np.random.choice(self.numObs))
+            self.kernel = np.matrix(np.matmul(self.data[self.sample,:],
+                               np.transpose(self.data[self.sample,:])))
         else:
             #self.normalized = sk.preprocessing.normalize(self.data, axis=1)
             size = min([self.batch, len(self.avail)]) # how many to check
             candidates = np.random.choice(self.avail, size, replace=False)
             dets = []
-            kernel = np.matrix(np.matmul(self.data[self.sample,:],
-                               np.transpose(self.data[self.sample,:])))
+            # kernel = np.matrix(np.matmul(self.data[self.sample,:],
+            #                    np.transpose(self.data[self.sample,:])))
 
             for c in candidates:
                 newrow = np.matmul(self.data[c,:], np.transpose(self.data[self.sample,:]))
@@ -39,7 +42,7 @@ class svdSampler(seqSampler):
                 # print(newrow)
                 # print(kernel)
 
-                newKernel = np.vstack([kernel, np.matrix(newrow)])
+                newKernel = np.vstack([self.kernel, np.matrix(newrow)])
 
                 # print(newKernel)
                 # print(np.matrix(np.transpose(newcol)))
@@ -55,15 +58,18 @@ class svdSampler(seqSampler):
                 # print(s)
                 # dets.append(np.prod(s))
 
-            ind = dets.index(max(dets))
-            new = candidates[ind]
-
             print('det size {} took {}'.format(len(self.sample),t1-t0))
-            print(kernel.shape)
-
+            print(self.kernel.shape)
 
             ind = dets.index(max(dets))
             new = candidates[ind]
+
+            newrow = np.matmul(self.data[new,:], np.transpose(self.data[self.sample,:]))
+            newcol = list(newrow) +[np.matmul(self.data[new,:],np.transpose(self.data[new,:]))]
+            newKernel = np.vstack([self.kernel, np.matrix(newrow)])
+            newKernel = np.hstack([newKernel, np.transpose(np.matrix(newcol))])
+            self.kernel = newKernel
+
             del self.avail[ind]
 
             self.sample.append(new)

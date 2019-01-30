@@ -86,9 +86,10 @@ if __name__ == '__main__':
     #print('labels is a {} of shape {}'.format(type(labels),labels.shape))
     #print(labels)
     viz_genes = []
+    genes = []
 
 
-    size=500
+    size=1000
     downsampler = svdSampler(X_dimred, batch=500)
     # downsampler.normalize()
     downsampler.downsample(size)
