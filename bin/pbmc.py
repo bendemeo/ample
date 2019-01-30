@@ -87,6 +87,14 @@ if __name__ == '__main__':
     #print(labels)
     viz_genes = []
 
+
+    size=100
+    downsampler = svdSampler(X_dimred, batch=500)
+    # downsampler.normalize()
+    downsampler.downsample(size)
+    downsampler.vizSample(file='pbmc_downsample_{}'.format(size),
+                          c=list(range(99)), cmap='hot', anno=True)
+
     # experiment(gs_gap, X_dimred, NAMESPACE, filename='orig_fn', cell_labels=cell_labels,
     #             gene_names=viz_genes, genes=genes, gene_expr=vstack(datasets),
     #             kmeans=False,
@@ -278,10 +286,10 @@ if __name__ == '__main__':
     #
     # gsLSH_gridTest.to_csv('target/experiments/{}_{}.txt.{}'.format(filename, ext, iter), sep='\t')
 
-    downsampler = splitLSH(X_dimred, minDiam=0.35)
-    downsampler.makeHash()
-    print('vizualizing...')
-    downsampler.vizHash('splithash_pbmc', maxPoints=10000)
+    # downsampler = splitLSH(X_dimred, minDiam=0.35)
+    # downsampler.makeHash()
+    # print('vizualizing...')
+    # downsampler.vizHash('splithash_pbmc', maxPoints=10000)
 
 
 

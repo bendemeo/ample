@@ -20,9 +20,12 @@ class sampler:
 
 
     def embed(self, **kwargs):
-        tsne = sk.manifold.TSNE(**kwargs)
-        fit = tsne.fit(self.data)
-        self.embedding = tsne.embedding_
+        if self.numFeatures == 2:
+            self.embedding = self.data
+        else:
+            tsne = sk.manifold.TSNE(**kwargs)
+            fit = tsne.fit(self.data)
+            self.embedding = tsne.embedding_
 
     def normalize(self, method='l2'):
         """normalize observations, default by L2 norm"""
@@ -31,7 +34,7 @@ class sampler:
 
 
 
-    def vizSample(self, file=None, full=True, c='m', cmap='viridis',**kwargs):
+    def vizSample(self, file=None, full=True, c='m', cmap='viridis',anno=False, annoMax=100, **kwargs):
 
         if self.embedding is None:
             self.embed()
@@ -41,6 +44,11 @@ class sampler:
 
         print(c)
         mpl.scatter(self.embedding[self.sample, 0], self.embedding[self.sample,1], c=c, cmap=cmap)
+
+        if(anno):
+            for i in range(min([len(self.sample),annoMax])):
+                mpl.annotate(i, (self.embedding[self.sample[i],0], self.embedding[self.sample[i],1]))
+
 
         if file is not None:
             mpl.savefig('{}.png'.format(file))

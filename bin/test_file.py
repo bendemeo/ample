@@ -47,9 +47,11 @@ if __name__ == '__main__':
 
     #start_experiment('pug', ['height','weight'],['fat','size'])
 
-    sizes=[1000,200,10,5, 15]
+    np.random.seed()
+
+    sizes=[500,200,100,50, 10]
     N=sum(sizes)
-    gauss2D = gauss_test(sizes, 2, 5, [1]*5)
+    gauss2D = gauss_test(sizes, 10, 5, [1]*5)
     gauss2D_2 = gauss_test([5000, 200],2,1,[10])
     print(gauss2D)
 
@@ -63,12 +65,12 @@ if __name__ == '__main__':
 
     # downsampler.makeHash()
     # print(downsampler.hash)
-
+    size=7
     t0 = time()
-    downsampler.downsample(100)
+    downsampler.downsample(size)
     t1=time()
     print('it took {} seconds'.format(t1-t0))
-    downsampler.vizSample(c=range(100), cmap='hot')
+    downsampler.vizSample(c=range(size), cmap='hot', anno=True)
 
     # downsampler = pRankSampler(gauss2D)
     #
