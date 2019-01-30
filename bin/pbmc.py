@@ -88,12 +88,13 @@ if __name__ == '__main__':
     viz_genes = []
 
 
-    size=100
+    size=1000
     downsampler = svdSampler(X_dimred, batch=500)
     # downsampler.normalize()
     downsampler.downsample(size)
+    print('visualizing...')
     downsampler.vizSample(file='pbmc_downsample_{}'.format(size),
-                          c=list(range(99)), cmap='hot', anno=True)
+                          c=list(range(99)), cmap='hot', anno=True, full=False)
 
     # experiment(gs_gap, X_dimred, NAMESPACE, filename='orig_fn', cell_labels=cell_labels,
     #             gene_names=viz_genes, genes=genes, gene_expr=vstack(datasets),

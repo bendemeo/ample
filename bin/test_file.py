@@ -9,6 +9,7 @@ import matplotlib.pyplot as mpl
 from hashers import *
 from experiments import *
 from copy import deepcopy
+
 #from lsh_experiments import start_experiment
 #from lsh_sketch import *
 
@@ -65,12 +66,12 @@ if __name__ == '__main__':
 
     # downsampler.makeHash()
     # print(downsampler.hash)
-    size=7
+    size=6
     t0 = time()
     downsampler.downsample(size)
     t1=time()
     print('it took {} seconds'.format(t1-t0))
-    downsampler.vizSample(c=range(size), cmap='hot', anno=True)
+    downsampler.vizSample(c=range(size), cmap='hot', anno=True, full=True)
 
     # downsampler = pRankSampler(gauss2D)
     #

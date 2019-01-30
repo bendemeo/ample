@@ -4,10 +4,12 @@ import numpy as np
 import sklearn as sk
 import matplotlib.pyplot as mpl
 import math
+import os
+from MulticoreTSNE import MulticoreTSNE
 
 class sampler:
 
-    def __init__(self, data, replace=False):
+    def __init__(self, data, NAMESPACE='',replace=False):
         self.numObs, self.numFeatures = data.shape
         self.replace = replace
         self.data = data
@@ -19,12 +21,17 @@ class sampler:
         return self.sample
 
 
-    def embed(self, **kwargs):
+    def embed(self, subset = None, **kwargs):
+
+        if subset is None:
+            subset = list(range(self.numObs))
         if self.numFeatures == 2:
-            self.embedding = self.data
+            self.embedding = self.data[subset,:]
         else:
-            tsne = sk.manifold.TSNE(**kwargs)
-            fit = tsne.fit(self.data)
+
+            tsne = MulticoreTSNE(**kwargs)
+            #tsne = sk.manifold.TSNE(**kwargs)
+            fit = tsne.fit(self.data[subset,:])
             self.embedding = tsne.embedding_
 
     def normalize(self, method='l2'):
@@ -36,18 +43,28 @@ class sampler:
 
     def vizSample(self, file=None, full=True, c='m', cmap='viridis',anno=False, annoMax=100, **kwargs):
 
-        if self.embedding is None:
-            self.embed()
+
 
         if(full):
+            if self.embedding is None:
+                self.embed()
             mpl.scatter(self.embedding[:,0], self.embedding[:,1])
+            mpl.scatter(self.embedding[self.sample, 0], self.embedding[self.sample,1], c=c, cmap=cmap)
 
-        print(c)
-        mpl.scatter(self.embedding[self.sample, 0], self.embedding[self.sample,1], c=c, cmap=cmap)
+            if(anno):
+                for i in range(min([len(self.sample),annoMax])):
+                    mpl.annotate(i, (self.embedding[self.sample[i],0], self.embedding[self.sample[i],1]))
 
-        if(anno):
-            for i in range(min([len(self.sample),annoMax])):
-                mpl.annotate(i, (self.embedding[self.sample[i],0], self.embedding[self.sample[i],1]))
+        else:
+            print('embedding sample only')
+            self.embed(subset=self.sample)
+            mpl.scatter(self.embedding[:,0], self.embedding[:,1], c=c, cmap=cmap)
+
+            if(anno):
+                for i in range(min([len(self.sample),annoMax])):
+                    mpl.annotate(i, (self.embedding[i,0], self.embedding[i,1]))
+
+
 
 
         if file is not None:
