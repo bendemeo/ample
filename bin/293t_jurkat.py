@@ -95,7 +95,7 @@ if __name__ == '__main__':
         results.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
-    downsampler = svdSampler(X_dimred, batch=1000)
+    downsampler = svdSampler(X_dimred, batch=500)
     downsampler.downsample(100)
     downsampler.vizSample(file='293t_svdsample_100', c=list(range(100)), cmap='hot')
 

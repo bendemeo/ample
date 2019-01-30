@@ -28,8 +28,8 @@ class svdSampler(seqSampler):
             dets = []
             for c in candidates:
                 subset = self.sample + [c]
-                kernel = np.matmul(numpy.transpose(self.data[subset,:]),
-                                   self.data[subset,:])
+                kernel = np.matmul(self.data[subset,:],
+                                   np.transpose(self.data[subset,:]))
 
                 t0 = time()
                 dets.append(np.linalg.det(kernel))
@@ -41,6 +41,7 @@ class svdSampler(seqSampler):
                 # print(s)
                 # dets.append(np.prod(s))
             print('det size {} took {}'.format(len(subset),t1-t0))
+            print(kernel.shape)
             ind = dets.index(max(dets))
             new = candidates[ind]
             del self.avail[ind]
