@@ -116,7 +116,7 @@ if __name__ == '__main__':
     }
 
     tests = ['max_min_dist', 'time', 'maxCounts',
-             'rare', 'cluster_counts', 'occSquares']
+             'rare', 'cluster_counts', 'occSquares', 'centers']
 
     ballLSH_gridTest = try_params(X_dimred, 'ballLSH',
                                   params=testParams,
