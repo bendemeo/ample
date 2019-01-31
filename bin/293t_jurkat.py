@@ -96,18 +96,20 @@ if __name__ == '__main__':
 
     downsampler = gsLSH(X_dimred, gridSize=0.35)
 
+    downsampler.makeHash()
+    downsampler.downsample(500)
+    downsampler.vizHash(file='293t_gsLSH_vizhash')
 
-
-    downsampler = diverseLSH(X_dimred, numCenters = 2, batch=1000)
-    for k in range(2,20):
-        print(downsampler)
-        downsampler.numCenters=k
-        downsampler.makeHash()
-        downsampler.makeFinder()
-        downsampler.downsample(100)
-        downsampler.vizHash(file='293t_diverseLSH_vizhash_{}'.format(k))
-        downsampler.vizSample(file='293t_diverseLSH_vizsample_{}'.format(k))
-        print('k={} done'.format(k))
+    # downsampler = diverseLSH(X_dimred, numCenters = 2, batch=1000)
+    # for k in range(2,20):
+    #     print(downsampler)
+    #     downsampler.numCenters=k
+    #     downsampler.makeHash()
+    #     downsampler.makeFinder()
+    #     downsampler.downsample(100)
+    #     downsampler.vizHash(file='293t_diverseLSH_vizhash_{}'.format(k))
+    #     downsampler.vizSample(file='293t_diverseLSH_vizsample_{}'.format(k))
+    #     print('k={} done'.format(k))
 
 
     # downsampler = svdSampler(X_dimred, batch=500)
