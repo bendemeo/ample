@@ -212,6 +212,7 @@ class ballLSH(diverseLSH):
 
         while sum(covered) < self.numObs:
             c = centerSampler.addSample()
+            print('{} centers added'.format(len(centerSampler.sample)))
             center = self.data[c,:]
             centerDists = []
             for i in range(self.numObs):
