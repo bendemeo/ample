@@ -100,6 +100,7 @@ if __name__ == '__main__':
 
     for i in np.arange(3,20,1).tolist():
         downsampler = diverseSampler(X_dimred, batch=1000, numCenters=i, replace=False)
+        downsampler.downsample(100)
         downsampler.vizSample(file='293t_diverseSampler_{}_centers'.format(i))
 
 
