@@ -21,10 +21,8 @@ METHOD = 'svd'
 DIMRED = 100
 
 
+data_names = ['data/293t_jurkat/jurkat_293t_99_1']
 
-
-
-data_names = [ 'data/293t_jurkat/jurkat_293t_99_1' ]
 
 def plot(X, title, labels, bold=None):
     plot_clusters(X, labels)
@@ -32,6 +30,7 @@ def plot(X, title, labels, bold=None):
         plot_clusters(X[bold], labels[bold], s=20)
     plt.title(title)
     plt.savefig('{}.png'.format(title))
+
 
 if __name__ == '__main__':
     datasets, genes_list, n_cells = load_names(data_names, norm=False)
@@ -59,52 +58,78 @@ if __name__ == '__main__':
 
         numObs = data.shape[0]
 
-        params = {'target':ks}
+        params = {'target': ks}
         print('k is {}'.format(ks))
 
         results = try_params(X_dimred, 'gsLSH', params,
-            ['max_min_dist','time','kmeans_ami','lastCounts','remnants','rare',
-            'guess','actual','error', 'gridSize', 'maxCounts'],
-            cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
-            Ns=Ns,
-            n_seeds=3
-        )
-        results.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
-
+                             ['max_min_dist', 'time', 'kmeans_ami', 'lastCounts', 'remnants', 'rare',
+                              'guess', 'actual', 'error', 'gridSize', 'maxCounts'],
+                             cell_labels=cell_labels, rare_label=le.transform(['293t'])[
+                                 0],
+                             Ns=Ns,
+                             n_seeds=3
+                             )
+        results.to_csv(
+            'target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
     def randomGrid_exp(data, filename, Ns, targets, iter=1, n_grids=3):
         ''' random grid experiment formed with OR of some random grids'''
 
         params = {
-            'gridSize':[0.01],
-            'numHashes':[n_grids],
-            'numBands':[n_grids],
-            'bandSize':[1],
+            'gridSize': [0.01],
+            'numHashes': [n_grids],
+            'numBands': [n_grids],
+            'bandSize': [1],
             'target': targets
         }
 
         results = try_params(data, 'randomGridLSH', params,
-            ['max_min_dist','time','kmeans_ami','lastCounts','maxCounts','remnants','rare',
-            'guess','actual','error', 'gridSize'],
-            cell_labels=cell_labels, rare_label = le.transform(['293t'])[0],
-            Ns=Ns,
-            n_seeds=3,
-            optimizeParams=['gridSize'],
-            inverted=[True]
-        )
+                             ['max_min_dist', 'time', 'kmeans_ami', 'lastCounts', 'maxCounts', 'remnants', 'rare',
+                              'guess', 'actual', 'error', 'gridSize'],
+                             cell_labels=cell_labels, rare_label=le.transform(['293t'])[
+                                 0],
+                             Ns=Ns,
+                             n_seeds=3,
+                             optimizeParams=['gridSize'],
+                             inverted=[True]
+                             )
 
-        results.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+        results.to_csv(
+            'target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
+    # downsampler = ballLSH(X_dimred)
+    # for eps in np.arange(0.5, 1, 0.01).tolist():
+    #     downsampler.epsilon = eps
+    #     downsampler.makeHash()
+    #     downsampler.makeFinder()
+    #     downsampler.vizHash(file='293t_ballLSH_hashes_eps_{}'.format(eps))
+    #     downsampler.downsample(200)
+    #     downsampler.vizSample(file='293t_ballLSH_sample_eps_{}'.format(eps))
+    #
 
+    filename = 'ballLSHTest'
+    iter = 1
+    testParams = {
+        'epsilon': np.arange(start=0.5, stop=1, step=0.01).tolist()
+    }
 
-    downsampler = ballLSH(X_dimred)
-    for eps in np.arange(0.5, 1, 0.01).tolist():
-        downsampler.epsilon = eps
-        downsampler.makeHash()
-        downsampler.makeFinder()
-        downsampler.vizHash(file='293t_ballLSH_hashes_eps_{}'.format(eps))
-        downsampler.downsample(200)
-        downsampler.vizSample(file='293t_ballLSH_sample_eps_{}'.format(eps))
+    tests = ['max_min_dist', 'time', 'maxCounts',
+             'rare', 'cluster_counts', 'occSquares']
+
+    ballLSH_gridTest = try_params(X_dimred, 'ballLSH',
+                                  params=testParams,
+                                  tests=tests,
+                                  n_seeds=5,
+                                  cell_labels=cell_labels,
+                                  rare_label=rare_label,
+                                  Ns=[100, 200, 500]
+                                  )
+
+    # with open("gsLSH_gridTest.file", "wb") as f:
+    #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
+
+    ballLSH_gridTest.to_csv(
+        'target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
     # downsampler = gsLSH(X_dimred, gridSize=0.35)
     #
@@ -122,7 +147,6 @@ if __name__ == '__main__':
     #     downsampler.vizHash(file='293t_diverseLSH_vizhash_{}'.format(k))
     #     downsampler.vizSample(file='293t_diverseLSH_vizsample_{}'.format(k))
     #     print('k={} done'.format(k))
-
 
     # downsampler = svdSampler(X_dimred, batch=500)
     # # downsampler.normalize()
@@ -149,8 +173,6 @@ if __name__ == '__main__':
     # filename='proj_gridTest'
     # iter=4
     # testresults_proj.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
-
-
 
     # test_targets=[10,20,30, 40, 60, 80, 100, 200, 400, 500]
     #
@@ -251,7 +273,6 @@ if __name__ == '__main__':
     #
     # projLSH_Test.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
-
     # filename='randomGrid_50hash'
     # iter = 1
     # gridSizes=np.arange(start=1,stop=0.01,step=-0.01).tolist()
@@ -277,8 +298,6 @@ if __name__ == '__main__':
     #
 
     #orig_exp(X_dimred, '293t_gs_orig')
-
-
 
     # ktest_cosine = try_params(X_dimred, 'cosineLSH',
     #     params={
@@ -368,7 +387,6 @@ if __name__ == '__main__':
     #
     # exit()
 
-
     # filename='293t_treeLSHTest_clustcounts'
     #
     # iter=1
@@ -428,7 +446,6 @@ if __name__ == '__main__':
     #
     # gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
-
     # filename='293t_angleSampler_clustcounts'
     #
     # iter=1
@@ -438,7 +455,6 @@ if __name__ == '__main__':
     # downsampler = splitLSH(X_dimred)
     # downsampler.makeHash()
     # downsampler.vizHash('splithash')
-
 
     # downsampler = angleSampler(X_dimred, strength=3)
     # downsampler.makeWeights()
@@ -465,7 +481,6 @@ if __name__ == '__main__':
     #
     # gsLSH_gridTest.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
-
     # Ns=[500]
     # bandSizes=np.arange(10,20,1)
     # hashSizes=[100]*len(bandSizes)
@@ -481,7 +496,6 @@ if __name__ == '__main__':
     #     #entropy=True,
     #     #max_min_dist=True
     # )
-
 
     # params_gs = {'gridSize': [0.01]}
     #
@@ -547,9 +561,6 @@ if __name__ == '__main__':
     # Ns=[200,300,800]
     # )
 
-
-
-
     #
     #
     # testresults = pd.concat([testresults_cosine,testresults_grid, testresults_proj, testresults_randomGrid, testresults_gs])
@@ -558,7 +569,6 @@ if __name__ == '__main__':
     # print(testresults)
     # testresults.to_csv('target/experiments/{}.txt.5'.format(NAMESPACE), sep='\t')
     #
-
 
     exit()
 
@@ -572,24 +582,22 @@ if __name__ == '__main__':
 
     balance(X_dimred, NAMESPACE, cell_labels)
 
+    # try_lsh_params(
+    #     X_dimred, 'cosineLSH', name=NAMESPACE, hashSizes=hashSizes, bandSizes=bandSizes, bandNums=bandNums, tests=['kmeans_ami','max_min_dist','rare', 'lastCounts','remnants'], cell_labels=cell_labels, rare_label=le.transform(['293t'])[0],
+    #     n_seeds=5, Ns=Ns, makeVisualization = True,
+    #     cell_types=labels
+    # )
 
-        # try_lsh_params(
-        #     X_dimred, 'cosineLSH', name=NAMESPACE, hashSizes=hashSizes, bandSizes=bandSizes, bandNums=bandNums, tests=['kmeans_ami','max_min_dist','rare', 'lastCounts','remnants'], cell_labels=cell_labels, rare_label=le.transform(['293t'])[0],
-        #     n_seeds=5, Ns=Ns, makeVisualization = True,
-        #     cell_types=labels
-        # )
-
-        # experiments_modular(
-        #     X_dimred, sampling_fns=[lshSketch],
-        #     name=NAMESPACE,
-        #     cell_labels = cell_labels,
-        #     kmeans_ami = True,
-        #     louvain_ami = False,
-        #     rare=True,
-        #     rare_label=le.transform(['293t'])[0],
-        #
-        # )
-
+    # experiments_modular(
+    #     X_dimred, sampling_fns=[lshSketch],
+    #     name=NAMESPACE,
+    #     cell_labels = cell_labels,
+    #     kmeans_ami = True,
+    #     louvain_ami = False,
+    #     rare=True,
+    #     rare_label=le.transform(['293t'])[0],
+    #
+    # )
 
     # params_randomGrid = {
     #     'numHashes':[4],
