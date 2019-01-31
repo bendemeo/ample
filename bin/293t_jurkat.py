@@ -110,7 +110,7 @@ if __name__ == '__main__':
     filename = 'ballLSHTest'
     iter = 2
     testParams = {
-        'epsilon': np.arange(start=0.5, stop=0.75, step=0.02).tolist(),
+        'epsilon': np.arange(start=0.2, stop=0.75, step=0.02).tolist(),
         'ord': [float('inf')],
         'batch':[2000]
     }
