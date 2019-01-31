@@ -141,6 +141,8 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
                 for t in tests:
                     if t == 'time':
                         results['time'].append(t1 - t0)
+                    elif t == 'centers':
+                        results['centers'].append(len(downsampler.centers))
                     elif t == 'cluster_counts':
 
                         cell_labels = kwargs['cell_labels']

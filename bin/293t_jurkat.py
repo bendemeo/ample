@@ -85,7 +85,7 @@ if __name__ == '__main__':
 
         results = try_params(data, 'randomGridLSH', params,
                              ['max_min_dist', 'time', 'kmeans_ami', 'lastCounts', 'maxCounts', 'remnants', 'rare',
-                              'guess', 'actual', 'error', 'gridSize'],
+                              'guess', 'actual', 'error', 'gridSize', 'centers'],
                              cell_labels=cell_labels, rare_label=le.transform(['293t'])[
                                  0],
                              Ns=Ns,
