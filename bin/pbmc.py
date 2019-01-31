@@ -89,25 +89,51 @@ if __name__ == '__main__':
     genes = []
 
 
-    size=1000
-    downsampler = svdSampler(X_dimred, batch=500)
-    # downsampler.normalize()
-    downsampler.downsample(size)
-    print('visualizing...')
-    downsampler.vizSample(file='pbmc_downsample_{}'.format(size),
-                          c=list(range(size)), cmap='hot', anno=True, full=False)
+    filename = 'pbmc_ballLSHTest'
+    iter = 1
+    testParams = {
+        'epsilon': np.arange(start=1, stop=0.01, step=-0.01).tolist()
+    }
+
+    tests = ['max_min_dist', 'time', 'maxCounts',
+             'rare', 'cluster_counts', 'occSquares']
+
+    X_dimred_scaled = X_dimred / X_dimred.max()
+    ballLSH_gridTest = try_params(X_dimred_scaled, 'ballLSH',
+                                  params=testParams,
+                                  tests=tests,
+                                  n_seeds=5,
+                                  cell_labels=cell_labels,
+                                  rare_label=rare_label,
+                                  Ns=[100, 200, 500],
+                                  cluster_labels = labels
+                                  )
+    # with open("gsLSH_gridTest.file", "wb") as f:
+    #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
+
+    ballLSH_gridTest.to_csv(
+        'target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
-
-
-    filename='pbmc_svdTest_500'
-    experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels='grid',
-        gene_names=viz_genes, genes=genes, gene_expr=vstack(datasets),
-        kmeans=False,
-        visualize_orig=False,
-        sample_type='gsLSH_wt',
-        lsh=True, optimize_grid_size=False,
-        weighted = True, alpha = alpha)
+    # size=1000
+    # downsampler = svdSampler(X_dimred, batch=500)
+    # # downsampler.normalize()
+    # downsampler.downsample(size)
+    # print('visualizing...')
+    # downsampler.vizSample(file='pbmc_downsample_{}'.format(size),
+    #                       c=list(range(size)), cmap='hot', anno=True, full=False)
+    #
+    #
+    #
+    #
+    # filename='pbmc_svdTest_500'
+    # experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels='grid',
+    #     gene_names=viz_genes, genes=genes, gene_expr=vstack(datasets),
+    #     kmeans=False,
+    #     visualize_orig=False,
+    #     sample_type='gsLSH_wt',
+    #     lsh=True, optimize_grid_size=False,
+    #     weighted = True, alpha = alpha)
 
     # experiment(gs_gap, X_dimred, NAMESPACE, filename='orig_fn', cell_labels=cell_labels,
     #             gene_names=viz_genes, genes=genes, gene_expr=vstack(datasets),
