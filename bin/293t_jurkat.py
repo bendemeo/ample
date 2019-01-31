@@ -122,7 +122,8 @@ if __name__ == '__main__':
                                   n_seeds=5,
                                   cell_labels=cell_labels,
                                   rare_label=rare_label,
-                                  Ns=[100, 200, 500]
+                                  Ns=[100, 200, 500],
+                                  cluster_labels = labels
                                   )
 
     # with open("gsLSH_gridTest.file", "wb") as f:
