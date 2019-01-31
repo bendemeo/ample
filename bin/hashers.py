@@ -161,13 +161,13 @@ class diverseSampler(seqSampler):
 
     def addSample(self):
         if self.iter >= self.numCenters:
-            print('resetting')
-            print(self.centerSampler.sample)
+            # print('resetting')
+            # print(self.centerSampler.sample)
             self.centerSampler.sample.sort(reverse=True)
             for new in self.centerSampler.sample:
                 del self.avail[new]
             #clean slate on sampler
-            print(self.data[self.avail,:])
+            #print(self.data[self.avail,:])
             self.centerSampler = detSampler(self.data[self.avail,:], self.batch, self.replace)
             self.iter = 0
 
