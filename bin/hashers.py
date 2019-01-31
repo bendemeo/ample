@@ -155,6 +155,7 @@ class diverseSampler(seqSampler):
         self.numCenters = numCenters # before repeat
         self.centers = []
         self.iter = 0 # how many centers we've sampled since last
+        self.batch=batch
 
     def addSample(self):
         if self.iter >= self.numCenters:
