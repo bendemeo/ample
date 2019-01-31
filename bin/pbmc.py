@@ -92,7 +92,7 @@ if __name__ == '__main__':
     filename = 'pbmc_ballLSHTest'
     iter = 1
     testParams = {
-        'epsilon': np.arange(start=2, stop=1, step=-0.02).tolist(),
+        'epsilon': np.arange(start=1.8, stop=1, step=-0.02).tolist(),
         'ord':[float('inf')],
         'batch':[2000]
     }
