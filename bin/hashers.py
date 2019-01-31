@@ -104,7 +104,7 @@ class diverseLSH(LSH):
             centerDists = []
             for c in self.centers:
                 centerDists.append(np.linalg.norm(self.data[i,:]
-                                                  -self.data[c,:], ord=float('inf')))
+                                                  -self.data[c,:]))
             hashes[i,0] = self.centers[centerDists.index(min(centerDists))]
 
         self.hash = hashes
