@@ -157,9 +157,9 @@ class diverseSampler(seqSampler):
         self.iter = 0 # how many centers we've sampled since last
 
     def addSample(self):
-        if self.iter == self.numCenters:
+        if self.iter >= self.numCenters:
             #clean slate on sampler
-            self.centerSampler = detSampler(data, batch, replace)
+            self.centerSampler = detSampler(self.data, self.batch, self.replace)
 
         new = self.centerSampler.addSample()
         self.sample.append(new)
