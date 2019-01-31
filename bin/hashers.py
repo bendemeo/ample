@@ -19,6 +19,7 @@ class detSampler(seqSampler):
         seqSampler.__init__(self, data, replace)
         self.batch = batch
         self.kernel = None
+        self.sample = []
 
     def addSample(self, viz=False, file=None, **kwargs):
         if len(self.sample) == 0:
@@ -156,15 +157,24 @@ class diverseSampler(seqSampler):
         self.centers = []
         self.iter = 0 # how many centers we've sampled since last
         self.batch=batch
+        self.avail = list(range(self.numObs))
 
     def addSample(self):
         if self.iter >= self.numCenters:
+            print('resetting')
+            print(self.centerSampler.sample)
+            self.centerSampler.sample.sort(reverse=True)
+            for new in self.centerSampler.sample:
+                del self.avail[new]
             #clean slate on sampler
-            self.centerSampler = detSampler(self.data, self.batch, self.replace)
+            print(self.data[self.avail,:])
+            self.centerSampler = detSampler(self.data[self.avail,:], self.batch, self.replace)
             self.iter = 0
 
         new = self.centerSampler.addSample()
+
         self.sample.append(new)
+        #self.centerSampler.sample.append(new)
         self.iter += 1
 
         return(new)

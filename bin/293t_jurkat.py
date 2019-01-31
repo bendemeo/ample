@@ -103,6 +103,7 @@ if __name__ == '__main__':
         downsampler.numCenters = i
         downsampler.iter = i
         downsampler.sample = []
+        downsampler.avail = list(range(downsampler.numObs))
         downsampler.downsample(100)
         print('done downsampling')
         downsampler.vizSample(file='293t_diverseSampler_{}_centers'.format(i))

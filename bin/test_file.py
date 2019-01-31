@@ -56,7 +56,7 @@ if __name__ == '__main__':
     gauss2D_2 = gauss_test([5000, 200],2,1,[10])
     print(gauss2D)
 
-    downsampler = diverseSampler(gauss2D, batch=1000, numCenters=7)
+    downsampler = diverseSampler(gauss2D, batch=100, numCenters=7)
     downsampler.downsample(100)
     downsampler.vizSample()
 
