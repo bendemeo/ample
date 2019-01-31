@@ -97,6 +97,14 @@ if __name__ == '__main__':
         results.to_csv(
             'target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
+
+    for i in np.arange(3,20,1).tolist():
+        downsampler = diverseSampler(X_dimred, batch=1000, numCenters=i, replace=False)
+        downsampler.vizSample(file='293t_diverseSampler_{}_centers'.format(i))
+
+
+
+
     # downsampler = ballLSH(X_dimred)
     # for eps in np.arange(0.5, 1, 0.01).tolist():
     #     downsampler.epsilon = eps
@@ -107,32 +115,32 @@ if __name__ == '__main__':
     #     downsampler.vizSample(file='293t_ballLSH_sample_eps_{}'.format(eps))
     #
 
-    filename = 'ballLSHTest'
-    iter = 2
-    testParams = {
-        'epsilon': np.arange(start=0.2, stop=0.75, step=0.02).tolist(),
-        'ord': [float('inf')],
-        'batch':[2000]
-    }
-
-    tests = ['max_min_dist', 'time', 'maxCounts',
-             'rare', 'cluster_counts', 'occSquares', 'centers']
-
-    ballLSH_gridTest = try_params(X_dimred, 'ballLSH',
-                                  params=testParams,
-                                  tests=tests,
-                                  n_seeds=5,
-                                  cell_labels=cell_labels,
-                                  rare_label=rare_label,
-                                  Ns=[100, 200, 500],
-                                  cluster_labels = labels
-                                  )
-
-    # with open("gsLSH_gridTest.file", "wb") as f:
-    #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
-
-    ballLSH_gridTest.to_csv(
-        'target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+    # filename = 'ballLSHTest'
+    # iter = 2
+    # testParams = {
+    #     'epsilon': np.arange(start=0.2, stop=0.75, step=0.02).tolist(),
+    #     'ord': [float('inf')],
+    #     'batch':[2000]
+    # }
+    #
+    # tests = ['max_min_dist', 'time', 'maxCounts',
+    #          'rare', 'cluster_counts', 'occSquares', 'centers']
+    #
+    # ballLSH_gridTest = try_params(X_dimred, 'ballLSH',
+    #                               params=testParams,
+    #                               tests=tests,
+    #                               n_seeds=5,
+    #                               cell_labels=cell_labels,
+    #                               rare_label=rare_label,
+    #                               Ns=[100, 200, 500],
+    #                               cluster_labels = labels
+    #                               )
+    #
+    # # with open("gsLSH_gridTest.file", "wb") as f:
+    # #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
+    #
+    # ballLSH_gridTest.to_csv(
+    #     'target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
     # downsampler = gsLSH(X_dimred, gridSize=0.35)
     #

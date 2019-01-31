@@ -56,12 +56,17 @@ if __name__ == '__main__':
     gauss2D_2 = gauss_test([5000, 200],2,1,[10])
     print(gauss2D)
 
-    downsampler = ballLSH(gauss2D, epsilon=6, ord=float('inf'))
-    downsampler.makeHash()
-    print(downsampler.occSquares)
-    downsampler.vizHash()
+    downsampler = diverseSampler(gauss2D, batch=100, numCenters=10)
     downsampler.downsample(100)
     downsampler.vizSample()
+
+
+    # downsampler = ballLSH(gauss2D, epsilon=6, ord=float('inf'))
+    # downsampler.makeHash()
+    # print(downsampler.occSquares)
+    # downsampler.vizHash()
+    # downsampler.downsample(100)
+    # downsampler.vizSample()
     #print(downsampler.hash)
     # downsampler.makeFinder()
     # downsampler.downsample(100)

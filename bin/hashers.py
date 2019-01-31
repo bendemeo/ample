@@ -148,6 +148,25 @@ class diverseLSH(LSH):
         mpl.show()
         mpl.close()
 
+class diverseSampler(seqSampler):
+    def __init__(self, data, batch, numCenters, replace=False):
+        seqSampler.__init__(self, data, replace)
+        self.centerSampler = detSampler(data, batch, replace)
+        self.numCenters = numCenters # before repeat
+        self.centers = []
+        self.iter = 0 # how many centers we've sampled since last
+
+    def addSample(self):
+        if self.iter == self.numCenters:
+            #clean slate on sampler
+            self.centerSampler = detSampler(data, batch, replace)
+
+        new = self.centerSampler.addSample()
+        self.sample.append(new)
+
+        return(new)
+
+
 
 class rankLSH(diverseLSH):
     """like diverseLSH but uses epsilon-balls around each center"""

@@ -1,6 +1,7 @@
 library(tidyverse)
 library(data.table)
 library(dplyr)
+library(gridExtra)
 setwd('~/Documents/bergerlab/lsh/ample/')
 
 ### comparing different LSH
@@ -125,6 +126,7 @@ sizetest=fread('target/experiments/gsGridTest.txt.3')
 sizetest_rg=fread('target/experiments/randomGridTest.txt.1') # 3 random grids
 sizetest_cos = fread('target/experiments/cosTest.txt.1')
 sizetest_proj = fread('target/experiments/projTest.txt.1')
+sizetest_ball = fread('target/experiments/ballLSHTest.txt.2')
 
 ##gsLSH plots
 
@@ -133,10 +135,21 @@ sizetest %>% filter(N==500) %>%
   ggplot(aes(x=gridSize, y=max_min_dist))+
   geom_boxplot(aes(group=cut_width(gridSize,0.03)))
 
+
 #gridsize vs rare
-sizetest %>% filter(N==500) %>%
+g0 = sizetest %>% filter(N==500) %>%
   ggplot(aes(x=gridSize, y=rare))+
   geom_boxplot(aes(group=cut_width(gridSize,0.01)))
+
+
+g1 = sizetest %>% filter(N==500) %>%
+  ggplot(aes(x=gridSize, y=maxCounts))+
+  geom_point()
+
+g2 = sizetest %>% filter(N==500) %>%
+  ggplot(aes(x=gridSize, y=max_min_dist))+
+  geom_boxplot(aes(group=cut_width(gridSize,0.01)))
+
 
 sizetest %>% filter(N==500) %>%
   ggplot(aes(x=maxCounts,y=max_min_dist))+
@@ -150,12 +163,13 @@ sizetest %>% filter(rare==28, N==500) %>%
    ggplot(aes(x=maxCounts))+
    geom_histogram()
 
-sizetest %>% filter(N==500) %>%
-  ggplot(aes(x=gridSize, y=maxCounts))+
-  geom_point()
+
 
 sizetest %>% filter(N==500)  %>% ggplot(aes(x=rare,y=max_min_dist))+
   geom_boxplot(aes(group=rare))
+
+
+
 
 #N vs rare
 sizetest %>% ggplot(aes(x=N, y=rare))+
@@ -305,20 +319,22 @@ pbmc_nonwt = fread('target/experiments/gsGridTest_clustcounts_nonwt.txt.1')
 pbmc_nonwt_2 = fread('target/experiments/pbmc_gsGridTest_clustcounts_nonwt.txt.1')
 pbmc_wt = fread('target/experiments/gsGridTest_clustcounts_wt.txt.1')
 pbmc_grid_nonrandom = fread('target/experiments/pbmc_gridLSHTest_clustcounts.txt.1')
+pbmc_grid_random = fread('target/experiments/pbmc_gridLSHTest_clustcounts_randomorigin_.txt.2')
 
 pbmc_nonwt = melt(pbmc_nonwt, id.vars=c('gridSize','max_min_dist', 'time'), measure.vars=c('b_cells','cd14_monocytes', "cd4_t_helper",   "cd56_nk",       
                                                                      "cytotoxic_t",    "memory_t",       "regulatory_t"))
 
 pbmc_wt = melt(pbmc_wt, id.vars=c('gridSize','max_min_dist', 'time'), measure.vars=c('b_cells','cd14_monocytes', "cd4_t_helper",   "cd56_nk",       
                                                                                            "cytotoxic_t",    "memory_t",       "regulatory_t"))
-pbmc_grid_nonrandom = melt(pbmc_grid_nonrandom, id.vars=c("max_min_dist","time","maxCounts","randomize_origin","gridSize"), 
+pbmc_grid_nonrandom = melt(pbmc_grid_nonrandom, id.vars=c("max_min_dist","time","maxCounts","randomize_origin","gridSize", "N"), 
                            measure.vars = c("CD14+_Monocyte","CD19+_B","CD4+/CD25_T_Reg","CD4+/CD45RA+/CD25-_Naive_T","CD4+/CD45RO+_Memory",
                                             "CD4+_T_Helper2","CD56+_NK","CD8+/CD45RA+_Naive_Cytotoxic","CD8+_Cytotoxic_T","Dendritic"))
 pbmc_nonwt_2 = melt(pbmc_nonwt_2, id.vars=c("max_min_dist","time","maxCounts","gridSize"), 
                            measure.vars = c("CD14+_Monocyte","CD19+_B","CD4+/CD25_T_Reg","CD4+/CD45RA+/CD25-_Naive_T","CD4+/CD45RO+_Memory",
                                             "CD4+_T_Helper2","CD56+_NK","CD8+/CD45RA+_Naive_Cytotoxic","CD8+_Cytotoxic_T","Dendritic"))
-
-
+pbmc_grid_random = melt(pbmc_grid_random, id.vars=c("max_min_dist","time","maxCounts","randomize_origin","gridSize"), 
+                           measure.vars = c("CD14+_Monocyte","CD19+_B","CD4+/CD25_T_Reg","CD4+/CD45RA+/CD25-_Naive_T","CD4+/CD45RO+_Memory",
+                                            "CD4+_T_Helper2","CD56+_NK","CD8+/CD45RA+_Naive_Cytotoxic","CD8+_Cytotoxic_T","Dendritic"))
 
 pdf('plots/pbmc_gridLSH_nonrandom_size_vs_clustCounts.pdf', 15, 8)
 pbmc_grid_nonrandom %>% ggplot(aes(x=gridSize, y=value, color=variable))+
@@ -332,9 +348,161 @@ pbmc_grid_nonrandom %>% ggplot(aes(x=gridSize, y=value, color=variable))+
 dev.off()
 
 
+pdf('plots/pbmc_gridLSH_nonrandom_size_vs_clustCounts_all.pdf', 10, 6)
+pbmc_grid_nonrandom %>% ggplot(aes(x=gridSize, y=value, color=variable))+
+  geom_line(span=0.1)
+dev.off()
+
+g0 = pbmc_grid_nonrandom %>% ggplot(aes(x=gridSize, y=value, color=variable))+
+  geom_smooth(span=0.1)+
+  theme(legend.position = 'top')+
+  labs(y = 'Membership in size-1000 subsample')+
+  ggtitle('PBMC 68K gridLSH')
+
+g1 = pbmc_grid_nonrandom %>% ggplot(aes(x=gridSize, y=max_min_dist))+
+  geom_boxplot(aes(group = gridSize))+
+  labs(y = 'Hausdorff distance')
+
+g2 = pbmc_grid_nonrandom %>% ggplot(aes(x=gridSize, y=maxCounts))+
+  geom_line(span=0.1)+
+  labs(y = 'grid squares occupied')
+
+
+pdf('plots/pbmc_68k_gridtests.pdf', 12, 12)
+grid.arrange(g0,g1,g2)
+dev.off()
+
+
+pbmc_grid_nonrandom %>% ggplot(aes(x=maxCounts, y=max_min_dist, color = variable))+
+  geom_line(span=0.1)
+
+pbmc_grid_nonrandom %>% ggplot(aes(x=maxCounts, y=value, color = variable))+
+  geom_line(span=0.1)
+
+
+ggplot(pbmc_grid_random, aes(x=maxCounts, y=time))+
+  geom_point()
+
+
+
+
+
+pbmc_grid_nonrandom %>% ggplot(aes(x=max_min_dist, y=value, color = variable))+
+  geom_line(span=0.1)
+
 pdf('plots/pbmc_grid_vs_clustcounts.pdf', 8,5)
 ggplot(pbmc_nonwt, aes(x=gridSize, y=value, color=variable))+
   facet_wrap(~variable)+
   geom_smooth(span=0.1)
   geom_boxplot(aes(group= paste0(variable,cut_width(gridSize,0.03))))
 dev.off()
+
+pdf('plots/pbmc_gridLSH_random_size_vs_clustCounts_all.pdf', 10, 6)
+pbmc_grid_random %>% ggplot(aes(x=gridSize, y=value, color=variable))+
+  geom_smooth(span=0.2)
+dcolev.off()
+
+ggplot(pbmc_nonwt_2, aes(x=gridSize, y=value, color=variable))+
+  geom_smooth(span=0.2)
+geom_boxplot(aes(group= paste0(variable,cut_width(gridSize,0.03))))
+dev.off()
+
+
+
+######quick experiments on short data ######
+pbmc_grid_random_short = fread('target/experiments/pbmc_gridLSHTest_clustcounts_randomorigin_short.txt.1')
+pbmc_grid_nonrandom_short = fread('target/experiments/pbmc_gridLSHTest_clustcounts_randomorigin_short.txt.1')
+
+
+
+pbmc_grid_random_short = melt(pbmc_grid_random_short, id.vars=c("max_min_dist","time","maxCounts","randomize_origin","gridSize"), 
+                        measure.vars = c("CD14+_Monocyte","CD19+_B","CD4+/CD25_T_Reg","CD4+/CD45RA+/CD25-_Naive_T","CD4+/CD45RO+_Memory",
+                                         "CD4+_T_Helper2","CD56+_NK","CD8+/CD45RA+_Naive_Cytotoxic","CD8+_Cytotoxic_T","Dendritic"))
+pbmc_grid_nonrandom_short = melt(pbmc_grid_nonrandom_short, id.vars=c("max_min_dist","time","maxCounts","randomize_origin","gridSize"), 
+                              measure.vars = c("CD14+_Monocyte","CD19+_B","CD4+/CD25_T_Reg","CD4+/CD45RA+/CD25-_Naive_T","CD4+/CD45RO+_Memory",
+                                               "CD4+_T_Helper2","CD56+_NK","CD8+/CD45RA+_Naive_Cytotoxic","CD8+_Cytotoxic_T","Dendritic"))
+
+
+
+pbmc_grid_nonrandom_short %>% ggplot(aes(x=gridSize, y=value, color=variable))+
+  geom_smooth(span=0.2)
+
+pbmc_grid_random_short %>% ggplot(aes(x=gridSize, y=value, color=variable))+
+  geom_smooth(span=0.2)
+
+
+
+
+
+
+#############
+scores = fread('target/experiments/pbmc_gridLSHTest_clustcounts_.txt.3')
+
+scores <- melt(scores, id.vars=c("max_min_dist","time","maxCounts","randomize_origin","gridSize"),
+               measure.vars = c('CD14+_Monocyte','CD19+_B','CD4+/CD25_T_Reg','CD4+/CD45RA+/CD25-_Naive_T',
+                                'CD4+/CD45RO+_Memory','CD4+_T_Helper2','CD56+_NK','CD8+/CD45RA+_Naive_Cytotoxic',
+                                'CD8+_Cytotoxic_T','Dendritic','CD14+_Monocyte_score','CD19+_B_score',
+                                'CD4+/CD25_T_Reg_score','CD4+/CD45RA+/CD25-_Naive_T_score','CD4+/CD45RO+_Memory_score',
+                                'CD4+_T_Helper2_score','CD56+_NK_score','CD8+/CD45RA+_Naive_Cytotoxic_score',
+                                'CD8+_Cytotoxic_T_score','Dendritic_score')    )
+
+ggplot(aes(x=gridSize,y=value, color=variable))+
+  geom_line()
+
+
+
+
+
+
+
+
+
+#######treeLSH testing############
+tree = fread('target/experiments/pbmc_treeLSHTest_clustcounts_.txt.1')
+
+tree = melt(tree, id.vars=c("max_min_dist","time","occSquares", "children", "splitSize", "N"), 
+     measure.vars = c("CD14+_Monocyte","CD19+_B","CD4+/CD25_T_Reg","CD4+/CD45RA+/CD25-_Naive_T","CD4+/CD45RO+_Memory",
+                      "CD4+_T_Helper2","CD56+_NK","CD8+/CD45RA+_Naive_Cytotoxic","CD8+_Cytotoxic_T","Dendritic"))
+
+tree %>% ggplot(aes(x=N, y=value, color = variable))+
+  geom_line()
+
+pbmc_grid_nonrandom %>% filter(gridSize==0.3) %>%
+  ggplot(aes(x=N, y=value, color = variable))+
+  geom_line()
+
+
+
+#######
+t_tree = fread('target/experiments/293t_treeLSHTest_clustcounts.txt.3')
+
+t_tree %>% ggplot(aes(x=N, y=rare))+
+  geom_boxplot(aes(group = N))
+
+
+##########MAKE PDFS#############
+#gridsize vs rare
+r0 = sizetest %>% filter(N==500) %>%
+  ggplot(aes(x=gridSize, y=rare))+
+  geom_boxplot(aes(group=cut_width(gridSize,0.01)))+
+  ggtitle('293T Jurkat grid size tests')+
+  labs(y='Rare cells in 500')
+
+
+r1 = sizetest %>% filter(N==500) %>%
+  ggplot(aes(x=gridSize, y=maxCounts))+
+  geom_point()+
+  labs(y='Occupied grid squares')
+
+r2 = sizetest %>% filter(N==500) %>%
+  ggplot(aes(x=gridSize, y=max_min_dist))+
+  geom_boxplot(aes(group=cut_width(gridSize,0.01)))+
+  labs(y='Hausdorff distance')
+
+
+pdf('plots/293Tjurkat_gridtests.pdf')
+grid.arrange(r0,r2,r1)
+dev.off()
+
+
+pdf('
