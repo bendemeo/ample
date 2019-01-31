@@ -96,7 +96,7 @@ if __name__ == '__main__':
     }
 
     tests = ['max_min_dist', 'time', 'maxCounts',
-             'rare', 'cluster_counts', 'occSquares']
+              'cluster_counts', 'occSquares']
 
     X_dimred_scaled = X_dimred / X_dimred.max()
     ballLSH_gridTest = try_params(X_dimred_scaled, 'ballLSH',
@@ -104,7 +104,6 @@ if __name__ == '__main__':
                                   tests=tests,
                                   n_seeds=5,
                                   cell_labels=cell_labels,
-                                  rare_label=rare_label,
                                   Ns=[100, 200, 500],
                                   cluster_labels = labels
                                   )
