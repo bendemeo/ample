@@ -94,6 +94,7 @@ if __name__ == '__main__':
         )
         results.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
+    downsampler = gsLSH(X_dimred, gridSize=0.35)
 
 
 
@@ -102,7 +103,9 @@ if __name__ == '__main__':
         print(downsampler)
         downsampler.numCenters=k
         downsampler.makeHash()
+        downsampler.downsample(100)
         downsampler.vizHash(file='293t_diverseLSH_vizhash_{}'.format(k))
+        downsampler.vizSample(file='293t_diverseLSH_vizsample_{}'.format(k))
         print('k={} done'.format(k))
 
 
