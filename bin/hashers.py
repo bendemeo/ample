@@ -22,11 +22,13 @@ class detSampler(seqSampler):
 
     def addSample(self, viz=False, file=None, **kwargs):
         if len(self.sample) == 0:
-            self.sample.append(np.random.choice(self.numObs))
+            new = np.random.choice(self.numObs)
+            self.sample.append(new)
             self.kernel = np.matrix(np.matmul(self.data[self.sample, :],
                                               np.transpose(self.data[self.sample, :])))
+            return(new)
         else:
-            #self.normalized = sk.preprocessing.normalize(self.data, axis=1)
+            # self.normalized = sk.preprocessing.normalize(self.data, axis=1)
             size = min([self.batch, len(self.avail)])  # how many to check
             candidates = np.random.choice(self.avail, size, replace=False)
             dets = []
@@ -59,8 +61,8 @@ class detSampler(seqSampler):
                 # print(s)
                 # dets.append(np.prod(s))
 
-            print('det size {} took {}'.format(len(self.sample), t1 - t0))
-            print(self.kernel.shape)
+            #print('det size {} took {}'.format(len(self.sample), t1 - t0))
+            #print(self.kernel.shape)
 
             ind = dets.index(max(dets))
             new = candidates[ind]
@@ -76,6 +78,7 @@ class detSampler(seqSampler):
             del self.avail[ind]
 
             self.sample.append(new)
+            return(new)
 
 
 class diverseLSH(LSH):
@@ -91,52 +94,53 @@ class diverseLSH(LSH):
                      replace=replace)
 
         self.numCenters = numCenters
-        self.batch=batch
-        self.centers=None
+        self.batch = batch
+        self.centers = None
 
     def makeHash(self):
         centerSampler = detSampler(self.data, self.batch, self.replace)
         self.centers = centerSampler.downsample(self.numCenters)
 
-        hashes = np.empty([self.numObs,1])
+        hashes = np.empty([self.numObs, 1])
 
         for i in range(self.numObs):
             centerDists = []
             for c in self.centers:
-                centerDists.append(np.linalg.norm(self.data[i,:]
-                                                  -self.data[c,:]))
-            hashes[i,0] = self.centers[centerDists.index(min(centerDists))]
+                centerDists.append(np.linalg.norm(self.data[i, :]
+                                                  - self.data[c, :]))
+            hashes[i, 0] = self.centers[centerDists.index(min(centerDists))]
 
         self.hash = hashes
 
-    def vizHash(self,file=None, maxPoints=float("inf"), plotCenters=True,anno=False, **kwargs):
+    def vizHash(self, file=None, maxPoints=float("inf"), plotCenters=True, anno=False, **kwargs):
         if self.embedding is None:
             tsne = sk.manifold.TSNE(**kwargs)
 
             if self.numObs > maxPoints:
-                self.embeddingInds = np.random.choice(self.numObs, maxPoints, replace=False)
+                self.embeddingInds = np.random.choice(
+                    self.numObs, maxPoints, replace=False)
             else:
                 self.embeddingInds = range(self.numObs)
 
-            fit = tsne.fit(self.data[self.embeddingInds,:])
+            fit = tsne.fit(self.data[self.embeddingInds, :])
             self.embedding = tsne.embedding_
 
         else:
-            self.embeddingInds=range(self.numObs)
+            self.embeddingInds = range(self.numObs)
         if self.numHashes > 1:
             log('too many hashes to vizualize; visualiing only first hash')
 
-        cols = self.hash[self.embeddingInds,0]
-        mpl.scatter(self.embedding[:, 0], self.embedding[:,1], c=cols)
+        cols = self.hash[self.embeddingInds, 0]
+        mpl.scatter(self.embedding[:, 0], self.embedding[:, 1], c=cols)
 
         if plotCenters:
-            mpl.scatter(self.embedding[self.centers,0],self.embedding[self.centers,1], c='r')
-
+            mpl.scatter(self.embedding[self.centers, 0],
+                        self.embedding[self.centers, 1], c='r')
 
         if(anno):
-            for i, h in enumerate(self.hash[self.embeddingInds,0]):
-                mpl.annotate(int(h), (self.embedding[self.embeddingInds[i],0],
-                                 self.embedding[self.embeddingInds[i],1]))
+            for i, h in enumerate(self.hash[self.embeddingInds, 0]):
+                mpl.annotate(int(h), (self.embedding[self.embeddingInds[i], 0],
+                                      self.embedding[self.embeddingInds[i], 1]))
 
         if file is not None:
             mpl.savefig('{}.png'.format(file))
@@ -144,8 +148,153 @@ class diverseLSH(LSH):
         mpl.show()
         mpl.close()
 
-class ballLSH(diverseLSH):
+
+class rankLSH(diverseLSH):
     """like diverseLSH but uses epsilon-balls around each center"""
+
+    # def __init__(self, data, batch=100, replace=False, eps=0.1):
+    #     diverseLSH.__init__(self, data, batch=batch, replace=replace)
+    #
+    #     self.avail = list(range(self.numObs))
+    #     self.sampled [False]*self.numObs
+
+    def makeHash(self):
+        centerSampler = detSampler(self.data, self.batch, self.replace)
+        self.centers = centerSampler.downsample(self.numCenters)
+
+        hashes = np.empty([self.numObs, 1])
+
+        # stores each point's distance to each center
+        distTable = np.empty([self.numObs, self.numCenters])
+
+        for i, c in enumerate(self.centers):
+            dists = []
+            for j in range(self.numObs):
+                dists.append(np.linalg.norm(self.data[j, :]
+                                            - self.data[c, :]))
+            distTable[:,i]=dists
+
+        # add rows to enumerate
+        distTable = np.hstack([distTable,
+                              np.transpose(np.matrix(list(range(self.numObs))))])
+
+        while(distTable.shape[0] > 0):
+            for i,c in enumerate(self.centers):
+                if (distTable.shape[0]==0):
+                    break
+                closest = np.argmin(distTable[:,i])
+                # distTable[:,i].index(max(distTable[:,i]))
+                closestInd = int(distTable[closest, -1])
+                print(closestInd)
+                hashes[closestInd,0]=c
+                distTable = np.delete(distTable,(closest), axis=0)
+
+        self.hash = hashes
+
+class ballLSH(diverseLSH):
+    def __init__(self, data, batch=100, replace=False, epsilon=1):
+        numBands = 1
+        bandSize = 1
+        numHashes = 1
+
+        LSH.__init__(self, data, numHashes=numHashes, numBands=numBands, bandSize=bandSize,
+                     replace=replace)
+        self.epsilon = epsilon
+        self.batch = batch
+
+    def makeHash(self):
+        centerSampler = detSampler(self.data, self.batch, self.replace)
+
+        covered = [False]*self.numObs #whether each has been covered by a ball
+        sigs = np.array([]).reshape(self.numObs,0)
+
+        hashes = np.empty([self.numObs, 1])
+
+        while sum(covered) < self.numObs:
+            c = centerSampler.addSample()
+            center = self.data[c,:]
+            centerDists = []
+            for i in range(self.numObs):
+                centerDists.append(np.linalg.norm(center-self.data[i,:]))
+
+            nearby = [int(x < self.epsilon) for x in centerDists]
+
+            sigs = np.hstack([sigs,np.transpose(np.matrix(nearby))])
+
+            covered[c] += 1
+            #set nearby points as covered
+            covered = np.maximum(covered, nearby)
+            #print(sum(covered))
+
+        # print(sigs)
+        # print(sigs.shape)
+
+        # make unique signature for each combo
+        hashdict = {}
+
+        for sample_idx in range(self.numObs):
+            hashlist= sigs[sample_idx, :].tolist()
+            hashlist = [y for x in hashlist for y in x]
+            hash_cell = tuple(hashlist)
+            if hash_cell not in hashdict:
+                hashdict[hash_cell] = []
+            hashdict[hash_cell].append(sample_idx)
+
+        keys = list(hashdict.keys())
+        for bucket in range(len(keys)):
+            for idx in hashdict[keys[bucket]]:
+                hashes[idx, 0] = bucket
+
+        self.hash = hashes
+        self.occSquares = len(hashdict)
+        self.centers = centerSampler.sample
+        return(hashes)
+
+
+class gapLSH(diverseLSH):
+
+
+    @staticmethod
+    def findLeap(dists):
+        """find the first big gap in distances"""
+
+
+
+    def makeHash(self):
+        centerSampler = detSampler(self.data, self.batch, self.replace)
+        self.centers = centerSampler.downsample(self.numCenters)
+
+        hashes = np.empty([self.numObs, 1])
+
+        hashtable = np.empty([self.numObs, self.numCenters])
+
+        # stores each point's distance to each center
+        distTable = np.empty([self.numObs, self.numCenters])
+
+        for i, c in enumerate(self.centers):
+            dists = []
+            for j in range(self.numObs):
+                dists.append(np.linalg.norm(self.data[j, :]
+                                            - self.data[c, :]))
+            distTable[:,i]=dists
+
+        # add rows to enumerate
+        distTable = np.hstack([distTable,
+                              np.transpose(np.matrix(list(range(self.numObs))))])
+
+        while(distTable.shape[0] > 0):
+            for i,c in enumerate(self.centers):
+                if (distTable.shape[0]==0):
+                    break
+                closest = np.argmin(distTable[:,i])
+                # distTable[:,i].index(max(distTable[:,i]))
+                closestInd = int(distTable[closest, -1])
+                print(closestInd)
+                hashes[closestInd,0]=c
+                distTable = np.delete(distTable,(closest), axis=0)
+
+        self.hash = hashes
+
 
 class pRankSampler(rankSampler):
 
@@ -205,8 +354,8 @@ class angleSampler(weightedSampler):
 
             # print(angles)
             wts[i] = sum([a < (math.pi / 30) for a in angles])
-            #wts[i] = sum(angles)/len(angles)
-            #wts[i] = min(angles)
+            # wts[i] = sum(angles)/len(angles)
+            # wts[i] = min(angles)
             # print(wts[i])
 
         # wts = [math.pi/2 - w for w in wts]
@@ -314,16 +463,16 @@ class treeLSH(LSH):
         if diam < splitSize:
             return([0] * len(vals))
 
-        #print('diameter is {}'.format(diam))
+        # print('diameter is {}'.format(diam))
         splits = min(np.ceil(diam / float(splitSize)), children)
 
         return pd.qcut(vals, int(splits), labels=False)
 
     @staticmethod
     def dimHash(data, splitSize, children, max_splits):
-        #print('shape is {}'.format(data.shape))
+        # print('shape is {}'.format(data.shape))
 
-        #print('data has size {}'.format(data.shape[0]))
+        # print('data has size {}'.format(data.shape[0]))
         hashes = np.empty([data.shape[0], 1])
         hashes[:, 0] = np.array(treeLSH.quantilate(
             data[:, 0], splitSize, max_splits=max_splits))
@@ -340,7 +489,7 @@ class treeLSH(LSH):
 
         if len(np.unique(hashes)) > 1:
             print('splitting into {}'.format(len(np.unique(hashes))))
-        #print('there are {} splits'.format(len(np.unique(hashes))))
+        # print('there are {} splits'.format(len(np.unique(hashes))))
         for val in np.unique(hashes):
             inds = [i for i in range(len(hashes)) if hashes[i] == val]
             # print('recursing')
@@ -363,7 +512,7 @@ class treeLSH(LSH):
             print('dealing with dimension {}'.format(i))
             new_dict = {}
             for k in cur_dict.keys():
-                #print('partition {}'.format(k))
+                # print('partition {}'.format(k))
                 inds = cur_dict[k]  # which indices have this signature
                 if len(inds) <= self.minPoints:
                     # don't partition
@@ -413,7 +562,7 @@ class gridLSH(LSH):
         X = self.data - self.data.min(0)
         X /= X.max()
 
-        #hashes = np.empty((self.numObs,self.numFeatures))
+        # hashes = np.empty((self.numObs,self.numFeatures))
         hashes = np.empty((self.numObs, 1))
 
         grid = {}
@@ -472,13 +621,13 @@ class gridLSH(LSH):
                 # print(grid.values())
                 counts = [len([i for i in square if self.cluster_labels[i] == lab])
                           for square in grid.values()]
-                #print('counts: {}'.format(counts))
+                # print('counts: {}'.format(counts))
                 counts = [count for count in counts if count > 0]
 
-                #print('counts: {}'.format(counts))
+                # print('counts: {}'.format(counts))
                 # normalize to percentages
                 counts = [float(count) / sum(counts) for count in counts]
-                #print('counts: {}'.format(counts))
+                # print('counts: {}'.format(counts))
 
                 counts.sort(reverse=True)
                 pct_covered = [sum(counts[:(i + 1)])
@@ -489,7 +638,7 @@ class gridLSH(LSH):
                 score = min(good_inds)
 
                 # score = sum([count for count in counts])/len(counts)
-                #score = max(counts)
+                # score = max(counts)
                 scores[lab] = score
             self.clustScores = scores
             print(scores)
@@ -694,7 +843,7 @@ class gsLSH(LSH):
 
         # sizes of grid squares
         sizes = {square: len(v) for (square, v) in grid.items()}
-        #print('square sizes: {}'.format(sizes))
+        # print('square sizes: {}'.format(sizes))
 
         weights = [1 / (np.power(size, alpha)) for size in sizes.values()]
         total = sum(weights)
@@ -747,11 +896,11 @@ class gsLSH(LSH):
                 weights = [float(w) / total for w in weights]
                 assert(np.abs(sum(weights) - 1) < .000001)
 
-            #print('appending {}'.format(sample))
+            # print('appending {}'.format(sample))
             subinds.append(sample)
-            #print('samples is now {}'.format(subinds))
+            # print('samples is now {}'.format(subinds))
 
-        #print('samples: {}'.format(samples))
+        # print('samples: {}'.format(samples))
         return(sorted(subinds))
 
 
@@ -812,7 +961,7 @@ class randomGridLSH(LSH):
             newData = np.matmul(self.data, basis)
             t1 = time()
 
-            #print('making random basis took {} seconds'.format(t1-t0))
+            # print('making random basis took {} seconds'.format(t1-t0))
 
             # do gridLSH in this new basis
 

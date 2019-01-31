@@ -92,13 +92,24 @@ if __name__ == '__main__':
             optimizeParams=['gridSize'],
             inverted=[True]
         )
+
         results.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
-    downsampler = gsLSH(X_dimred, gridSize=0.35)
 
-    downsampler.makeHash()
-    downsampler.downsample(500)
-    downsampler.vizHash(file='293t_gsLSH_vizhash')
+
+    downsampler = ballLSH(X_dimred)
+    for eps in [0.1,0.5,0.7,1,5]:
+        downsampler.epsilon = eps
+        downsampler.makeHash()
+        downsampler.vizHash(file='293t_ballLSH_hashes_eps_{}'.format(eps))
+        downsampler.downsample(200)
+        downsampler.vizSample(file='293t_ballLSH_sample_eps_{}'.format(eps))
+
+    # downsampler = gsLSH(X_dimred, gridSize=0.35)
+    #
+    # downsampler.makeHash()
+    # downsampler.downsample(500)
+    # downsampler.vizHash(file='293t_gsLSH_vizhash')
 
     # downsampler = diverseLSH(X_dimred, numCenters = 2, batch=1000)
     # for k in range(2,20):
