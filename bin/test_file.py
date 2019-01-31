@@ -48,7 +48,7 @@ if __name__ == '__main__':
 
     #start_experiment('pug', ['height','weight'],['fat','size'])
 
-    np.random.seed()
+    #np.random.seed()
 
     sizes=[500,200,100,50, 10]
     N=sum(sizes)
@@ -56,7 +56,7 @@ if __name__ == '__main__':
     gauss2D_2 = gauss_test([5000, 200],2,1,[10])
     print(gauss2D)
 
-    downsampler = diverseSampler(gauss2D, batch=100, numCenters=10)
+    downsampler = diverseSampler(gauss2D, batch=1000, numCenters=7)
     downsampler.downsample(100)
     downsampler.vizSample()
 
