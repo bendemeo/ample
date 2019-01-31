@@ -93,7 +93,8 @@ if __name__ == '__main__':
     iter = 1
     testParams = {
         'epsilon': np.arange(start=2, stop=1, step=-0.02).tolist(),
-        'ord':[float('inf')]
+        'ord':[float('inf')],
+        'batch':[2000]
     }
 
     tests = ['max_min_dist', 'time', 'maxCounts',
