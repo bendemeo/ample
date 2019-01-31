@@ -98,7 +98,7 @@ if __name__ == '__main__':
     }
 
     tests = ['max_min_dist', 'time', 'maxCounts',
-              'cluster_counts', 'occSquares']
+              'cluster_counts', 'occSquares', 'centers']
 
     X_dimred_scaled = X_dimred / X_dimred.max()
     ballLSH_gridTest = try_params(X_dimred_scaled, 'ballLSH',
