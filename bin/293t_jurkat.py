@@ -101,6 +101,7 @@ if __name__ == '__main__':
     for eps in [4,3,2,1,0.5]:
         downsampler.epsilon = eps
         downsampler.makeHash()
+        downsampler.makeFinder()
         downsampler.vizHash(file='293t_ballLSH_hashes_eps_{}'.format(eps))
         downsampler.downsample(200)
         downsampler.vizSample(file='293t_ballLSH_sample_eps_{}'.format(eps))
