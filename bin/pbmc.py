@@ -92,7 +92,8 @@ if __name__ == '__main__':
     filename = 'pbmc_ballLSHTest'
     iter = 1
     testParams = {
-        'epsilon': np.arange(start=2, stop=1, step=-0.02).tolist()
+        'epsilon': np.arange(start=2, stop=1, step=-0.02).tolist(),
+        'ord':[float('inf')]
     }
 
     tests = ['max_min_dist', 'time', 'maxCounts',
@@ -102,7 +103,7 @@ if __name__ == '__main__':
     ballLSH_gridTest = try_params(X_dimred_scaled, 'ballLSH',
                                   params=testParams,
                                   tests=tests,
-                                  n_seeds=5,
+                                  n_seeds=3,
                                   cell_labels=cell_labels,
                                   Ns=[100, 500,1000],
                                   cluster_labels = labels
