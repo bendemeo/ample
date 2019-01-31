@@ -161,9 +161,11 @@ class diverseSampler(seqSampler):
         if self.iter >= self.numCenters:
             #clean slate on sampler
             self.centerSampler = detSampler(self.data, self.batch, self.replace)
+            self.iter = 0
 
         new = self.centerSampler.addSample()
         self.sample.append(new)
+        self.iter += 1
 
         return(new)
 
