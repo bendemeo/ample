@@ -98,7 +98,7 @@ if __name__ == '__main__':
 
 
     downsampler = ballLSH(X_dimred)
-    for eps in [5, 6, 7, 8, 9]:
+    for eps in [4,3,2,1,0.5]:
         downsampler.epsilon = eps
         downsampler.makeHash()
         downsampler.vizHash(file='293t_ballLSH_hashes_eps_{}'.format(eps))
