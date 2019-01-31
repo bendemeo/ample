@@ -108,10 +108,11 @@ if __name__ == '__main__':
     #
 
     filename = 'ballLSHTest'
-    iter = 1
+    iter = 2
     testParams = {
-        'epsilon': np.arange(start=0.5, stop=1, step=0.01).tolist(),
+        'epsilon': np.arange(start=0.5, stop=0.75, step=0.02).tolist(),
         'ord': [float('inf')]
+        'batch':[2000]
     }
 
     tests = ['max_min_dist', 'time', 'maxCounts',
