@@ -111,7 +111,7 @@ if __name__ == '__main__':
     iter = 2
     testParams = {
         'epsilon': np.arange(start=0.5, stop=0.75, step=0.02).tolist(),
-        'ord': [float('inf')]
+        'ord': [float('inf')],
         'batch':[2000]
     }
 
