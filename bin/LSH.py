@@ -195,8 +195,8 @@ class LSH(sampler):
                 key=tuple(self.hash[band])
             else:
                 key = tuple(self.hash[ind, band])
-            print(key)
-            print(d.keys())
+            # print(key)
+            # print(d.keys())
             candidates = candidates + d.get(key)  # this is O(n) on gauss
 
         if self.keepStats:
