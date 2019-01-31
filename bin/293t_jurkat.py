@@ -97,9 +97,11 @@ if __name__ == '__main__':
         results.to_csv(
             'target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
-
+    downsampler = diverseSampler(X_dimred, batch=1000, numCenters=10, replace=False)
     for i in np.arange(3,20,1).tolist():
-        downsampler = diverseSampler(X_dimred, batch=1000, numCenters=i, replace=False)
+        print('doing {} centers'.format(i))
+        downsampler.numCenters = i
+        downsampler.iter = i
         downsampler.downsample(100)
         downsampler.vizSample(file='293t_diverseSampler_{}_centers'.format(i))
 
