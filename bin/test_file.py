@@ -52,11 +52,11 @@ if __name__ == '__main__':
 
     sizes=[500,200,100,50, 10]
     N=sum(sizes)
-    gauss2D = gauss_test(sizes, 10, 5, [1]*5)
+    gauss2D = gauss_test(sizes, 200, 5, [1]*5)
     gauss2D_2 = gauss_test([5000, 200],2,1,[10])
     print(gauss2D)
 
-    downsampler = ballLSH(gauss2D, epsilon=6)
+    downsampler = ballLSH(gauss2D, epsilon=6, ord=float('inf'))
     downsampler.makeHash()
     print(downsampler.occSquares)
     downsampler.vizHash()

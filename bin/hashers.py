@@ -192,7 +192,7 @@ class rankLSH(diverseLSH):
         self.hash = hashes
 
 class ballLSH(diverseLSH):
-    def __init__(self, data, batch=100, replace=False, epsilon=1):
+    def __init__(self, data, batch=100, replace=False, epsilon=1, ord=None):
         numBands = 1
         bandSize = 1
         numHashes = 1
@@ -201,6 +201,7 @@ class ballLSH(diverseLSH):
                      replace=replace)
         self.epsilon = epsilon
         self.batch = batch
+        self.ord = ord
 
     def makeHash(self):
         centerSampler = detSampler(self.data, self.batch, self.replace)
@@ -216,7 +217,7 @@ class ballLSH(diverseLSH):
             center = self.data[c,:]
             centerDists = []
             for i in range(self.numObs):
-                centerDists.append(np.linalg.norm(center-self.data[i,:]))
+                centerDists.append(np.linalg.norm(center-self.data[i,:], ord=self.ord))
 
             nearby = [int(x < self.epsilon) for x in centerDists]
 
