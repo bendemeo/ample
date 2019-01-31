@@ -98,7 +98,7 @@ if __name__ == '__main__':
 
 
     downsampler = ballLSH(X_dimred)
-    for eps in [4,3,2,1,0.5]:
+    for eps in np.arange(0.5, 1, 0.01).tolist():
         downsampler.epsilon = eps
         downsampler.makeHash()
         downsampler.makeFinder()
