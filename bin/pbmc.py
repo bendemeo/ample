@@ -86,20 +86,24 @@ if __name__ == '__main__':
 
 
     downsampler = diverseLSH(X_dimred, numCenters=20, batch=1000, labels=cell_labels)
-    # downsampler.downsample(5000)
-    # downsampler.vizSample(full=False, c=np.array(downsampler.labels)[downsampler.sample],
-    #                       file='pbmc_diverseLSH_sample_5000')
-    #
+    downsampler.downsample(5000)
+    downsampler.vizSample(full=False, c=np.array(downsampler.labels)[downsampler.sample],
+                          file='pbmc_diverseLSH_sample_5000')
 
-    viz_genes = []
-    genes = []
-    filename = 'pbmc_diverseLSH_sample_5000_origColors'
-    experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels=cell_labels,
-        gene_names=viz_genes, genes=genes, 
-        kmeans=False,
-        visualize_orig=False,
-        sample_type='diverseLSH',
-        lsh=True)
+
+
+
+
+
+    # viz_genes = []
+    # genes = []
+    # filename = 'pbmc_diverseLSH_sample_5000_origColors'
+    # experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels=cell_labels,
+    #     gene_names=viz_genes, genes=genes,
+    #     kmeans=False,
+    #     visualize_orig=False,
+    #     sample_type='diverseLSH',
+    #     lsh=True)
 
     # #print('labels is a {} of shape {}'.format(type(labels),labels.shape))
     # #print(labels)

@@ -55,7 +55,7 @@ class sampler:
 
 
 
-    def vizSample(self, file=None, full=False, c='m', cmap='viridis',anno=False, annoMax=100, **kwargs):
+    def vizSample(self, file=None, full=False, c='m', cmap='Set1',anno=False, annoMax=100, **kwargs):
         if(full):
             if self.embedding is None:
                 self.embed()
