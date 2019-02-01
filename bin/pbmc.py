@@ -98,11 +98,11 @@ if __name__ == '__main__':
     tests = ['max_min_dist', 'time', 'maxCounts',
               'cluster_counts']
 
-    X_dimred_scaled = X_dimred / X_dimred.max()
-    ballLSH_gridTest = try_params(X_dimred_scaled, 'ballLSH',
+
+    ballLSH_gridTest = try_params(X_dimred, 'diverseLSH',
                                   params=testParams,
                                   tests=tests,
-                                  n_seeds=3,
+                                  n_seeds=10,
                                   cell_labels=cell_labels,
                                   Ns=[100, 500,1000],
                                   cluster_labels = labels
