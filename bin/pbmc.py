@@ -88,6 +88,7 @@ if __name__ == '__main__':
     viz_genes = []
     genes = []
 
+    sampler = 'diverseLSH'
     filename = 'pbmc_diverseLSHTest'
     iter = 1
     testParams = {
@@ -99,7 +100,7 @@ if __name__ == '__main__':
               'cluster_counts']
 
 
-    ballLSH_gridTest = try_params(X_dimred, 'diverseLSH',
+    testResults = try_params(X_dimred, sampler,
                                   params=testParams,
                                   tests=tests,
                                   n_seeds=10,
@@ -110,7 +111,7 @@ if __name__ == '__main__':
     # with open("gsLSH_gridTest.file", "wb") as f:
     #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
 
-    ballLSH_gridTest.to_csv(
+    testResults.to_csv(
         'target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
