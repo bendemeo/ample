@@ -95,7 +95,7 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
         for lab in cluster_labels:
             results['{}_score'.format(lab)] = []
 
-    results['sampler'] = [hasher] * numTests
+    #results['sampler'] = [hasher] * numTests
     results['N'] = []
 
     for i in range(numSettings):
@@ -264,6 +264,8 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
                                 cell_labels, full_labels, dist='balanced'
                             )
                             results['louvain_bami'].append(bami)
+                        
+                        results['sampler'].append(hasher)
                 if(backup is not None):
                     lengths = {k: len(v) for (k, v) in results.items()}
 
