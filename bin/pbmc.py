@@ -88,17 +88,15 @@ if __name__ == '__main__':
     viz_genes = []
     genes = []
 
-
-    filename = 'pbmc_ballLSHTest'
+    filename = 'pbmc_diverseLSHTest'
     iter = 1
     testParams = {
-        'epsilon': np.arange(start=1.8, stop=1, step=-0.02).tolist(),
-        'ord':[float('inf')],
-        'batch':[2000]
+        'numCenters':np.arange(1, 200, 2).tolist() * 2,
+        'batch': [1000]*100 + [5000]*100
     }
 
     tests = ['max_min_dist', 'time', 'maxCounts',
-              'cluster_counts', 'occSquares', 'centers']
+              'cluster_counts']
 
     X_dimred_scaled = X_dimred / X_dimred.max()
     ballLSH_gridTest = try_params(X_dimred_scaled, 'ballLSH',
@@ -115,6 +113,34 @@ if __name__ == '__main__':
     ballLSH_gridTest.to_csv(
         'target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
+
+
+    # filename = 'pbmc_ballLSHTest'
+    # iter = 1
+    # testParams = {
+    #     'epsilon': np.arange(start=1.8, stop=1, step=-0.02).tolist(),
+    #     'ord':[float('inf')],
+    #     'batch':[2000]
+    # }
+    #
+    # tests = ['max_min_dist', 'time', 'maxCounts',
+    #           'cluster_counts', 'occSquares', 'centers']
+    #
+    # X_dimred_scaled = X_dimred / X_dimred.max()
+    # ballLSH_gridTest = try_params(X_dimred_scaled, 'ballLSH',
+    #                               params=testParams,
+    #                               tests=tests,
+    #                               n_seeds=3,
+    #                               cell_labels=cell_labels,
+    #                               Ns=[100, 500,1000],
+    #                               cluster_labels = labels
+    #                               )
+    # # with open("gsLSH_gridTest.file", "wb") as f:
+    # #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
+    #
+    # ballLSH_gridTest.to_csv(
+    #     'target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+    #
 
     # size=1000
     # downsampler = svdSampler(X_dimred, batch=500)

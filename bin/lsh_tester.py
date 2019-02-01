@@ -119,7 +119,7 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
                 for p in currentParams.keys():
                     results[p].append(currentParams[p])
 
-                # print(currentParams)
+                print(currentParams)
                 log('sampling {} from {}'.format(N, hasher))
 
                 downsampler.makeHash() ## re-do for randomness
