@@ -32,7 +32,7 @@ def err_exit(param_name):
     exit(1)
 
 
-def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], inverted=[], weighted=False, alpha=1, pickle_it=True, **kwargs):
+def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], inverted=[], weighted=False, alpha=1, pickle_it=True, backup = None, **kwargs):
     """version where params is a dict to be unpacked"""
 
     # make sure all needed params are provided
@@ -264,6 +264,7 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
                             )
                             results['louvain_bami'].append(bami)
                 if(backup is not None):
+                    print('saving backup...')
                     df = pd.dataframe.from_dict(results)
                     df.to_csv('target/experiments/{}.txt', sep='/t')
 
