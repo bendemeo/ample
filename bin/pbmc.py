@@ -95,7 +95,7 @@ if __name__ == '__main__':
     genes = []
     filename = 'pbmc_diverseLSH_sample_5000_origColors'
     experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels=cell_labels,
-        gene_names=viz_genes, genes=genes, gene_expr=vstack(datasets),
+        gene_names=viz_genes, genes=genes, 
         kmeans=False,
         visualize_orig=False,
         sample_type='diverseLSH',
