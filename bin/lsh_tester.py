@@ -59,6 +59,7 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
     print(paramLengths)
     assert(len(uniqueLengths) <= 2)
     if len(uniqueLengths) == 2:
+        print({p:len(l) for (p,l) in params.items()})
         assert(1 in uniqueLengths)
 
     # how many different parameter settings to try
