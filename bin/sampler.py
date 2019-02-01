@@ -68,7 +68,7 @@ class sampler:
 
         self.numObs, self.numFeatures = result.shape
         self.data = result
-        print(result)
+        # print(result)
 
 
 
