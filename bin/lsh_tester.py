@@ -272,7 +272,7 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
                     print(lengths)
                     print('saving backup...')
                     df = pd.DataFrame.from_dict(results)
-                    df.to_csv('target/experiments/{}.txt', sep='\t')
+                    df.to_csv('target/experiments/{}.txt'.format(backup), sep='\t')
 
     print(results)
     lengths = {k: len(v) for (k, v) in results.items()}
