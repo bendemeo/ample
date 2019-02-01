@@ -91,6 +91,15 @@ if __name__ == '__main__':
                           file='pbmc_diverseLSH_sample_5000')
 
 
+    viz_genes = []
+    genes = []
+    filename = 'pbmc_diverseLSH_sample_5000_origColors'
+    experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels=cell_labels,
+        gene_names=viz_genes, genes=genes, gene_expr=vstack(datasets),
+        kmeans=False,
+        visualize_orig=False,
+        sample_type='diverseLSH',
+        lsh=True)
 
     # #print('labels is a {} of shape {}'.format(type(labels),labels.shape))
     # #print(labels)
