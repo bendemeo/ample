@@ -173,7 +173,7 @@ def experiment(sampling_fn, X_dimred, name, cell_labels=None,
             if weighted:
                 samp_idx = sampling_fn.downsample_weighted(N, alpha=alpha)
             else:
-                samp_idx=sampling_fn.downSample(N)
+                samp_idx=sampling_fn.downsample(N)
         else:
             samp_idx = sampling_fn(X_dimred, N)
         t2=time()
