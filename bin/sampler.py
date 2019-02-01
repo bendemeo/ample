@@ -1,4 +1,4 @@
-## base class for all downsamplers
+# base class for all downsamplers
 
 import numpy as np
 import sklearn as sk
@@ -7,44 +7,55 @@ import math
 import os
 from MulticoreTSNE import MulticoreTSNE
 
+
 class sampler:
 
-    def __init__(self, data, NAMESPACE='',replace=False):
+    def __init__(self, data, NAMESPACE='', labels=None, replace=False):
         self.numObs, self.numFeatures = data.shape
         self.replace = replace
         self.data = data
         self.embedding = None
-
+        self.sampleEmbedding = None
+        self.labels = labels  # existing cluster labels if any
+        self.sample = None
 
     def downsample(self, sampleSize):
+        self.sampleEmbedding = None # clear previous sample embeddings
         self.sample = np.random.choice(range(self.numObs), sampleSize)
         return self.sample
 
-
-    def embed(self, subset = None, **kwargs):
-
+    def embed(self, subset=None, **kwargs):
         if subset is None:
             subset = list(range(self.numObs))
         if self.numFeatures == 2:
-            self.embedding = self.data[subset,:]
+            self.embedding = self.data[subset, :]
         else:
 
             tsne = MulticoreTSNE(**kwargs)
-            #tsne = sk.manifold.TSNE(**kwargs)
-            fit = tsne.fit(self.data[subset,:])
+            # tsne = sk.manifold.TSNE(**kwargs)
+            fit = tsne.fit(self.data[subset, :])
             self.embedding = tsne.embedding_
+
+    def embedSample(self, **kwargs):
+        if self.numFeatures == 2:
+            self.embedding = self.data[subset, :]
+
+        else:
+            tsne = MulticoreTSNE(**kwargs)
+            # tsne = sk.manifold.TSNE(**kwargs)
+            fit = tsne.fit(self.data[self.sample,:])
+            self.sampleEmbedding = tsne.embedding_
 
     def normalize(self, method='l2'):
         """normalize observations, default by L2 norm"""
         self.data = sk.preprocessing.normalize(self.data, axis=1, norm=method)
 
 
-
-
-    def vizSample(self, file=None, full=True, c='m', cmap='viridis',anno=False, annoMax=100, **kwargs):
+    #def viz(self, file=None, size=self.numObs, c='b'):
 
 
 
+    def vizSample(self, file=None, full=False, c='m', cmap='viridis',anno=False, annoMax=100, **kwargs):
         if(full):
             if self.embedding is None:
                 self.embed()
@@ -57,12 +68,14 @@ class sampler:
 
         else:
             print('embedding sample only')
-            self.embed(subset=self.sample)
-            mpl.scatter(self.embedding[:,0], self.embedding[:,1], c=c, cmap=cmap)
+            if self.sampleEmbedding is None:
+                self.embedSample()
+            print(self.sampleEmbedding.shape)
+            mpl.scatter(self.sampleEmbedding[:,0], self.sampleEmbedding[:,1], c=c, cmap=cmap)
 
             if(anno):
                 for i in range(min([len(self.sample),annoMax])):
-                    mpl.annotate(i, (self.embedding[i,0], self.embedding[i,1]))
+                    mpl.annotate(i, (self.sampleEmbedding[i,0], self.sampleEmbedding[i,1]))
 
 
 
@@ -134,8 +147,8 @@ class weightedSampler(sampler):
         self.wts = [float(1)/self.numObs]*self.numObs
 
     def downsample(self, sampleSize):
-        #print('doing weighted downsampling')
-        #print(self.wts)
+        # print('doing weighted downsampling')
+        # print(self.wts)
         if self.wts is None:
             self.makeWeights()
 
@@ -144,7 +157,7 @@ class weightedSampler(sampler):
 
     def vizWeights(self, log=True, file = None, **kwargs):
         print('wts at time of viz')
-        #print(self.wts)
+        # print(self.wts)
         tsne = sk.manifold.TSNE(**kwargs)
 
         fit = tsne.fit(self.data)

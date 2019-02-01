@@ -56,9 +56,11 @@ if __name__ == '__main__':
     gauss2D_2 = gauss_test([5000, 200],2,1,[10])
     print(gauss2D)
 
-    downsampler = diverseSampler(gauss2D, batch=100, numCenters=7)
-    downsampler.downsample(100)
-    downsampler.vizSample()
+    downsampler = diverseLSH(gauss2D, batch=100, numCenters=7, labels = [1,2]*430+[3])
+    downsampler.downsample(400)
+    print(max(downsampler.sample))
+    downsampler.vizSample(full=False, c=np.array(downsampler.labels)[downsampler.sample])
+
 
 
     # downsampler = ballLSH(gauss2D, epsilon=6, ord=float('inf'))

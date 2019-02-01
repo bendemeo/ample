@@ -86,13 +86,13 @@ class diverseLSH(LSH):
     """uses a DPP-like process to select diverse centers,
      then assigns points to their nearest one"""
 
-    def __init__(self, data, numCenters=10, batch=100, replace=False):
+    def __init__(self, data, numCenters=10, batch=100, replace=False,**kwargs):
         numBands = 1
         bandSize = 1
         numHashes = 1
 
         LSH.__init__(self, data, numHashes=numHashes, numBands=numBands, bandSize=bandSize,
-                     replace=replace)
+                     replace=replace, **kwargs)
 
         self.numCenters = numCenters
         self.batch = batch

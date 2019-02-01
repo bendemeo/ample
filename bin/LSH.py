@@ -16,12 +16,12 @@ class LSH(sampler):
     '''class to construct a random projection of data'''
 
     def __init__(self, data, numHashes, numBands, bandSize, replace=False, keepStats=True, target = 'auto',
-    allowRepeats = True, verbose = True):
+    allowRepeats = True, verbose = True, **kwargs):
         ''' numHashes is number of random projections it makes'''
         ''' dim is number of dimensions '''
 
 
-        sampler.__init__(self,data)
+        sampler.__init__(self,data, **kwargs)
         self.numHashes = numHashes
         self.numBands = numBands
         self.bandSize = bandSize

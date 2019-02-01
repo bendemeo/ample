@@ -127,6 +127,20 @@ sizetest_rg=fread('target/experiments/randomGridTest.txt.1') # 3 random grids
 sizetest_cos = fread('target/experiments/cosTest.txt.1')
 sizetest_proj = fread('target/experiments/projTest.txt.1')
 sizetest_ball = fread('target/experiments/ballLSHTest.txt.2')
+sizetest_diverse = fread('target/experiments/293t_diverseLSHTest_backup.txt')
+
+
+
+sizetest_diverse %>% group_by(N, numCenters) %>%
+  summarize(`293t`=mean(`293t`)) %>% 
+  ggplot(aes(x=N, y=`293t`, color = as.character(numCenters)))+
+  geom_line()
+
+sizetest_diverse %>% filter(N==500) %>%
+  ggplot(aes(x=numCenters, y=`293t`))+
+  geom_boxplot(aes(group=numCenters))
+
+
 
 ##gsLSH plots
 
