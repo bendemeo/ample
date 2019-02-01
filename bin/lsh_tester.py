@@ -101,10 +101,10 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
     for i in range(numSettings):
         currentParams = {p: val[i] for (p, val) in params.items()}
 
-        print('making sampler')
+
         hasherfunc = getattr(hashers, hasher)
         downsampler = hasherfunc(X_dimred, **currentParams)
-        print('made samples')
+
         if 'q' in kwargs:
             print('quantile transforming...')
             downsampler.qTransform(q=kwargs['q'])
