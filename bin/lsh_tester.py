@@ -103,6 +103,7 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
 
         hasherfunc = getattr(hashers, hasher)
         downsampler = hasherfunc(X_dimred, **currentParams)
+        print('made sampler')
         if 'q' in kwargs:
             print('quantile transforming...')
             downsampler.qTransform(q=kwargs['q'])
