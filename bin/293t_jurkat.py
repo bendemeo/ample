@@ -97,17 +97,49 @@ if __name__ == '__main__':
         results.to_csv(
             'target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
-    downsampler = diverseSampler(X_dimred, batch=1000, numCenters=10, replace=False)
-    for i in np.arange(3,20,1).tolist():
-        print('doing {} centers'.format(i))
-        downsampler.numCenters = i
-        downsampler.iter = i
-        downsampler.sample = []
-        downsampler.avail = list(range(downsampler.numObs))
-        downsampler.downsample(100)
-        print('done downsampling')
-        downsampler.vizSample(file='293t_diverseSampler_{}_centers'.format(i))
 
+    viz_genes = []
+    genes = []
+
+    sampler = 'diverseLSH'
+    filename = '293t_diverseLSHTest'
+    iter = 1
+    testParams = {
+        'numCenters':np.arange(1, 100, 2).tolist() * 2,
+        'batch': [500]*50 + [1000]*50
+    }
+
+    tests = ['max_min_dist', 'time', 'maxCounts',
+              'cluster_counts']
+
+
+    testResults = try_params(X_dimred, sampler,
+                                  params=testParams,
+                                  tests=tests,
+                                  n_seeds=5,
+                                  cell_labels=cell_labels,
+                                  Ns=[100, 500,1000],
+                                  cluster_labels = labels,
+                                  backup=filename+'_backup')
+    # with open("gsLSH_gridTest.file", "wb") as f:
+    #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
+
+    testResults.to_csv(
+        'target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+
+
+
+    # downsampler = diverseSampler(X_dimred, batch=1000, numCenters=10, replace=False)
+    # for i in np.arange(3,20,1).tolist():
+    #     print('doing {} centers'.format(i))
+    #     downsampler.numCenters = i
+    #     downsampler.iter = i
+    #     downsampler.sample = []
+    #     downsampler.avail = list(range(downsampler.numObs))
+    #     downsampler.downsample(100)
+    #     print('done downsampling')
+    #     downsampler.vizSample(file='293t_diverseSampler_{}_centers'.format(i))
+    #
 
 
 
