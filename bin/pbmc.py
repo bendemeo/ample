@@ -91,7 +91,7 @@ if __name__ == '__main__':
     filename = 'pbmc_diverseLSHTest'
     iter = 1
     testParams = {
-        'numCenters':np.arange(1, 200, 2).tolist() * 2,
+        'numCenters':np.arange(1, 100, 2).tolist() * 2,
         'batch': [1000]*100 + [5000]*100
     }
 
@@ -105,8 +105,8 @@ if __name__ == '__main__':
                                   n_seeds=10,
                                   cell_labels=cell_labels,
                                   Ns=[100, 500,1000],
-                                  cluster_labels = labels
-                                  )
+                                  cluster_labels = labels,
+                                  backup=filename+'_backup')
     # with open("gsLSH_gridTest.file", "wb") as f:
     #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
 
