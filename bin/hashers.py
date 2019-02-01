@@ -99,6 +99,8 @@ class diverseLSH(LSH):
         self.centers = None
 
     def makeHash(self):
+        print('data at time of hashing:')
+        print(self.data)
         centerSampler = detSampler(self.data, self.batch, self.replace)
         self.centers = centerSampler.downsample(self.numCenters)
 

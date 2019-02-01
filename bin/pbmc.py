@@ -110,32 +110,33 @@ if __name__ == '__main__':
     # viz_genes = []
     # genes = []
     #
-    # sampler = 'diverseLSH'
-    # filename = 'pbmc_diverseLSHTest'
-    # iter = 1
-    # testParams = {
-    #     'numCenters':np.arange(1, 100, 2).tolist() * 2,
-    #     'batch': [1000]*50 + [5000]*50
-    # }
-    #
-    # tests = ['max_min_dist', 'time', 'maxCounts',
-    #           'cluster_counts']
-    #
-    #
-    # testResults = try_params(X_dimred, sampler,
-    #                               params=testParams,
-    #                               tests=tests,
-    #                               n_seeds=10,
-    #                               cell_labels=cell_labels,
-    #                               Ns=[100, 500,1000],
-    #                               cluster_labels = labels,
-    #                               backup=filename+'_backup')
-    # # with open("gsLSH_gridTest.file", "wb") as f:
-    # #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
-    #
-    # testResults.to_csv(
-    #     'target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
-    #
+    sampler = 'diverseLSH'
+    filename = 'pbmc_diverseLSHTest_q4'
+    iter = 1
+    testParams = {
+        'numCenters':np.arange(1, 100, 2).tolist() * 2,
+        'batch': [1000]*50 + [5000]*50
+    }
+
+    tests = ['max_min_dist', 'time', 'maxCounts',
+              'cluster_counts']
+
+
+    testResults = try_params(X_dimred, sampler,
+                                  params=testParams,
+                                  tests=tests,
+                                  n_seeds=10,
+                                  cell_labels=cell_labels,
+                                  Ns=[100, 500,1000],
+                                  cluster_labels = labels,
+                                  backup=filename+'_backup',
+                                  q=4)
+    # with open("gsLSH_gridTest.file", "wb") as f:
+    #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
+
+    testResults.to_csv(
+        'target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+
 
 
     # filename = 'pbmc_ballLSHTest'

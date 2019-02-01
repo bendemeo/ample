@@ -1,6 +1,7 @@
 # base class for all downsamplers
 
 import numpy as np
+import pandas as pd
 import sklearn as sk
 import matplotlib.pyplot as mpl
 import math
@@ -51,6 +52,26 @@ class sampler:
         self.data = sk.preprocessing.normalize(self.data, axis=1, norm=method)
 
 
+    def qTransform(self, q=4):
+        bins = np.empty(self.data.shape)
+        for i in range(self.numFeatures):
+            bins[:,i] = pd.qcut(self.data[:,i], q, labels=False)
+
+        print(bins)
+        result = np.empty([self.numObs, q*self.numFeatures])
+        for i in range(self.numObs):
+            row = [[0]*q for x in range(self.numFeatures)]
+            for j in range(self.numFeatures):
+                row[j][int(bins[i,j])]=1
+
+            result[i,:]= [x for y in row for x in y]
+
+        self.numObs, self.numFeatures = result.shape
+        self.data = result
+        print(result)
+
+
+
     #def viz(self, file=None, size=self.numObs, c='b'):
 
 
@@ -78,7 +99,7 @@ class sampler:
                     mpl.annotate(i, (self.sampleEmbedding[i,0], self.sampleEmbedding[i,1]))
 
 
-
+        mpl.legend()
 
         if file is not None:
             mpl.savefig('{}.png'.format(file))

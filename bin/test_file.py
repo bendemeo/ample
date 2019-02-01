@@ -56,10 +56,16 @@ if __name__ == '__main__':
     gauss2D_2 = gauss_test([5000, 200],2,1,[10])
     print(gauss2D)
 
-    downsampler = diverseLSH(gauss2D, batch=100, numCenters=7, labels = [1,2]*430+[3])
+    downsampler = diverseLSH(gauss2D, batch=100, numCenters=5, labels = [1,2]*430+[3])
+    downsampler.qTransform(q=10)
+
+
+
+
     downsampler.downsample(400)
     print(max(downsampler.sample))
-    downsampler.vizSample(full=False, c=np.array(downsampler.labels)[downsampler.sample])
+    downsampler.vizHash()
+    #downsampler.vizSample(full=False, c=np.array(downsampler.labels)[downsampler.sample])
 
 
 
