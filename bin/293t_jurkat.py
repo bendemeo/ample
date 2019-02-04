@@ -97,15 +97,15 @@ if __name__ == '__main__':
         results.to_csv(
             'target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
-
+    downsampler = dpp(X_dimred)
     for step in [1000,10000,20000,50000,100000]:
-        downsampler = dpp(X_dimred, steps=step)
+        downsampler.steps=step
         # downsampler.normalize()
         downsampler.downsample(100)
         print('det with step size {}'.format(step))
         print(downsampler.det)
         downsampler.vizSample(file='293t_dppsample_100_{}'.format(step),
-                              c=list(range(100)), cmap='hot', anno=True)
+                              c=list(range(100)), cmap='hot', full=True anno=True)
 
 
 
