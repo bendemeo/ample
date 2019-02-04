@@ -132,7 +132,7 @@ class dpp(sampler):
             self.sample = newSample
             self.kernel = newKernel
             self.det = newDet
-            print(newDet)
+            #print(newDet)
 
     def downsample(self,sampleSize):
         self.available = range(self.numObs)  # reset
