@@ -99,13 +99,14 @@ if __name__ == '__main__':
 
     downsampler = dpp(X_dimred)
     for step in [1000,10000,20000,50000]:
-        downsampler.steps=step
-        # downsampler.normalize()
-        downsampler.downsample(10)
-        print('det with step size {}'.format(step))
-        print(downsampler.det)
-        downsampler.vizSample(file='293t_dppsample_10_{}'.format(step),
-                              c=list(range(10)), cmap='hot', full=True, anno=True)
+        for sampleSize in [2, 3, 5, 10]:
+            downsampler.steps=step
+            # downsampler.normalize()
+            downsampler.downsample(sampleSize)
+            print('det with {} steps'.format(step))
+            print(downsampler.det)
+            downsampler.vizSample(file='293t_dppsample_{}_{}'.format(sampleSize,step),
+                                  c=list(range(sampleSize)), cmap='hot', full=True, anno=True)
 
     greedysampler = detSampler(X_dimred, batch=1000)
     greedysampler.downsample(10)
