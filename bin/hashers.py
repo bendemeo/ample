@@ -160,7 +160,7 @@ class dpp(sampler):
 
 class centerSampler(sampler):
 
-    def __init__(self, data, numCenters=10, steps=1000, normalize=False **kwargs):
+    def __init__(self, data, numCenters=10, steps=1000, normalize=False, **kwargs):
         sampler.__init__(self, data, **kwargs)
         self.numCenters = numCenters
         self.steps = steps
