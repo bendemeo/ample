@@ -166,6 +166,7 @@ class centerSampler(sampler):
 
     def downsample(self, sampleSize):
         self.sample = []
+        self.available = list(range(self.numObs))
         centerFinder = dpp(self.data, self.steps)
         self.centers = centerFinder.downsample(self.numCenters)
 
