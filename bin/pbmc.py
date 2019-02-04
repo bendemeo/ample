@@ -92,14 +92,15 @@ if __name__ == '__main__':
     genes = []
 
     sampler = 'centerSampler'
-    filename = 'pbmc_centerSamplerTest'
+    filename = 'pbmc_centerSamplerTest_l2norm'
     iter = 1
     testParams = {
         'numCenters':np.arange(1, 100, 1).tolist()*3,
         'steps': [1000]*99 + [10000]*99 + [50000]*99
+        'normalize':[True]
     }
 
-    tests = ['max_min_dist', 'time',
+    tests = ['time',
               'cluster_counts']
 
 
