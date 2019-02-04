@@ -123,7 +123,7 @@ if __name__ == '__main__':
         'steps': [1000]*19 + [10000]*19
     }
 
-    tests = ['max_min_dist', 'time', 'maxCounts',
+    tests = ['max_min_dist', 'time',
               'cluster_counts']
 
 
