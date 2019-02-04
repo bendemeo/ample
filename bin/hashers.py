@@ -183,6 +183,7 @@ class centerSampler(sampler):
         while(len(self.sample) < sampleSize):
 
             for i,c in enumerate(self.centers):
+                #print(self.sample)
                 dists = distTable[:,i].tolist()
 
                 dists.pop(i)
@@ -200,9 +201,7 @@ class centerSampler(sampler):
 
                 if len(self.sample) >= sampleSize:
                     break
-
-
-
+        return self.sample
 
 
 class diverseLSH(LSH):
