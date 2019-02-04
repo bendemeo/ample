@@ -162,7 +162,7 @@ class centerSampler(sampler):
         self.steps = steps
         self.sample = None
         self.centers = None
-        self.available = range(self.numObs)
+        self.available = list(range(self.numObs))
 
     def downsample(self, sampleSize):
         self.sample = []
