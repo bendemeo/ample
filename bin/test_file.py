@@ -57,15 +57,15 @@ if __name__ == '__main__':
     print(gauss2D)
 
 
-    downsampler = dpp(gauss2D, steps=50000)
-    downsampler.downsample(20)
+    downsampler = centerSampler(gauss2D, numCenters=10, steps=10000)
+    downsampler.downsample(200)
     downsampler.vizSample(full=True)
 
 
-    downsampler = detSampler(gauss2D, batch=1000)
-    downsampler.downsample(20)
-    print('determinant using greedy method')
-    print(downsampler.det)
+    # downsampler = detSampler(gauss2D, batch=1000)
+    # downsampler.downsample(20)
+    # print('determinant using greedy method')
+    # print(downsampler.det)
 
 
 

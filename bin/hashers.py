@@ -153,6 +153,58 @@ class dpp(sampler):
 
         return(self.sample)
 
+
+class centerSampler(sampler):
+
+    def __init__(self, data, numCenters=10, steps=1000, **kwargs):
+        sampler.__init__(self, data, **kwargs)
+        self.numCenters = numCenters
+        self.steps = steps
+        self.sample = None
+        self.centers = None
+        self.available = range(self.numObs)
+
+    def downsample(self, sampleSize):
+        self.sample = []
+        centerFinder = dpp(self.data, self.steps)
+        self.centers = centerFinder.downsample(self.numCenters)
+
+
+        # stores each point's distance to each center
+        distTable = np.empty([self.numObs, self.numCenters])
+
+        for i, c in enumerate(self.centers):
+            dists = []
+            for j in range(self.numObs):
+                dists.append(np.linalg.norm(self.data[j, :]
+                                            - self.data[c, :]))
+            distTable[:, i] = dists
+
+        while(len(self.sample) < sampleSize):
+
+            for i,c in enumerate(self.centers):
+                dists = distTable[:,i].tolist()
+
+                dists.pop(i)
+                smallest = min(dists)
+
+                dists = distTable[:,i].tolist()
+                new = dists.index(smallest)
+
+
+                self.sample.append(self.available[new])
+                del self.available[new]
+
+                distTable = np.delete(distTable, new, 0)
+
+
+                if len(self.sample) >= sampleSize:
+                    break
+
+
+
+
+
 class diverseLSH(LSH):
     """uses a DPP-like process to select diverse centers,
      then assigns points to their nearest one"""
