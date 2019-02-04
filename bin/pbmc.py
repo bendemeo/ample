@@ -100,7 +100,7 @@ if __name__ == '__main__':
         'normalize':[True]
     }
 
-    tests = ['time',
+    tests = ['time','max_min_dist',
               'cluster_counts']
 
 
