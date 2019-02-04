@@ -95,7 +95,7 @@ if __name__ == '__main__':
     filename = 'pbmc_centerSamplerTest'
     iter = 1
     testParams = {
-        'numCenters':np.arange(1, 20, 1).tolist()*3,
+        'numCenters':np.arange(1, 100, 1).tolist()*3,
         'steps': [1000]*19 + [10000]*19 + [50000]*19
     }
 
@@ -106,7 +106,7 @@ if __name__ == '__main__':
     testResults = try_params(X_dimred, sampler,
                                   params=testParams,
                                   tests=tests,
-                                  n_seeds=3,
+                                  n_seeds=10,
                                   cell_labels=cell_labels,
                                   Ns=[100, 500],
                                   cluster_labels = labels,
