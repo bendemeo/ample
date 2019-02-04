@@ -97,18 +97,18 @@ if __name__ == '__main__':
         results.to_csv(
             'target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
-    # downsampler = dpp(X_dimred)
-    # for step in [1000,10000,20000,50000,100000]:
-    #     downsampler.steps=step
-    #     # downsampler.normalize()
-    #     downsampler.downsample(100)
-    #     print('det with step size {}'.format(step))
-    #     print(downsampler.det)
-    #     downsampler.vizSample(file='293t_dppsample_100_{}'.format(step),
-    #                           c=list(range(100)), cmap='hot', full=True, anno=True)
+    downsampler = dpp(X_dimred)
+    for step in [1000,10000,20000,50000]:
+        downsampler.steps=step
+        # downsampler.normalize()
+        downsampler.downsample(10)
+        print('det with step size {}'.format(step))
+        print(downsampler.det)
+        downsampler.vizSample(file='293t_dppsample_10_{}'.format(step),
+                              c=list(range(10)), cmap='hot', full=True, anno=True)
 
-    greedysampler = detSampler(X_dimred, batch=4000)
-    greedysampler.downsample(100)
+    greedysampler = detSampler(X_dimred, batch=1000)
+    greedysampler.downsample(10)
     print('det with greedy sampler: {}'.format(greedysampler.det))
 
     # viz_genes = []
