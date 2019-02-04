@@ -117,13 +117,13 @@ class dpp(sampler):
 
         newcol = newrow + [np.matmul(self.data[c, :], np.transpose(self.data[c, :]))]
 
-        # print(newcol)
+        #print(newcol)
         newKernel = np.vstack([newKernel, np.matrix(newrow)])
 
         # print(np.transpose(np.matrix(newcol)).shape)
         # print(newKernel.shape)
         newKernel = np.hstack(
-            [newKernel, np.transpose(np.matrix(newcol))])
+            [newKernel, np.transpose(np.matrix(np.array(newcol)))])
 
         newSample = newSample + c.tolist()
         newDet = np.linalg.det(newKernel)
