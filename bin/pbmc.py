@@ -91,7 +91,7 @@ if __name__ == '__main__':
     iter = 1
     testParams = {
         'numCenters':np.arange(2, 100, 2).tolist() * 2,
-        'batch': [1000]*49 + [5000]*49
+        'steps': [1000]*49 + [10000]*49
     }
 
     tests = ['max_min_dist', 'time', 'maxCounts',
