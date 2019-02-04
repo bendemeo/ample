@@ -86,23 +86,54 @@ if __name__ == '__main__':
 
 
 
-    downsampler = gsLSH(X_dimred, gridSize=0.4)
-    # downsampler.downsample(5000)
-    # downsampler.vizSample(full=False, c=np.array(downsampler.labels)[downsampler.sample],
-    #                       file='pbmc_diverseLSH_sample_5000')
 
-
-    #downsampler.qTransform(q=4)
 
     viz_genes = []
     genes = []
-    filename = 'pbmc_gsLSH_sample_5000'
-    experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels=cell_labels,
-        gene_names=viz_genes, genes=genes,
-        kmeans=False,
-        visualize_orig=False,
-        sample_type='diverseLSH',
-        lsh=True)
+
+    sampler = 'centerSampler'
+    filename = 'pbmc_centerSamplerTest'
+    iter = 1
+    testParams = {
+        'numCenters':np.arange(1, 20, 1).tolist()*3,
+        'steps': [1000]*19 + [10000]*19 + [50000]*19
+    }
+
+    tests = ['max_min_dist', 'time',
+              'cluster_counts']
+
+
+    testResults = try_params(X_dimred, sampler,
+                                  params=testParams,
+                                  tests=tests,
+                                  n_seeds=3,
+                                  cell_labels=cell_labels,
+                                  Ns=[100, 500],
+                                  cluster_labels = labels,
+                                  backup=filename+'_backup')
+    # with open("gsLSH_gridTest.file", "wb") as f:
+    #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
+
+    testResults.to_csv(
+        'target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+
+    # downsampler = gsLSH(X_dimred, gridSize=0.4)
+    # # downsampler.downsample(5000)
+    # # downsampler.vizSample(full=False, c=np.array(downsampler.labels)[downsampler.sample],
+    # #                       file='pbmc_diverseLSH_sample_5000')
+    #
+    #
+    # #downsampler.qTransform(q=4)
+    #
+    # viz_genes = []
+    # genes = []
+    # filename = 'pbmc_gsLSH_sample_5000'
+    # experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels=cell_labels,
+    #     gene_names=viz_genes, genes=genes,
+    #     kmeans=False,
+    #     visualize_orig=False,
+    #     sample_type='diverseLSH',
+    #     lsh=True)
 
     # downsampler = diverseLSH(X_dimred, numCenters=20, batch=1000, labels=cell_labels)
     # # downsampler.downsample(5000)
