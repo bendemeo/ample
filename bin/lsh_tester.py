@@ -128,8 +128,8 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
                 print(currentParams)
                 log('sampling {} from {}'.format(N, hasher))
 
-                downsampler.makeHash() ## re-do for randomness
-                downsampler.makeFinder()
+                # downsampler.makeHash() ## re-do for randomness
+                # downsampler.makeFinder()
                 #log('grid size: {}'.format(getattr(downsampler, 'gridSize')))
                 t0 = time()
                 if weighted:
