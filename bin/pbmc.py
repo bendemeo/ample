@@ -86,6 +86,34 @@ if __name__ == '__main__':
 
 
 
+    sampler = 'diverseLSH'
+    filename = 'pbmc_diverseLSHTest_mcmc'
+    iter = 1
+    testParams = {
+        'numCenters':np.arange(2, 100, 2).tolist() * 2,
+        'batch': [1000]*49 + [5000]*49
+    }
+
+    tests = ['max_min_dist', 'time', 'maxCounts',
+              'cluster_counts']
+
+
+    testResults = try_params(X_dimred, sampler,
+                                  params=testParams,
+                                  tests=tests,
+                                  n_seeds=5,
+                                  cell_labels=cell_labels,
+                                  Ns=[1000],
+                                  cluster_labels = labels,
+                                  backup=filename+'_backup',
+                                  q=4)
+    # with open("gsLSH_gridTest.file", "wb") as f:
+    #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
+
+    testResults.to_csv(
+        'target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+
+
 
 
     viz_genes = []
