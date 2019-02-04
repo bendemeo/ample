@@ -86,13 +86,17 @@ class detSampler(seqSampler):
 class dpp(sampler):
     """uses an MCMC framework to emulate a DPP"""
 
-    def __init__(self, data, steps=100, **kwargs):
+    def __init__(self, data, steps=100, normalize=False, **kwargs):
         sampler.__init__(self, data, **kwargs)
         self.sample = None
         self.sampled = [False] * self.numObs
         self.available = range(self.numObs)
         self.steps = steps
         self.det = None
+        if(normalize):
+            self.normalize()
+
+
 
     def step(self):
         c = np.random.choice(self.available, 1)  # new candidate
