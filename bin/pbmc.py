@@ -105,8 +105,7 @@ if __name__ == '__main__':
                                   cell_labels=cell_labels,
                                   Ns=[1000],
                                   cluster_labels = labels,
-                                  backup=filename+'_backup',
-                                  q=4)
+                                  backup=filename+'_backup')
     # with open("gsLSH_gridTest.file", "wb") as f:
     #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
 
