@@ -105,7 +105,7 @@ if __name__ == '__main__':
         print('det with step size {}'.format(step))
         print(downsampler.det)
         downsampler.vizSample(file='293t_dppsample_100_{}'.format(step),
-                              c=list(range(100)), cmap='hot', full=True anno=True)
+                              c=list(range(100)), cmap='hot', full=True, anno=True)
 
 
 
