@@ -98,7 +98,7 @@ if __name__ == '__main__':
             'target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
-    for step in [1000,10000,20000,50000,100000:
+    for step in [1000,10000,20000,50000,100000]:
         downsampler = dpp(X_dimred, steps=step)
         # downsampler.normalize()
         downsampler.downsample(100)
