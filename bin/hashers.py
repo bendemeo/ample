@@ -63,9 +63,10 @@ class detSampler(seqSampler):
                 # dets.append(np.prod(s))
 
             #print('det size {} took {}'.format(len(self.sample), t1 - t0))
-            #print(self.kernel.shape)
+            # print(self.kernel.shape)
 
             ind = dets.index(max(dets))
+            self.det = max(dets)
             new = candidates[ind]
 
             newrow = np.matmul(self.data[new, :], np.transpose(
@@ -82,11 +83,81 @@ class detSampler(seqSampler):
             return(new)
 
 
+class dpp(sampler):
+    """uses an MCMC framework to emulate a DPP"""
+
+    def __init__(self, data, steps=100, **kwargs):
+        sampler.__init__(self, data, **kwargs)
+        self.sample = None
+        self.sampled = [False] * self.numObs
+        self.available = range(self.numObs)
+        self.steps = steps
+        self.det = None
+
+    def step(self):
+        c = np.random.choice(self.available, 1)  # new candidate
+        s = np.random.choice(self.sample, 1)  # sample to switch out
+
+        # compute kernel matrix if s is swapped for c
+        newKernel = deepcopy(self.kernel)
+        newSample = deepcopy(self.sample)
+
+        i = self.sample.index(s)
+        del newSample[i]
+        newKernel = np.delete(newKernel, i, 0)
+        newKernel = np.delete(newKernel, i, 1)
+
+        #print(newSample)
+        newrow = np.matmul(self.data[c, :], np.transpose(
+            self.data[newSample, :]))
+
+
+        newrow = [x for y in newrow for x in y]
+        # print(newrow)
+
+        newcol = newrow + [np.matmul(self.data[c, :], np.transpose(self.data[c, :]))]
+
+        # print(newcol)
+        newKernel = np.vstack([newKernel, np.matrix(newrow)])
+
+        # print(np.transpose(np.matrix(newcol)).shape)
+        # print(newKernel.shape)
+        newKernel = np.hstack(
+            [newKernel, np.transpose(np.matrix(newcol))])
+
+        newSample = newSample + c.tolist()
+        newDet = np.linalg.det(newKernel)
+
+        if newDet > self.det:
+            self.sample = newSample
+            self.kernel = newKernel
+            self.det = newDet
+            print(newDet)
+
+    def downsample(self,sampleSize):
+        self.available = range(self.numObs)  # reset
+
+        self.sample = np.random.choice(
+            range(self.numObs), sampleSize, replace=False).tolist()
+
+        self.kernel = np.matrix(np.matmul(self.data[self.sample, :],
+                                          np.transpose(self.data[self.sample, :])))
+
+        self.det = np.linalg.det(self.kernel)
+
+        for s in self.sample:
+            self.sampled[s] = True
+
+        for n in range(self.steps):
+            self.step()
+
+        return(self.sample)
+
 class diverseLSH(LSH):
     """uses a DPP-like process to select diverse centers,
      then assigns points to their nearest one"""
 
-    def __init__(self, data, numCenters=10, batch=100, replace=False,**kwargs):
+    def __init__(self, data, numCenters=10, batch=100, replace=False, **kwargs):
         numBands = 1
         bandSize = 1
         numHashes = 1
@@ -151,14 +222,15 @@ class diverseLSH(LSH):
         mpl.show()
         mpl.close()
 
+
 class diverseSampler(seqSampler):
     def __init__(self, data, batch, numCenters, replace=False):
         seqSampler.__init__(self, data, replace)
         self.centerSampler = detSampler(data, batch, replace)
-        self.numCenters = numCenters # before repeat
+        self.numCenters = numCenters  # before repeat
         self.centers = []
-        self.iter = 0 # how many centers we've sampled since last
-        self.batch=batch
+        self.iter = 0  # how many centers we've sampled since last
+        self.batch = batch
         self.avail = list(range(self.numObs))
 
     def addSample(self):
@@ -168,19 +240,19 @@ class diverseSampler(seqSampler):
             self.centerSampler.sample.sort(reverse=True)
             for new in self.centerSampler.sample:
                 del self.avail[new]
-            #clean slate on sampler
-            #print(self.data[self.avail,:])
-            self.centerSampler = detSampler(self.data[self.avail,:], self.batch, self.replace)
+            # clean slate on sampler
+            # print(self.data[self.avail,:])
+            self.centerSampler = detSampler(
+                self.data[self.avail, :], self.batch, self.replace)
             self.iter = 0
 
         new = self.centerSampler.addSample()
 
         self.sample.append(new)
-        #self.centerSampler.sample.append(new)
+        # self.centerSampler.sample.append(new)
         self.iter += 1
 
         return(new)
-
 
 
 class rankLSH(diverseLSH):
@@ -206,24 +278,25 @@ class rankLSH(diverseLSH):
             for j in range(self.numObs):
                 dists.append(np.linalg.norm(self.data[j, :]
                                             - self.data[c, :]))
-            distTable[:,i]=dists
+            distTable[:, i] = dists
 
         # add rows to enumerate
         distTable = np.hstack([distTable,
-                              np.transpose(np.matrix(list(range(self.numObs))))])
+                               np.transpose(np.matrix(list(range(self.numObs))))])
 
         while(distTable.shape[0] > 0):
-            for i,c in enumerate(self.centers):
-                if (distTable.shape[0]==0):
+            for i, c in enumerate(self.centers):
+                if (distTable.shape[0] == 0):
                     break
-                closest = np.argmin(distTable[:,i])
+                closest = np.argmin(distTable[:, i])
                 # distTable[:,i].index(max(distTable[:,i]))
                 closestInd = int(distTable[closest, -1])
                 print(closestInd)
-                hashes[closestInd,0]=c
-                distTable = np.delete(distTable,(closest), axis=0)
+                hashes[closestInd, 0] = c
+                distTable = np.delete(distTable, (closest), axis=0)
 
         self.hash = hashes
+
 
 class ballLSH(diverseLSH):
     def __init__(self, data, batch=100, replace=False, epsilon=1, ord=None):
@@ -240,27 +313,29 @@ class ballLSH(diverseLSH):
     def makeHash(self):
         centerSampler = detSampler(self.data, self.batch, self.replace)
 
-        covered = [False]*self.numObs #whether each has been covered by a ball
-        sigs = np.array([]).reshape(self.numObs,0)
+        # whether each has been covered by a ball
+        covered = [False] * self.numObs
+        sigs = np.array([]).reshape(self.numObs, 0)
 
         hashes = np.empty([self.numObs, 1])
 
         while sum(covered) < self.numObs:
             c = centerSampler.addSample()
             print('{} centers added'.format(len(centerSampler.sample)))
-            center = self.data[c,:]
+            center = self.data[c, :]
             centerDists = []
             for i in range(self.numObs):
-                centerDists.append(np.linalg.norm(center-self.data[i,:], ord=self.ord))
+                centerDists.append(np.linalg.norm(
+                    center - self.data[i, :], ord=self.ord))
 
             nearby = [int(x < self.epsilon) for x in centerDists]
 
-            sigs = np.hstack([sigs,np.transpose(np.matrix(nearby))])
+            sigs = np.hstack([sigs, np.transpose(np.matrix(nearby))])
 
             covered[c] += 1
-            #set nearby points as covered
+            # set nearby points as covered
             covered = np.maximum(covered, nearby)
-            #print(sum(covered))
+            # print(sum(covered))
 
         # print(sigs)
         # print(sigs.shape)
@@ -269,7 +344,7 @@ class ballLSH(diverseLSH):
         hashdict = {}
 
         for sample_idx in range(self.numObs):
-            hashlist= sigs[sample_idx, :].tolist()
+            hashlist = sigs[sample_idx, :].tolist()
             hashlist = [y for x in hashlist for y in x]
             hash_cell = tuple(hashlist)
             if hash_cell not in hashdict:
@@ -289,12 +364,9 @@ class ballLSH(diverseLSH):
 
 class gapLSH(diverseLSH):
 
-
     @staticmethod
     def findLeap(dists):
         """find the first big gap in distances"""
-
-
 
     def makeHash(self):
         centerSampler = detSampler(self.data, self.batch, self.replace)
@@ -312,22 +384,22 @@ class gapLSH(diverseLSH):
             for j in range(self.numObs):
                 dists.append(np.linalg.norm(self.data[j, :]
                                             - self.data[c, :]))
-            distTable[:,i]=dists
+            distTable[:, i] = dists
 
         # add rows to enumerate
         distTable = np.hstack([distTable,
-                              np.transpose(np.matrix(list(range(self.numObs))))])
+                               np.transpose(np.matrix(list(range(self.numObs))))])
 
         while(distTable.shape[0] > 0):
-            for i,c in enumerate(self.centers):
-                if (distTable.shape[0]==0):
+            for i, c in enumerate(self.centers):
+                if (distTable.shape[0] == 0):
                     break
-                closest = np.argmin(distTable[:,i])
+                closest = np.argmin(distTable[:, i])
                 # distTable[:,i].index(max(distTable[:,i]))
                 closestInd = int(distTable[closest, -1])
                 print(closestInd)
-                hashes[closestInd,0]=c
-                distTable = np.delete(distTable,(closest), axis=0)
+                hashes[closestInd, 0] = c
+                distTable = np.delete(distTable, (closest), axis=0)
 
         self.hash = hashes
 

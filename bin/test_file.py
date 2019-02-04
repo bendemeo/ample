@@ -56,15 +56,28 @@ if __name__ == '__main__':
     gauss2D_2 = gauss_test([5000, 200],2,1,[10])
     print(gauss2D)
 
-    downsampler = diverseLSH(gauss2D, batch=100, numCenters=5, labels = [1,2]*430+[3])
-    downsampler.qTransform(q=10)
+
+    downsampler = dpp(gauss2D, steps=50000)
+    downsampler.downsample(20)
+    downsampler.vizSample(full=True)
+
+
+    downsampler = detSampler(gauss2D, batch=1000)
+    downsampler.downsample(20)
+    print('determinant using greedy method')
+    print(downsampler.det)
 
 
 
-
-    downsampler.downsample(400)
-    print(max(downsampler.sample))
-    downsampler.vizHash()
+    # downsampler = diverseLSH(gauss2D, batch=100, numCenters=5, labels = [1,2]*430+[3])
+    # downsampler.qTransform(q=10)
+    #
+    #
+    #
+    #
+    # downsampler.downsample(400)
+    # print(max(downsampler.sample))
+    # downsampler.vizHash()
     #downsampler.vizSample(full=False, c=np.array(downsampler.labels)[downsampler.sample])
 
 
