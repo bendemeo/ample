@@ -84,7 +84,7 @@ if __name__ == '__main__':
     cell_labels = le.transform(labels)
 
 
-    downsampler = centerSampler(X_dimred, steps=1000, numCenters=100)
+    downsampler = centerSampler(X_dimred, steps=10, numCenters=10)
     downsampler.downsample(5000)
     downsampler.embedSample()
     labels = [labels[x] for x in cell_labels]
@@ -94,7 +94,7 @@ if __name__ == '__main__':
     labels = labels[downsampler.sample]
     labels = np.transpose(labels)
 
-    plotData = np.concatenate(downsampler.sampleEmbedding, labels, axis=1)
+    plotData = np.concatenate((downsampler.sampleEmbedding, labels), axis=1)
     plotData.to_csv('pbmc_centerSampler_plotData_5000_100centers', sep='\t')
 
     #
