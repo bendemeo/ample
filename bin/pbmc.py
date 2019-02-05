@@ -93,6 +93,7 @@ if __name__ == '__main__':
 
     labels = labels[downsampler.sample]
     labels = np.transpose(labels)
+    labels = np.reshape(labels, (labels.size, 1))
     print(downsampler.sampleEmbedding.shape)
     print(labels.shape)
     plotData = np.concatenate((downsampler.sampleEmbedding, labels), axis=1)
