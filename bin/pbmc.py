@@ -83,22 +83,26 @@ if __name__ == '__main__':
     le = LabelEncoder().fit(labels)
     cell_labels = le.transform(labels)
 
+    labels = [labels[x] for x in cell_labels]
+    print(labels[1])
+    labels = np.array(labels)
+    print(np.unique(labels))
 
     downsampler = centerSampler(X_dimred, steps=1000, numCenters=100)
     downsampler.downsample(5000)
     downsampler.embedSample()
-    labels = [labels[x] for x in cell_labels]
-    print(labels[1])
-    labels = np.array(labels)
+
 
     labels = labels[downsampler.sample]
+    print(np.unique(labels))
+
     labels = np.transpose(labels)
     labels = np.reshape(labels, (labels.size, 1))
     print(downsampler.sampleEmbedding.shape)
     print(labels.shape)
     plotData = np.concatenate((downsampler.sampleEmbedding, labels), axis=1)
     plotData = pd.DataFrame(plotData, columns = ['x','y','cell_type'])
-    plotData.to_csv('pbmc_centerSampler_plotData_5000_100centers', sep='\t')
+    plotData.to_csv('plotData/pbmc_centerSampler_plotData_5000_100centers', sep='\t')
 
     #
     # sampler = 'diverseLSH'
