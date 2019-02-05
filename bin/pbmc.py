@@ -80,6 +80,7 @@ if __name__ == '__main__':
             pickle.dump(labels, open('pickles/{}'.format(labelname), 'wb'))
 
     print(np.unique(labels))
+    print(len(labels))
     le = LabelEncoder().fit(labels)
     cell_labels = le.transform(labels)
     print(np.unique(cell_labels))
