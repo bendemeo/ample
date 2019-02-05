@@ -41,8 +41,8 @@ class sigSampler(sampler):
                 for k in range(self.bins):
                     p = float(sum(1 for x in binVals if x == k)) / len(self.available)
                     proportions.append(p)
-                print(proportions)
-                print(sum(proportions))
+                # print(proportions)
+                # print(sum(proportions))
                 binProps = [proportions[v] for v in binVals]
                 newInd = binProps.index(min(binProps))
                 sample.append(self.available[newInd])

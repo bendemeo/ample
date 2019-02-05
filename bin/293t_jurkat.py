@@ -98,7 +98,7 @@ if __name__ == '__main__':
             'target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
-    downsampler = sigSampler(X_dimred, bins=4)
+    downsampler = sigSampler(X_dimred, bins=10)
     downsampler.downsample(500)
     downsampler.vizSample(file='293t_sigSample', anno=True, full=True)
 
