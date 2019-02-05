@@ -52,15 +52,15 @@ if __name__ == '__main__':
 
     sizes=[500,200,100,50, 10]
     N=sum(sizes)
-    gauss2D = gauss_test(sizes, 200, 5, [1]*5)
+    gauss2D = gauss_test(sizes, 20, 5, [1]*5)
     gauss2D_2 = gauss_test([5000, 200],2,1,[10])
     print(gauss2D)
 
 
     downsampler = sigSampler(gauss2D, bins=4)
 
-    downsampler.downsample()
-    downsampler.vizSample(full=True, anno=True)
+    downsampler.downsample(200)
+    downsampler.vizSample(full=True, anno=True, annoMax=200)
 
     # downsampler = centerSampler(gauss2D, numCenters=10, steps=10000)
     # downsampler.downsample(200)

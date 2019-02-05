@@ -26,24 +26,27 @@ class sigSampler(sampler):
         self.sample = None
         self.available = list(range(self.numObs))
 
-    def downsample(self):
+    def downsample(self, sampleSize):
         self.available = list(range(self.numObs))
-        binData = np.empty(self.data.shape)
         sample = []
 
-        # convert data to bins, ala cut_width
-        for i in range(self.numFeatures):
-            binVals = pd.cut(self.data[self.available,i], self.bins,
-                             labels=False).tolist()
-            proportions = []
-            for k in range(self.bins):
-                p = sum(1 for x in binVals if x == k) / float(self.bins)
-                proportions.append(p)
+        while(len(sample) < sampleSize):
 
-            binProps = [proportions[v] for v in binVals]
-            newInd = binProps.index(min(binProps))
-            sample.append(self.available[newInd])
-            del self.available[newInd]
+            binData = np.empty(self.data.shape)
+            # convert data to bins, ala cut_width
+            for i in range(self.numFeatures):
+                binVals = pd.cut(self.data[self.available,i], self.bins,
+                                 labels=False).tolist()
+                proportions = []
+                for k in range(self.bins):
+                    p = float(sum(1 for x in binVals if x == k)) / len(self.available)
+                    proportions.append(p)
+                print(proportions)
+                print(sum(proportions))
+                binProps = [proportions[v] for v in binVals]
+                newInd = binProps.index(min(binProps))
+                sample.append(self.available[newInd])
+                del self.available[newInd]
 
         self.sample = sample
         return(sample)
