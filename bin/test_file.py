@@ -50,21 +50,22 @@ if __name__ == '__main__':
 
     #np.random.seed()
 
-    sizes=[500,200,100,50, 10]
+    sizes=[1000,10,10,4,1]
     N=sum(sizes)
-    gauss2D = gauss_test(sizes, 20, 5, [1]*5)
+    gauss2D = gauss_test(sizes, 200, 5, [1]*5)
     gauss2D_2 = gauss_test([5000, 200],2,1,[10])
     print(gauss2D)
 
 
-    downsampler = sigSampler(gauss2D, bins=4)
-
-    downsampler.downsample(200)
-    downsampler.vizSample(full=True, anno=True, annoMax=200)
-
-    # downsampler = centerSampler(gauss2D, numCenters=10, steps=10000)
+    # downsampler = sigSampler(gauss2D, bins=10)
+    # downsampler.sigTransform()
+    # print(downsampler.data)
     # downsampler.downsample(200)
-    # downsampler.vizSample(full=True)
+    # downsampler.vizSample(full=True, anno=True, annoMax=200)
+
+    downsampler = centerSampler(gauss2D, numCenters=10, steps=10000, transformed=True)
+    downsampler.downsample(10)
+    downsampler.vizSample(full=True)
 
 
     # downsampler = detSampler(gauss2D, batch=1000)

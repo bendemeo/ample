@@ -98,9 +98,14 @@ if __name__ == '__main__':
             'target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
-    downsampler = sigSampler(X_dimred, bins=10)
+
+    downsampler = centerSampler(X_dimred, centers=100, transformed=True)
     downsampler.downsample(500)
-    downsampler.vizSample(file='293t_sigSample', anno=True, full=True)
+    downsampler.vizSample(file='293t_centerSample_transformed', anno=True, full=True)
+
+    # downsampler = sigSampler(X_dimred, bins=10)
+    # downsampler.downsample(500)
+    # downsampler.vizSample(file='293t_sigSample', anno=True, full=True)
 
 
 

@@ -26,6 +26,28 @@ class sigSampler(sampler):
         self.sample = None
         self.available = list(range(self.numObs))
 
+    def sigTransform(self, bins=4):
+        transformed = np.empty(self.data.shape)
+        # convert data to bins, ala cut_width
+        for i in range(self.numFeatures):
+            binVals = pd.cut(self.data[:,i], self.bins,
+                             labels=False).tolist()
+            proportions = []
+            for k in range(self.bins):
+                p = float(sum(1 for x in binVals if x == k)) / len(self.available)
+                proportions.append(p)
+            # print(proportions)
+            # print(sum(proportions))
+            binProps = [proportions[v] for v in binVals]
+            expected = 1./self.bins
+
+            scores = [expected / x for x in binProps]
+            transformed[:,i] = scores
+
+        self.data = transformed
+        return (transformed)
+
+
     def downsample(self, sampleSize):
         self.available = list(range(self.numObs))
         sample = []
@@ -44,20 +66,19 @@ class sigSampler(sampler):
                 # print(proportions)
                 # print(sum(proportions))
                 binProps = [proportions[v] for v in binVals]
+                expected = 1./self.bins
+
+                scores = [expected / x for x in binProps]
+
+
+
+
                 newInd = binProps.index(min(binProps))
                 sample.append(self.available[newInd])
                 del self.available[newInd]
 
         self.sample = sample
         return(sample)
-
-
-
-
-
-
-
-
 
 
 class detSampler(seqSampler):
@@ -144,7 +165,26 @@ class dpp(sampler):
         if(normalize):
             self.normalize()
 
+    def sigTransform(self, bins=4):
+        transformed = np.empty(self.data.shape)
+        # convert data to bins, ala cut_width
+        for i in range(self.numFeatures):
+            binVals = pd.cut(self.data[:,i], bins,
+                             labels=False).tolist()
+            proportions = []
+            for k in range(bins):
+                p = float(sum(1 for x in binVals if x == k)) / self.numObs
+                proportions.append(p)
+            # print(proportions)
+            # print(sum(proportions))
+            binProps = [proportions[v] for v in binVals]
+            expected = 1./bins
 
+            scores = [expected / x for x in binProps]
+            transformed[:,i] = scores
+
+        self.data = transformed
+        return (transformed)
 
     def step(self):
         c = np.random.choice(self.available, 1)  # new candidate
@@ -208,7 +248,7 @@ class dpp(sampler):
 
 class centerSampler(sampler):
 
-    def __init__(self, data, numCenters=10, steps=1000, normalize=False, **kwargs):
+    def __init__(self, data, numCenters=10, steps=1000, normalize=False, transformed=False, **kwargs):
         sampler.__init__(self, data, **kwargs)
         self.numCenters = numCenters
         self.steps = steps
@@ -216,11 +256,14 @@ class centerSampler(sampler):
         self.centers = None
         self.available = list(range(self.numObs))
         self.normalize = normalize
+        self.transformed = transformed
 
     def downsample(self, sampleSize):
         self.sample = []
         self.available = list(range(self.numObs))
         centerFinder = dpp(self.data, self.steps, normalize=self.normalize)
+        if(self.transformed):
+            centerFinder.sigTransform()
         self.centers = centerFinder.downsample(self.numCenters)
 
 
