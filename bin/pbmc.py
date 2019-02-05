@@ -79,9 +79,10 @@ if __name__ == '__main__':
             pickle.dump(X_dimred, open('pickles/{}'.format(picklename), 'wb'))
             pickle.dump(labels, open('pickles/{}'.format(labelname), 'wb'))
 
-
+    print(np.unique(labels))
     le = LabelEncoder().fit(labels)
     cell_labels = le.transform(labels)
+    print(np.unique(cell_labels))
 
     labels = [labels[x] for x in cell_labels]
     print(labels[1])
