@@ -99,7 +99,7 @@ if __name__ == '__main__':
 
 
 
-    downsampler = centerSampler(X_dimred, centers=100, transformed=True)
+    downsampler = centerSampler(X_dimred, numCenters=100, transformed=True)
     downsampler.downsample(500)
     downsampler.vizSample(file='293t_centerSample_transformed', anno=True, full=True)
 
