@@ -87,6 +87,7 @@ if __name__ == '__main__':
     print(labels[1])
     labels = np.array(labels)
     print(np.unique(labels))
+    print(labels.size)
 
     downsampler = centerSampler(X_dimred, steps=1000, numCenters=100)
     downsampler.downsample(5000)
