@@ -97,7 +97,7 @@ if __name__ == '__main__':
     print(downsampler.sampleEmbedding.shape)
     print(labels.shape)
     plotData = np.concatenate((downsampler.sampleEmbedding, labels), axis=1)
-    plotData.savetxt('pbmc_centerSampler_plotData_5000_100centers.csv', a, delimiter=',')
+    np.savetxt('pbmc_centerSampler_plotData_5000_100centers.csv', plotData, delimiter=',')
 
     #
     # sampler = 'diverseLSH'
