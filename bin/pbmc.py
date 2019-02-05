@@ -93,7 +93,8 @@ if __name__ == '__main__':
 
     labels = labels[downsampler.sample]
     labels = np.transpose(labels)
-
+    print(downsampler.sampleEmbedding.shape)
+    print(labels.shape)
     plotData = np.concatenate((downsampler.sampleEmbedding, labels), axis=1)
     plotData.to_csv('pbmc_centerSampler_plotData_5000_100centers', sep='\t')
 
