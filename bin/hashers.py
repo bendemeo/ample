@@ -24,7 +24,7 @@ class sigSampler(sampler):
 
         self.bins = bins
         self.sample = None
-        self.available = range(self.numObs)
+        self.available = list(range(self.numObs))
 
     def downsample(self):
         self.available = range(self.numObs)
