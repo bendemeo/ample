@@ -84,66 +84,78 @@ if __name__ == '__main__':
     cell_labels = le.transform(labels)
 
 
+    downsampler = centerSampler(X_dimred, steps=1000, numCenters=100)
+    downsampler.downsample(5000)
+    downsampler.embedSample()
+    labels = [labels[x] for x in cell_labels]
+    print(labels[1])
+    labels = np.array(labels)
 
+    labels = labels[downsampler.sample]
+    labels = np.transpose(labels)
 
-    sampler = 'diverseLSH'
-    filename = 'pbmc_diverseLSHTest_mcmc'
-    iter = 1
-    testParams = {
-        'numCenters':np.arange(2, 100, 2).tolist() * 2,
-        'steps': [1000]*49 + [1000]*49
-    }
+    plotData = np.concatenate(downsampler.sampleEmbedding, labels, axis=1)
+    plotData.to_csv('pbmc_centerSampler_plotData_5000_100centers', sep='\t')
 
-    tests = ['max_min_dist', 'time', 'maxCounts',
-              'cluster_counts']
-
-
-    testResults = try_params(X_dimred, sampler,
-                                  params=testParams,
-                                  tests=tests,
-                                  n_seeds=5,
-                                  cell_labels=cell_labels,
-                                  Ns=[1000],
-                                  cluster_labels = labels,
-                                  backup=filename+'_backup')
-    # with open("gsLSH_gridTest.file", "wb") as f:
-    #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
-
-    testResults.to_csv(
-        'target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
-
-
-
-
-    viz_genes = []
-    genes = []
-
-    sampler = 'centerSampler'
-    filename = 'pbmc_centerSamplerTest_l2norm'
-    iter = 1
-    testParams = {
-        'numCenters':np.arange(1, 100, 1).tolist()*3,
-        'steps': [1000]*99 + [10000]*99 + [50000]*99,
-        'normalize':[True]
-    }
-
-    tests = ['time','max_min_dist',
-              'cluster_counts']
-
-
-    testResults = try_params(X_dimred, sampler,
-                                  params=testParams,
-                                  tests=tests,
-                                  n_seeds=10,
-                                  cell_labels=cell_labels,
-                                  Ns=[100, 500],
-                                  cluster_labels = labels,
-                                  backup=filename+'_backup')
-    # with open("gsLSH_gridTest.file", "wb") as f:
-    #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
-
-    testResults.to_csv(
-        'target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+    #
+    # sampler = 'diverseLSH'
+    # filename = 'pbmc_diverseLSHTest_mcmc'
+    # iter = 1
+    # testParams = {
+    #     'numCenters':np.arange(2, 100, 2).tolist() * 2,
+    #     'steps': [1000]*49 + [1000]*49
+    # }
+    #
+    # tests = ['max_min_dist', 'time', 'maxCounts',
+    #           'cluster_counts']
+    #
+    #
+    # testResults = try_params(X_dimred, sampler,
+    #                               params=testParams,
+    #                               tests=tests,
+    #                               n_seeds=5,
+    #                               cell_labels=cell_labels,
+    #                               Ns=[1000],
+    #                               cluster_labels = labels,
+    #                               backup=filename+'_backup')
+    # # with open("gsLSH_gridTest.file", "wb") as f:
+    # #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
+    #
+    # testResults.to_csv(
+    #     'target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+    #
+    #
+    #
+    #
+    # viz_genes = []
+    # genes = []
+    #
+    # sampler = 'centerSampler'
+    # filename = 'pbmc_centerSamplerTest_l2norm'
+    # iter = 1
+    # testParams = {
+    #     'numCenters':np.arange(1, 100, 1).tolist()*3,
+    #     'steps': [1000]*99 + [10000]*99 + [50000]*99,
+    #     'normalize':[True]
+    # }
+    #
+    # tests = ['time','max_min_dist',
+    #           'cluster_counts']
+    #
+    #
+    # testResults = try_params(X_dimred, sampler,
+    #                               params=testParams,
+    #                               tests=tests,
+    #                               n_seeds=10,
+    #                               cell_labels=cell_labels,
+    #                               Ns=[100, 500],
+    #                               cluster_labels = labels,
+    #                               backup=filename+'_backup')
+    # # with open("gsLSH_gridTest.file", "wb") as f:
+    # #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
+    #
+    # testResults.to_csv(
+    #     'target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
     # downsampler = gsLSH(X_dimred, gridSize=0.4)
     # # downsampler.downsample(5000)
