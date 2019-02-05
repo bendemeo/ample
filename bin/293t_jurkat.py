@@ -100,7 +100,7 @@ if __name__ == '__main__':
 
     downsampler = sigSampler(X_dimred, bins=4)
     downsampler.downsample()
-    downsampler.vizSample(file='293t_sigSample', anno=True)
+    downsampler.vizSample(file='293t_sigSample', anno=True, full=True)
 
 
 
