@@ -10,6 +10,51 @@ from sampler import *
 import random
 import sklearn as sk
 from fbpca import pca
+import pandas as pd
+
+
+
+
+
+
+class sigSampler(sampler):
+
+    def __init__(self, data, bins=4, **kwargs):
+        sampler.__init__(self, data)
+
+        self.bins = bins
+        self.sample = None
+        self.available = range(self.numObs)
+
+    def downsample(self):
+        self.available = range(self.numObs)
+        binData = np.empty(self.data.shape)
+        sample = []
+
+        # convert data to bins, ala cut_width
+        for i in range(self.numFeatures):
+            binVals = pd.cut(self.data[self.available,i], self.bins,
+                             labels=False).tolist()
+            proportions = []
+            for k in range(self.bins):
+                p = sum(1 for x in binVals if x == k) / float(self.bins)
+                proportions.append(p)
+
+            binProps = [proportions[v] for v in binVals]
+            newInd = binProps.index(min(binProps))
+            sample.append(self.available[newInd])
+            del self.available[newInd]
+
+        self.sample = sample
+        return(sample)
+
+
+
+
+
+
+
+
 
 
 class detSampler(seqSampler):
@@ -236,7 +281,7 @@ class diverseLSH(LSH):
         centerSampler=dpp(self.data, steps=self.steps)
         self.centers = centerSampler.downsample(self.numCenters)
 
-        
+
         hashes = np.empty([self.numObs, 1])
 
         for i in range(self.numObs):

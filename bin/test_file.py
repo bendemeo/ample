@@ -57,9 +57,14 @@ if __name__ == '__main__':
     print(gauss2D)
 
 
-    downsampler = centerSampler(gauss2D, numCenters=10, steps=10000)
-    downsampler.downsample(200)
-    downsampler.vizSample(full=True)
+    downsampler = sigSampler(gauss2D, bins=4)
+
+    downsampler.downsample()
+    downsampler.vizSample(full=True, anno=True)
+
+    # downsampler = centerSampler(gauss2D, numCenters=10, steps=10000)
+    # downsampler.downsample(200)
+    # downsampler.vizSample(full=True)
 
 
     # downsampler = detSampler(gauss2D, batch=1000)
