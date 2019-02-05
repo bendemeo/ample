@@ -84,8 +84,8 @@ if __name__ == '__main__':
     cell_labels = le.transform(labels)
 
 
-    downsampler = centerSampler(X_dimred, steps=10, numCenters=10)
-    downsampler.downsample(50)
+    downsampler = centerSampler(X_dimred, steps=1000, numCenters=100)
+    downsampler.downsample(5000)
     downsampler.embedSample()
     labels = [labels[x] for x in cell_labels]
     print(labels[1])
