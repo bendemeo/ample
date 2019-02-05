@@ -84,7 +84,6 @@ if __name__ == '__main__':
     le = LabelEncoder().fit(labels)
     cell_labels = le.transform(labels)
     print(np.unique(cell_labels))
-ss
     print(labels[1])
     labels = np.array(labels)
     print(np.unique(labels))
