@@ -144,8 +144,8 @@ if __name__ == '__main__':
     filename = 'pbmc_centerSamplerTest_weighted'
     iter = 1
     testParams = {
-        'numCenters':np.arange(1, 100, 1).tolist()*3,
-        'steps': [1000]*99 + [10000]*99 + [50000]*99,
+        'numCenters':np.arange(1, 100, 1).tolist(),
+        'steps': [1000],
         'weighted':[True]
     }
 
@@ -158,7 +158,7 @@ if __name__ == '__main__':
                                   tests=tests,
                                   n_seeds=3,
                                   cell_labels=cell_labels,
-                                  Ns=[100, 500],
+                                  Ns=[500],
                                   cluster_labels = labels,
                                   backup=filename+'_backup')
     # with open("gsLSH_gridTest.file", "wb") as f:
