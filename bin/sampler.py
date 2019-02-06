@@ -31,7 +31,6 @@ class sampler:
         if self.numFeatures == 2:
             self.embedding = self.data[subset, :]
         else:
-
             tsne = MulticoreTSNE(**kwargs)
             # tsne = sk.manifold.TSNE(**kwargs)
             fit = tsne.fit(self.data[subset, :])
@@ -39,7 +38,7 @@ class sampler:
 
     def embedSample(self, **kwargs):
         if self.numFeatures == 2:
-            self.embedding = self.data[subset, :]
+            self.sampleEmbedding = self.data[self.sample,:]
 
         else:
             tsne = MulticoreTSNE(**kwargs)

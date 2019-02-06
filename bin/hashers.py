@@ -248,7 +248,7 @@ class dpp(sampler):
 
 class centerSampler(sampler):
 
-    def __init__(self, data, numCenters=10, steps=1000, normalize=False, transformed=False, **kwargs):
+    def __init__(self, data, numCenters=10, steps=1000, normalize=False, transformed=False, weighted=False, **kwargs):
         sampler.__init__(self, data, **kwargs)
         self.numCenters = numCenters
         self.steps = steps
@@ -257,6 +257,7 @@ class centerSampler(sampler):
         self.available = list(range(self.numObs))
         self.normalize = normalize
         self.transformed = transformed
+        self.weighted = weighted
 
     def downsample(self, sampleSize):
         self.sample = []
@@ -277,28 +278,99 @@ class centerSampler(sampler):
                                             - self.data[c, :]))
             distTable[:, i] = dists
 
+
+        if(self.weighted):
+            k = centerFinder.kernel
+            print('printing kernel')
+            print(k)
+            cosines = np.empty(k.shape)
+
+            # construct cos(theta) matrix
+            for i in range(len(self.centers)):
+                for j in range(len(self.centers)):
+                    s1 = self.centers[i]
+                    s2 = self.centers[j]
+                    cosines[i,j] = float(k[i,j]) / (np.linalg.norm(self.data[s1,:]) * np.linalg.norm(self.data[s2,:]))
+            print('printing cosines')
+            print(cosines)
+            weights = np.sum(cosines, axis=0)
+            weights = [float(1)/x for x in weights]
+            # weights = [x**3 for x in weights]
+            total = sum(weights)
+            weights = [x/total for x in weights]
+            print(weights)
+            print(sum(weights))
+            self.weights=weights
+
+        i = 0
         while(len(self.sample) < sampleSize):
+            if(self.weighted):
+                c = np.random.choice(self.centers, p=weights)
+                i = self.centers.index(c)
 
-            for i,c in enumerate(self.centers):
-                #print(self.sample)
-                dists = distTable[:,i].tolist()
+            else:
+                # print(self.centers)
+                # print(self.available)
+                c = self.centers[i]
 
-                dists.pop(i)
-                smallest = min(dists)
+            dists = distTable[:,i].tolist()
 
-                dists = distTable[:,i].tolist()
-                new = dists.index(smallest)
+            # dists.pop(self.available.index(c))
+            smallest = min(dists)
 
+            #dists = distTable[:,i].tolist()
+            new = dists.index(smallest)
 
-                self.sample.append(self.available[new])
-                del self.available[new]
+            self.sample.append(self.available[new])
+            del self.available[new]
 
-                distTable = np.delete(distTable, new, 0)
+            distTable = np.delete(distTable, new, 0)
+            i = (i + 1) % len(self.centers)
 
-
-                if len(self.sample) >= sampleSize:
-                    break
         return self.sample
+
+    def vizSample(self, full=False, anno=False, annoMax=100, c='m', **kwargs):
+        if(full):
+            if self.embedding is None:
+                self.embed()
+            mpl.scatter(self.embedding[:,0], self.embedding[:,1])
+            mpl.scatter(self.embedding[self.sample, 0], self.embedding[self.sample,1], c=c)
+
+            if(self.weighted):
+                cols = self.weights
+            else:
+                cols = None
+
+            mpl.scatter(self.embedding[self.centers, 0], self.embedding[self.centers,1], c='w',
+                        edgecolors='g',
+                        cmap='hot')
+
+            if(anno):
+                for i in range(min([len(self.sample),annoMax])):
+                    mpl.annotate(i, (self.embedding[self.sample[i],0], self.embedding[self.sample[i],1]))
+
+        else:
+            print('embedding sample only')
+            if self.sampleEmbedding is None:
+                self.embedSample()
+            print(self.sampleEmbedding.shape)
+            mpl.scatter(self.sampleEmbedding[:,0], self.sampleEmbedding[:,1], c=c, cmap=cmap)
+
+            if(anno):
+                for i in range(min([len(self.sample),annoMax])):
+                    mpl.annotate(i, (self.sampleEmbedding[i,0], self.sampleEmbedding[i,1]))
+
+
+        mpl.legend()
+
+        if file is not None:
+            mpl.savefig('{}.png'.format(file))
+
+        mpl.show()
+        mpl.close()
+
+
+
 
 
 class diverseLSH(LSH):

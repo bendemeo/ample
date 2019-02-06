@@ -79,31 +79,31 @@ if __name__ == '__main__':
             pickle.dump(X_dimred, open('pickles/{}'.format(picklename), 'wb'))
             pickle.dump(labels, open('pickles/{}'.format(labelname), 'wb'))
 
-    print(np.unique(labels))
-    print(len(labels))
-    le = LabelEncoder().fit(labels)
-    cell_labels = le.transform(labels)
-    print(np.unique(cell_labels))
-    print(labels[1])
-    labels = np.array(labels)
-    print(np.unique(labels))
-    print(labels.size)
-
-    downsampler = centerSampler(X_dimred, steps=1000, numCenters=100)
-    downsampler.downsample(5000)
-    downsampler.embedSample()
-
-
-    labels = labels[downsampler.sample]
-    print(np.unique(labels))
-
-    labels = np.transpose(labels)
-    labels = np.reshape(labels, (labels.size, 1))
-    print(downsampler.sampleEmbedding.shape)
-    print(labels.shape)
-    plotData = np.concatenate((downsampler.sampleEmbedding, labels), axis=1)
-    plotData = pd.DataFrame(plotData, columns = ['x','y','cell_type'])
-    plotData.to_csv('plotData/pbmc_centerSampler_plotData_5000_100centers', sep='\t')
+    # print(np.unique(labels))
+    # print(len(labels))
+    # le = LabelEncoder().fit(labels)
+    # cell_labels = le.transform(labels)
+    # print(np.unique(cell_labels))
+    # print(labels[1])
+    # labels = np.array(labels)
+    # print(np.unique(labels))
+    # print(labels.size)
+    #
+    # downsampler = centerSampler(X_dimred, steps=1000, numCenters=100)
+    # downsampler.downsample(5000)
+    # downsampler.embedSample()
+    #
+    #
+    # labels = labels[downsampler.sample]
+    # print(np.unique(labels))
+    #
+    # labels = np.transpose(labels)
+    # labels = np.reshape(labels, (labels.size, 1))
+    # print(downsampler.sampleEmbedding.shape)
+    # print(labels.shape)
+    # plotData = np.concatenate((downsampler.sampleEmbedding, labels), axis=1)
+    # plotData = pd.DataFrame(plotData, columns = ['x','y','cell_type'])
+    # plotData.to_csv('plotData/pbmc_centerSampler_plotData_5000_100centers', sep='\t')
 
     #
     # sampler = 'diverseLSH'
@@ -138,32 +138,32 @@ if __name__ == '__main__':
     # viz_genes = []
     # genes = []
     #
-    # sampler = 'centerSampler'
-    # filename = 'pbmc_centerSamplerTest_l2norm'
-    # iter = 1
-    # testParams = {
-    #     'numCenters':np.arange(1, 100, 1).tolist()*3,
-    #     'steps': [1000]*99 + [10000]*99 + [50000]*99,
-    #     'normalize':[True]
-    # }
-    #
-    # tests = ['time','max_min_dist',
-    #           'cluster_counts']
-    #
-    #
-    # testResults = try_params(X_dimred, sampler,
-    #                               params=testParams,
-    #                               tests=tests,
-    #                               n_seeds=10,
-    #                               cell_labels=cell_labels,
-    #                               Ns=[100, 500],
-    #                               cluster_labels = labels,
-    #                               backup=filename+'_backup')
-    # # with open("gsLSH_gridTest.file", "wb") as f:
-    # #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
-    #
-    # testResults.to_csv(
-    #     'target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+    sampler = 'centerSampler'
+    filename = 'pbmc_centerSamplerTest_weighted'
+    iter = 1
+    testParams = {
+        'numCenters':np.arange(1, 100, 1).tolist()*3,
+        'steps': [1000]*99 + [10000]*99 + [50000]*99,
+        'weighted':[True]
+    }
+
+    tests = ['time','max_min_dist',
+              'cluster_counts']
+
+
+    testResults = try_params(X_dimred, sampler,
+                                  params=testParams,
+                                  tests=tests,
+                                  n_seeds=3,
+                                  cell_labels=cell_labels,
+                                  Ns=[100, 500],
+                                  cluster_labels = labels,
+                                  backup=filename+'_backup')
+    # with open("gsLSH_gridTest.file", "wb") as f:
+    #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
+
+    testResults.to_csv(
+        'target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
     # downsampler = gsLSH(X_dimred, gridSize=0.4)
     # # downsampler.downsample(5000)
