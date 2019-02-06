@@ -248,7 +248,7 @@ class dpp(sampler):
 
 class centerSampler(sampler):
 
-    def __init__(self, data, numCenters=10, steps=1000, normalize=False, transformed=False, weighted=False, **kwargs):
+    def __init__(self, data, numCenters=10, steps=1000, normalize=False, transformed=False, weighted=False, spherical = False, **kwargs):
         sampler.__init__(self, data, **kwargs)
         self.numCenters = numCenters
         self.steps = steps
@@ -258,7 +258,8 @@ class centerSampler(sampler):
         self.normalize = normalize
         self.transformed = transformed
         self.weighted = weighted
-        self.data -= self.data.min(0) # put in first quadrant
+        self.spherical = spherical
+        #self.data -= self.data.min(0) # put in first quadrant
 
     def downsample(self, sampleSize):
         self.sample = []
@@ -303,11 +304,26 @@ class centerSampler(sampler):
             print(sum(weights))
             self.weights=weights
 
+
+
         i = 0
         while(len(self.sample) < sampleSize):
             if(self.weighted):
                 c = np.random.choice(self.centers, p=weights)
                 i = self.centers.index(c)
+            elif(self.spherical):
+                # randomly sample on unit hypersphere and pick nearest center
+                seed = [random.gauss(0,1) for i in range(self.numFeatures)]
+                mag = sum(x**2 for x in seed) ** .5
+                seed = [x/mag for x in seed]
+
+                cdists = []
+                for center in self.centers:
+                    normed = np.linalg.norm(self.data[center,:])
+                    cdists.append(np.linalg.norm(normed -
+                                                 seed))
+                i = cdists.index(min(cdists))
+                c = self.centers[i]
 
             else:
                 # print(self.centers)

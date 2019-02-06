@@ -141,12 +141,12 @@ if __name__ == '__main__':
     # genes = []
     #
     sampler = 'centerSampler'
-    filename = 'pbmc_centerSamplerTest_weighted'
+    filename = 'pbmc_centerSamplerTest_spherical'
     iter = 1
     testParams = {
         'numCenters':np.arange(1, 100, 1).tolist(),
         'steps': [1000],
-        'weighted':[True]
+        'spherical':[True]
     }
 
     tests = ['time','max_min_dist',
