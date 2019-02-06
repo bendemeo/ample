@@ -11,7 +11,9 @@ diverse = fread('target/experiments/pbmc_diverseLSHTest_backup.txt')
 diverse_q4 = fread('target/experiments/pbmc_diverseLSHTest_q4_backup.txt')
 gs = fread('target/experiments/pbmc_gridLSHTest_clustcounts.txt.1')
 cs = fread('target/experiments/pbmc_centerSamplerTest_backup.txt')
+cswt = fread('target/experiments/pbmc_centerSamplerTest_weighted_backup.txt')
 csnorm = fread('target/experiments/pbmc_centerSamplerTest_l2norm_backup.txt')
+cs_5000 = fread('plotData/pbmc_centerSampler_plotData_5000_100centers')
 
 ###### transform ######
 diverse = melt(diverse, id.vars=c('numCenters','max_min_dist', 'time', 'N', 'batch'), 
@@ -33,6 +35,11 @@ cs = melt(cs, id.vars=c('numCenters','max_min_dist', 'time', 'N', 'steps'),
                               "CD4+_T_Helper2","CD56+_NK","CD8+/CD45RA+_Naive_Cytotoxic",
                               "CD8+_Cytotoxic_T","Dendritic"))
 
+cswt = melt(cswt, id.vars=c('numCenters','max_min_dist', 'time', 'N', 'steps'), 
+          measure.vars=c("CD14+_Monocyte","CD19+_B","CD4+/CD25_T_Reg",
+                         "CD4+/CD45RA+/CD25-_Naive_T","CD4+/CD45RO+_Memory",
+                         "CD4+_T_Helper2","CD56+_NK","CD8+/CD45RA+_Naive_Cytotoxic",
+                         "CD8+_Cytotoxic_T","Dendritic"))
 
 csnorm = melt(csnorm, id.vars=c('numCenters','max_min_dist', 'time', 'N', 'steps'), 
           measure.vars=c("CD14+_Monocyte","CD19+_B","CD4+/CD25_T_Reg",
@@ -49,6 +56,7 @@ gs = melt(gs, id.vars=c("max_min_dist","time","maxCounts","randomize_origin","gr
                            "CD4+/CD45RA+/CD25-_Naive_T","CD4+/CD45RO+_Memory",
                            "CD4+_T_Helper2","CD56+_NK","CD8+/CD45RA+_Naive_Cytotoxic",
                            "CD8+_Cytotoxic_T","Dendritic"))
+
 
 ##### plot #####
 divplot = diverse %>% filter(N==1000) %>%
@@ -79,6 +87,9 @@ csnormplot = csnorm %>% filter(N==500, steps==1000 ) %>%
 csmm = cs %>% filter(N==500, steps==1000) %>% 
   ggplot(aes(x=numCenters, y=max_min_dist))+
   geom_smooth()
+
+cs_example = cs_5000 %>% ggplot(aes(x=x,y=y, color = cell_type))+
+  geom_point()
 
 
 ##### PDFs #####

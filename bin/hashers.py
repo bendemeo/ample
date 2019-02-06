@@ -258,6 +258,7 @@ class centerSampler(sampler):
         self.normalize = normalize
         self.transformed = transformed
         self.weighted = weighted
+        self.data -= self.data.min(0) # put in first quadrant
 
     def downsample(self, sampleSize):
         self.sample = []
