@@ -156,7 +156,7 @@ if __name__ == '__main__':
     testResults = try_params(X_dimred, sampler,
                                   params=testParams,
                                   tests=tests,
-                                  n_seeds=3,
+                                  n_seeds=6,
                                   cell_labels=cell_labels,
                                   Ns=[500],
                                   cluster_labels = labels,
