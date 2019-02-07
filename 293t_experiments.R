@@ -16,7 +16,7 @@ cs = fread('target/experiments/293t_centerSamplerTest.txt.1')
 ##### plot #####
 c1 = cs %>% filter(N==100, steps==10000) %>%
   ggplot(aes(x=numCenters, y=`293t`))+
-  geom_boxplot(aes(group=numCenters))
+  geom_violin(aes(group=numCenters))
 
 ggplot(cs,aes(x=numCenters, y=`293t`))+
   geom_boxplot(aes(group=numCenters))

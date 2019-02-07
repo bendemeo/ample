@@ -13,6 +13,7 @@ gs = fread('target/experiments/pbmc_gridLSHTest_clustcounts.txt.1')
 cs = fread('target/experiments/pbmc_centerSamplerTest_backup.txt')
 cswt = fread('target/experiments/pbmc_centerSamplerTest_weighted_backup.txt')
 csnorm = fread('target/experiments/pbmc_centerSamplerTest_l2norm_backup.txt')
+cssph = fread('target/experiments/pbmc_centerSamplerTest_spherical_backup.txt')
 cs_5000 = fread('plotData/pbmc_centerSampler_plotData_5000_100centers')
 
 ###### transform ######
@@ -47,6 +48,12 @@ csnorm = melt(csnorm, id.vars=c('numCenters','max_min_dist', 'time', 'N', 'steps
                          "CD4+_T_Helper2","CD56+_NK","CD8+/CD45RA+_Naive_Cytotoxic",
                          "CD8+_Cytotoxic_T","Dendritic"))
 
+cssph = melt(cssph, id.vars=c('numCenters','max_min_dist', 'time', 'N', 'steps'), 
+              measure.vars=c("CD14+_Monocyte","CD19+_B","CD4+/CD25_T_Reg",
+                             "CD4+/CD45RA+/CD25-_Naive_T","CD4+/CD45RO+_Memory",
+                             "CD4+_T_Helper2","CD56+_NK","CD8+/CD45RA+_Naive_Cytotoxic",
+                             "CD8+_Cytotoxic_T","Dendritic"))
+
 # gs = melt(gs, id.vars=c('gridSize','max_min_dist', 'time', 'N'),
 #           measure.vars=c('b_cells','cd14_monocytes', "cd4_t_helper",
 #                          "cd56_nk", "cytotoxic_t","memory_t", "regulatory_t"))
@@ -79,6 +86,16 @@ csplot = cs %>% filter(N==500, steps==1000 ) %>%
   facet_wrap(~variable)+
   geom_boxplot(aes(group=numCenters), show.legend = FALSE)
 
+cswtplot = cswt %>% filter(N==500, steps==1000 ) %>%
+  ggplot(aes(x=numCenters,y=value/500, color=variable))+
+  facet_wrap(~variable)+
+  geom_boxplot(aes(group=numCenters), show.legend = FALSE)
+
+cssphplot = cssph %>% filter(N==500, steps==1000 ) %>%
+  ggplot(aes(x=numCenters,y=value/500, color=variable))+
+  facet_wrap(~variable)+
+  geom_boxplot(aes(group=numCenters), show.legend = FALSE)
+
 csnormplot = csnorm %>% filter(N==500, steps==1000 ) %>%
   ggplot(aes(x=numCenters,y=value/500, color=variable))+
   facet_wrap(~variable)+
@@ -101,4 +118,14 @@ dev.off()
 pdf('plots/pbmc_gsLSH_gridTest.pdf', 12, 8)
 gsplot+
   ggtitle('gsLSH on PBMC: N=1000')
+dev.off()
+
+pdf('plots/pbmc_cs_centerTest.pdf', 12, 8)
+csplot + 
+  ggtitle('center sampling on PBMC: N=500')
+dev.off()
+
+pdf('plots/pbmc_cswt_centerTest.pdf', 12, 8)
+cswtplot + 
+  ggtitle('center sampling on PBMC: N=500 (weighted)')
 dev.off()
