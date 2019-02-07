@@ -129,7 +129,7 @@ class sigSampler(sampler):
 
         self.sample = sample
         return(sample)
-s
+
 
 class detSampler(seqSampler):
     """adds point which makes determinant of kernel matrix better"""
