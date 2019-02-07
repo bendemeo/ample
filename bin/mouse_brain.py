@@ -81,20 +81,50 @@ if __name__ == '__main__':
     cell_labels = le.transform(labels)
 
 
-    downsampler = randomGridLSH(X_dimred, 0.01, 7, 2,3)
+    sampler = 'centerSampler'
+    filename = 'mouse_brain_centerSamplerTest'
+    iter = 1
+    testParams = {
+        'numCenters':np.arange(1, 100, 1).tolist(),
+        'steps': [1000]
+    }
+
+    tests = ['time','max_min_dist',
+              'cluster_counts']
+
+
+    testResults = try_params(X_dimred, sampler,
+                                  params=testParams,
+                                  tests=tests,
+                                  n_seeds=3,
+                                  cell_labels=cell_labels,
+                                  Ns=[1000],
+                                  cluster_labels = labels,
+                                  backup=filename+'_backup')
+    # with open("gsLSH_gridTest.file", "wb") as f:
+    #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
+
+    testResults.to_csv(
+        'target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+
+
+
+
+
+    # downsampler = randomGridLSH(X_dimred, 0.01, 7, 2,3)
     # downsampler = cosineLSH(X_dimred,
     #     numHashes=500,
     #     numBands=20,
     #     bandSize=30
     # )
 
-    experiment(downsampler, X_dimred, NAMESPACE, cell_labels=cell_labels,
-    gene_names=viz_genes, genes=genes,
-    gene_expr=vstack(datasets),
-    kmeans=False,
-    visualize_orig=False,
-    sample_type='randomGridLSH_2_',
-    lsh=True, optimize_grid_size=True)
+    # experiment(downsampler, X_dimred, NAMESPACE, cell_labels=cell_labels,
+    # gene_names=viz_genes, genes=genes,
+    # gene_expr=vstack(datasets),
+    # kmeans=False,
+    # visualize_orig=False,
+    # sample_type='randomGridLSH_2_',
+    # lsh=True, optimize_grid_size=True)
 
 
     # experiment_lsh(
