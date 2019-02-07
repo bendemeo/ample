@@ -1,4 +1,4 @@
-#from anndata import AnnData
+from anndata import AnnData
 import numpy as np
 import os
 from scanorama import *
@@ -159,7 +159,7 @@ def experiment(sampling_fn, X_dimred, name, cell_labels=None,
 
     # Downsample while preserving structure and visualize.
 
-    Ns = [5000]
+    Ns = [1000,5000,20000]
 
     for N in Ns:
         if N >= X_dimred.shape[0]:
