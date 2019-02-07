@@ -83,6 +83,19 @@ if __name__ == '__main__':
     cell_labels = le.transform(labels)
 
 
+    viz_genes = []
+    genes = []
+
+    filename = 'pbmc_dpp_subsample'
+    downsampler = dpp(X_dimred, steps=100000)
+
+    experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels=cell_labels,
+        gene_names=viz_genes, genes=genes,
+        kmeans=False,
+        visualize_orig=False,
+        sample_type='dpp',
+        lsh=True)
+
 
 
     # print(np.unique(cell_labels))

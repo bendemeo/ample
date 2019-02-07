@@ -50,13 +50,18 @@ if __name__ == '__main__':
 
     #np.random.seed()
 
-    sizes=[50,10,30,20,10]
+    sizes=[4010,100,30,20,10]
     N=sum(sizes)
-    gauss2D = gauss_test(sizes,2 , 5, [0.01,1,1,1,1])
+    gauss2D = gauss_test(sizes, 2, 1, [1,1,1,1,1])
     gauss2D -= gauss2D.min()
     gauss2D_2 = gauss_test([5000, 200],2,1,[10])
     #print(gauss2D)
 
+    downsampler = multiscaleSampler(gauss2D, scales=np.arange(1, 0, -0.01))
+    downsampler.makeWeights()
+    # downsampler.downsample(100)
+    # downsampler.vizSample()
+    downsampler.vizWeights()
 
     # downsampler = sigSampler(gauss2D, bins=10)
     # downsampler.sigTransform()
@@ -72,13 +77,13 @@ if __name__ == '__main__':
     # downsampler.vizSample(full=True)
 
 
-    downsampler = centerSampler(gauss2D, numCenters=6, steps=10000, spherical=True)
-    downsampler.downsample(100)
-    print(downsampler.sample)
-    downsampler.vizSample(full=True)
-    downsampler.vizSample()
-    print(downsampler.sampleEmbedding.shape)
-    print(downsampler.embedding.shape)
+    # downsampler = centerSampler(gauss2D, numCenters=6, steps=10000, spherical=True)
+    # downsampler.downsample(100)
+    # print(downsampler.sample)
+    # downsampler.vizSample(full=True)
+    # downsampler.vizSample()
+    # print(downsampler.sampleEmbedding.shape)
+    # print(downsampler.embedding.shape)
 
 
     # downsampler = detSampler(gauss2D, batch=1000)

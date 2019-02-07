@@ -177,11 +177,12 @@ class weightedSampler(sampler):
 
     def vizWeights(self, log=True, file = None, **kwargs):
         print('wts at time of viz')
-        # print(self.wts)
-        tsne = sk.manifold.TSNE(**kwargs)
-
-        fit = tsne.fit(self.data)
-        embedding = tsne.embedding_
+        print(self.wts)
+        # tsne = sk.manifold.TSNE(**kwargs)
+        #
+        # fit = tsne.fit(self.data)
+        self.embed()
+        embedding = self.embedding
 
         if log:
             colors = [math.log(w) for w in self.wts]

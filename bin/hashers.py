@@ -15,6 +15,56 @@ import pandas as pd
 
 
 
+class multiscaleSampler(weightedSampler):
+    def __init__(self, data, scales=[0.1]):
+        weightedSampler.__init__(self, data)
+
+        self.tests = tests
+        self.scales = scales
+
+
+
+
+    def scaleWeights(self, scale):
+        X = self.data - self.data.min(0)
+        X /= X.max()
+
+        grid = {}
+
+        neighborCounts = [0]*self.numObs #  how many neighbors in grid square
+        wts = [0]*self.numObs
+
+        for i in range(self.numObs):
+            coords = X[i, :]
+            gridsquare = tuple(
+                np.floor(coords / float(scale)).astype(int))
+
+            if gridsquare not in grid:
+                grid[gridsquare] = set()
+
+            grid[gridsquare].add(i)
+
+        numSquares = len(grid)
+        for square in grid:
+            size = len(grid[square])
+            for i in grid[square]:
+                wts[i] = 1./(numSquares * size)
+
+        return(wts)
+
+
+    def makeWeights(self):
+        wtTable = np.empty([self.numObs, len(self.scales)])
+
+        for i,s in enumerate(self.scales):
+            wtTable[:,i] = self.scaleWeights(s)
+
+        print(wtTable)
+        newWts = np.mean(wtTable, axis=1).tolist()
+        print(newWts)
+
+        print(sum(newWts))
+        self.wts = newWts
 
 
 class sigSampler(sampler):
@@ -79,7 +129,7 @@ class sigSampler(sampler):
 
         self.sample = sample
         return(sample)
-
+s
 
 class detSampler(seqSampler):
     """adds point which makes determinant of kernel matrix better"""
@@ -385,9 +435,6 @@ class centerSampler(sampler):
 
         mpl.show()
         mpl.close()
-
-
-
 
 
 class diverseLSH(LSH):
