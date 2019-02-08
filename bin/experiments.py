@@ -181,7 +181,7 @@ def experiment(sampling_fn, X_dimred, name, cell_labels=None,
         log('Found {} entries'.format(len(set(samp_idx))))
         log('it took {} seconds to do it'.format(t2-t1))
 
-        pickle.dump(samp_idx, open('pickles/{}'.format(filename+'_pickle{}'.format(N))), 'wb')
+        pickle.dump(samp_idx, open('pickles/{}'.format(filename+'_pickle{}'.format(N)), 'wb'))
 
         log('Visualizing sampled...')
 
