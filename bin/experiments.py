@@ -2,6 +2,7 @@ from anndata import AnnData
 import numpy as np
 import os
 from scanorama import *
+import pickle
 #import scanpy.api as sc
 import scipy.stats
 from scipy.sparse import vstack
@@ -179,6 +180,8 @@ def experiment(sampling_fn, X_dimred, name, cell_labels=None,
         t2=time()
         log('Found {} entries'.format(len(set(samp_idx))))
         log('it took {} seconds to do it'.format(t2-t1))
+
+        pickle.dump(samp_idx, open('pickles/{}'.format(filename+'_pickle{}'.format(N))), 'wb')
 
         log('Visualizing sampled...')
 

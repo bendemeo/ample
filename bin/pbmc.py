@@ -87,7 +87,7 @@ if __name__ == '__main__':
     genes = []
 
     filename = 'pbmc_dpp_subsample'
-    downsampler = dpp(X_dimred, steps=100000)
+    downsampler = dpp(X_dimred, steps=10)
 
     experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels=cell_labels,
         gene_names=viz_genes, genes=genes,
