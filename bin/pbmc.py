@@ -204,7 +204,7 @@ if __name__ == '__main__':
                                   tests=tests,
                                   n_seeds=5,
                                   cell_labels=cell_labels,
-                                  Ns=np.arange(100, 20000, 100),
+                                  Ns=[500,1000,5000,10000],
                                   cluster_labels = labels,
                                   backup=filename+'_backup')
     # with open("gsLSH_gridTest.file", "wb") as f:
