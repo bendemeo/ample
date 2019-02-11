@@ -157,7 +157,7 @@ if __name__ == '__main__':
     filename = 'pbmc_centerSamplerTest_densityWeighted'
     iter = 1
     testParams = {
-        'numCenters':np.arange(1, 100, 1).tolist(),
+        'numCenters':np.arange(2, 100, 1).tolist(),
         'steps': [1000],
         'weighted':[True]
     }
