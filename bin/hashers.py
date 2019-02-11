@@ -58,6 +58,7 @@ class multiscaleSampler(weightedSampler):
         wtTable = np.empty([self.numObs, len(self.scales)])
 
         for i,s in enumerate(self.scales):
+            print('trying scale {}'.format(s))
             wtTable[:,i] = self.scaleWeights(s)
 
         print(wtTable)
