@@ -292,7 +292,7 @@ class dpp(sampler):
             self.sampled[s] = True
 
         for n in range(self.steps):
-            print('sampling {}: step {} / {}'.format(sampleSize, n, self.steps))
+            #print('sampling {}: step {} / {}'.format(sampleSize, n, self.steps))
             self.step()
 
         return(self.sample)
