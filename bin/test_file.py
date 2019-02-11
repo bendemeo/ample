@@ -50,18 +50,26 @@ if __name__ == '__main__':
 
     #np.random.seed()
 
-    sizes=[4010,100,30,20,10]
+    sizes=[100]*2
     N=sum(sizes)
-    gauss2D = gauss_test(sizes, 2, 1, [1,1,1,1,1])
+    gauss2D = gauss_test(sizes, 20, 2, [1,0.1,1,1,1])
     gauss2D -= gauss2D.min()
     gauss2D_2 = gauss_test([5000, 200],2,1,[10])
     #print(gauss2D)
 
-    downsampler = multiscaleSampler(gauss2D, scales=np.arange(1, 0, -0.01))
+
+    downsampler = densitySampler(gauss2D)
     downsampler.makeWeights()
-    # downsampler.downsample(100)
-    # downsampler.vizSample()
     downsampler.vizWeights()
+
+    # downsampler = centerSampler(gauss2D, numCenters=20, weighted=True)
+    # downsampler.downsample(200)
+    # downsampler.vizSample(full=True)
+    # downsampler = multiscaleSampler(gauss2D, scales=np.arange(1, 0, -0.01))
+    # downsampler.makeWeights()
+    # # downsampler.downsample(100)
+    # # downsampler.vizSample()
+    # downsampler.vizWeights()
 
     # downsampler = sigSampler(gauss2D, bins=10)
     # downsampler.sigTransform()

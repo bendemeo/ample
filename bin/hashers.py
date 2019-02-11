@@ -1,22 +1,23 @@
 from __future__ import division
 from scipy.stats import norm, rankdata, ortho_group
+from scipy.spatial.distance import squareform
 from copy import deepcopy
 import numpy as np
 from LSH import *
-from test_file import *
+#from test_file import *
 from utils import *
 from time import time
 from sampler import *
 import random
 import sklearn as sk
+from sklearn import manifold
 from fbpca import pca
 import pandas as pd
 
 
 
-
 class multiscaleSampler(weightedSampler):
-    def __init__(self, data, scales=[0.1]):
+    def __init__(self, tests, data, scales=[0.1]):
         weightedSampler.__init__(self, data)
 
         self.tests = tests
@@ -296,6 +297,18 @@ class dpp(sampler):
 
         return(self.sample)
 
+class densitySampler(weightedSampler):
+    def makeWeights(self):
+        dists = sk.metrics.pairwise.euclidean_distances(self.data)
+        probs = sk.manifold.t_sne._joint_probabilities(dists, 10, True)
+        probs = squareform(probs)
+        print(probs)
+        wts = np.sum(np.multiply(dists, probs), axis = 1)
+        total = sum(wts)
+        wts = [x/total for x in wts]
+        print(wts)
+        print(sum(wts))
+        self.wts = wts
 
 class centerSampler(sampler):
 
@@ -332,35 +345,47 @@ class centerSampler(sampler):
             distTable[:, i] = dists
 
 
+        # if(self.weighted):
+        #     k = centerFinder.kernel
+        #     print('printing kernel')
+        #     print(k)
+        #     cosines = np.empty(k.shape)
+        #
+        #     # construct cos(theta) matrix
+        #     for i in range(len(self.centers)):
+        #         for j in range(len(self.centers)):
+        #             s1 = self.centers[i]
+        #             s2 = self.centers[j]
+        #             cosines[i,j] = float(k[i,j]) / (np.linalg.norm(self.data[s1,:]) * np.linalg.norm(self.data[s2,:]))
+        #     print('printing cosines')
+        #     print(cosines)
+        #     weights = np.sum(cosines, axis=0)
+        #     weights = [float(1)/x for x in weights]
+        #     # weights = [x**3 for x in weights]
+        #     total = sum(weights)
+        #     weights = [x/total for x in weights]
+        #     print(weights)
+        #     print(sum(weights))
+        #     self.weights=weights
         if(self.weighted):
-            k = centerFinder.kernel
-            print('printing kernel')
-            print(k)
-            cosines = np.empty(k.shape)
+            cDists = distTable[self.centers,:] #pairwise center dists
+            probs = sk.manifold.t_sne._joint_probabilities(cDists, 10, True)
+            probs = squareform(probs)
+            print(probs)
+            wts = np.sum(np.multiply(cDists, probs), axis = 1)
+            total = sum(wts)
+            wts = [x/total for x in wts]
+            print(wts)
+            print(sum(wts))
+            self.weights = wts
 
-            # construct cos(theta) matrix
-            for i in range(len(self.centers)):
-                for j in range(len(self.centers)):
-                    s1 = self.centers[i]
-                    s2 = self.centers[j]
-                    cosines[i,j] = float(k[i,j]) / (np.linalg.norm(self.data[s1,:]) * np.linalg.norm(self.data[s2,:]))
-            print('printing cosines')
-            print(cosines)
-            weights = np.sum(cosines, axis=0)
-            weights = [float(1)/x for x in weights]
-            # weights = [x**3 for x in weights]
-            total = sum(weights)
-            weights = [x/total for x in weights]
-            print(weights)
-            print(sum(weights))
-            self.weights=weights
 
 
 
         i = 0
         while(len(self.sample) < sampleSize):
             if(self.weighted):
-                c = np.random.choice(self.centers, p=weights)
+                c = np.random.choice(self.centers, p=self.weights)
                 i = self.centers.index(c)
             elif(self.spherical):
                 # randomly sample on unit hypersphere and pick nearest center
@@ -397,7 +422,7 @@ class centerSampler(sampler):
 
         return self.sample
 
-    def vizSample(self, full=False, anno=False, annoMax=100, c='m', **kwargs):
+    def vizSample(self, full=False, anno=False, annoMax=100, c='m', cmap=None, **kwargs):
         if(full):
             if self.embedding is None:
                 self.embed()
