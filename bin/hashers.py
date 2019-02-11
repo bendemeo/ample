@@ -17,10 +17,10 @@ import pandas as pd
 
 
 class multiscaleSampler(weightedSampler):
-    def __init__(self, tests, data, scales=[0.1]):
+    def __init__(self, data, scales=[0.1]):
         weightedSampler.__init__(self, data)
 
-        self.tests = tests
+        #self.tests = tests
         self.scales = scales
 
 
@@ -297,6 +297,7 @@ class dpp(sampler):
 
         return(self.sample)
 
+
 class densitySampler(weightedSampler):
     def makeWeights(self):
         dists = sk.metrics.pairwise.euclidean_distances(self.data)
@@ -309,6 +310,7 @@ class densitySampler(weightedSampler):
         print(wts)
         print(sum(wts))
         self.wts = wts
+
 
 class centerSampler(sampler):
 
