@@ -176,7 +176,7 @@ if __name__ == '__main__':
     #                               backup=filename+'_backup')
     # with open("gsLSH_gridTest.file", "wb") as f:
     #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
-    # 
+    #
     # testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
@@ -206,8 +206,7 @@ if __name__ == '__main__':
                                   cell_labels=cell_labels,
                                   Ns=np.arange(100, 20000, 100),
                                   cluster_labels = labels,
-                                  backup=filename+'_backup',
-                                  q=4)
+                                  backup=filename+'_backup')
     # with open("gsLSH_gridTest.file", "wb") as f:
     #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
 
