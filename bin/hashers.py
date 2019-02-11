@@ -368,16 +368,31 @@ class centerSampler(sampler):
         #     print(sum(weights))
         #     self.weights=weights
         if(self.weighted):
-            cDists = distTable[self.centers,:] #pairwise center dists
-            probs = sk.manifold.t_sne._joint_probabilities(cDists, 10, True)
+            dists = sk.metrics.pairwise.cosine_distances(self.data[self.centers,:])
+            probs = sk.manifold.t_sne._joint_probabilities(dists, 10, True)
             probs = squareform(probs)
             print(probs)
-            wts = np.sum(np.multiply(cDists, probs), axis = 1)
+            wts = np.sum(np.multiply(dists, probs), axis = 1)
             total = sum(wts)
             wts = [x/total for x in wts]
             print(wts)
             print(sum(wts))
             self.weights = wts
+
+
+
+
+            #
+            # cDists = distTable[self.centers,:] #pairwise center dists
+            # probs = sk.manifold.t_sne._joint_probabilities(cDists, 10, True)
+            # probs = squareform(probs)
+            # print(probs)
+            # wts = np.sum(np.multiply(cDists, probs), axis = 1)
+            # total = sum(wts)
+            # wts = [x/total for x in wts]
+            # print(wts)
+            # print(sum(wts))
+            # self.weights = wts
 
 
 

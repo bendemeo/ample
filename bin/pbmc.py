@@ -154,7 +154,7 @@ if __name__ == '__main__':
     # genes = []
     #
     sampler = 'centerSampler'
-    filename = 'pbmc_centerSamplerTest_densityWeighted'
+    filename = 'pbmc_centerSamplerTest_cosinedensityWeighted'
     iter = 1
     testParams = {
         'numCenters':np.arange(2, 100, 1).tolist(),

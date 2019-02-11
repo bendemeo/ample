@@ -15,6 +15,7 @@ cswt = fread('target/experiments/pbmc_centerSamplerTest_weighted_backup.txt')
 csnorm = fread('target/experiments/pbmc_centerSamplerTest_l2norm_backup.txt')
 cssph = fread('target/experiments/pbmc_centerSamplerTest_spherical_backup.txt')
 cs_5000 = fread('plotData/pbmc_centerSampler_plotData_5000_100centers')
+cs_densitywt = fread('target/experiments/pbmc_centerSamplerTest_densityWeighted_backup.txt')
 
 ###### transform ######
 diverse = melt(diverse, id.vars=c('numCenters','max_min_dist', 'time', 'N', 'batch'), 
@@ -41,6 +42,12 @@ cswt = melt(cswt, id.vars=c('numCenters','max_min_dist', 'time', 'N', 'steps'),
                          "CD4+/CD45RA+/CD25-_Naive_T","CD4+/CD45RO+_Memory",
                          "CD4+_T_Helper2","CD56+_NK","CD8+/CD45RA+_Naive_Cytotoxic",
                          "CD8+_Cytotoxic_T","Dendritic"))
+
+cs_denswt = melt(cs_denswt, id.vars=c('numCenters','max_min_dist', 'time', 'N', 'steps'), 
+                 measure.vars=c("CD14+_Monocyte","CD19+_B","CD4+/CD25_T_Reg",
+                                "CD4+/CD45RA+/CD25-_Naive_T","CD4+/CD45RO+_Memory",
+                                "CD4+_T_Helper2","CD56+_NK","CD8+/CD45RA+_Naive_Cytotoxic",
+                                "CD8+_Cytotoxic_T","Dendritic"))
 
 csnorm = melt(csnorm, id.vars=c('numCenters','max_min_dist', 'time', 'N', 'steps'), 
           measure.vars=c("CD14+_Monocyte","CD19+_B","CD4+/CD25_T_Reg",
