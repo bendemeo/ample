@@ -152,7 +152,7 @@ if __name__ == '__main__':
     #
     # viz_genes = []
     # genes = []
-    
+
     sampler = 'centerSampler'
     filename = 'pbmc_centerSamplerTest_cosinedensityWeighted'
     iter = 1
