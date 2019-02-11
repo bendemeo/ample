@@ -192,7 +192,7 @@ if __name__ == '__main__':
     filename = 'pbmc_multiscaleTest'
     iter = 1
     testParams = {
-        'scales':[np.arange(0.01, 1, 0.01)]
+        'scales':[np.arange(0.01, 1, 0.02)]
     }
 
     tests = ['max_min_dist', 'time', 'maxCounts',
