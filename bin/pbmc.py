@@ -177,7 +177,7 @@ if __name__ == '__main__':
     # with open("gsLSH_gridTest.file", "wb") as f:
     #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
 
-    testResults.to_csv(
+    #testResults.to_csv(
         'target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
