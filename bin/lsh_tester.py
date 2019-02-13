@@ -32,8 +32,10 @@ def err_exit(param_name):
     exit(1)
 
 
-def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], inverted=[], weighted=False, alpha=1, pickle_it=True, backup = None, **kwargs):
+def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], inverted=[], weighted=False, alpha=1, pickle_it=True, backup = None, raw_sample=None, picklename=None, **kwargs):
     """version where params is a dict to be unpacked"""
+
+    subsamples = []
 
     # make sure all needed params are provided
     if 'cell_labels' not in kwargs:
@@ -139,6 +141,11 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
 
                 t1 = time()
                 log('sampling {} done'.format(hasher))
+
+                subsamples.append(samp_idx)
+                if picklename is not None:
+                    pickle.dump(subsamples, open('pickles/{}'.format(picklename), 'wb'))
+
 
                 # record N
                 results['N'].append(N)
