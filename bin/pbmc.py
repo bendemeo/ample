@@ -97,12 +97,12 @@ if __name__ == '__main__':
     #     lsh=True)
 
     sampler = 'dpp'
-    filename = 'pbmc_dpp_tests'
+    filename = 'pbmc_dpp_tests_2'
     picklename = 'pbmc_dpp_downsamples'
 
     iter = 1
     testParams = {
-        'steps': [1000, 10000, 100000, 200000]
+        'steps': [100000, 200000]
     }
 
     tests = ['time','max_min_dist',
@@ -114,7 +114,7 @@ if __name__ == '__main__':
                                   tests=tests,
                                   n_seeds=1,
                                   cell_labels=cell_labels,
-                                  Ns=[1000, 5000, 10000, 20000],
+                                  Ns=[1000, 5000, 20000],
                                   cluster_labels = labels,
                                   backup=filename+'_backup',
                                   picklename = picklename)
