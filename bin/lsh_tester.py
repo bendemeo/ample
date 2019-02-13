@@ -144,6 +144,7 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
 
                 subsamples.append(samp_idx)
                 if picklename is not None:
+                    print('pickling subsamples...')
                     pickle.dump(subsamples, open('pickles/{}'.format(picklename), 'wb'))
 
 
