@@ -127,6 +127,7 @@ if __name__ == '__main__':
 
     sampler = 'gsLSH'
     filename = 'pbmc_gsLSH_hausdorff'
+    picklename = 'pbmc_gsLSH_hausdorff'
     iter = 1
     Ns = np.arange(1, 100, 1).tolist()
     testParams = {
