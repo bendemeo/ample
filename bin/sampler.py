@@ -74,6 +74,13 @@ class sampler:
     #def viz(self, file=None, size=self.numObs, c='b'):
 
 
+    def vizData(self, file=None, **kwargs):
+        if self.embedding is None:
+            self.embed()
+        mpl.scatter(self.embedding[:,0], self.embedding[:,1], **kwargs)
+        mpl.show()
+        mpl.close()
+
 
     def vizSample(self, file=None, full=False, c='m', cmap='Set1',anno=False, annoMax=100, **kwargs):
         if(full):

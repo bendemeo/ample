@@ -29,6 +29,56 @@ def gauss_test(n=[100], d=1, m=1, stdev=[1]):
                                     axis = 0)
     return result
 
+def prettydata(n=1000, n_polys=1, deg=3, sds=[1]):
+    #random polynomial coefs
+    x=np.arange(n)
+    x = [float(y)/n for y in x]
+
+    y = [0]*len(x)
+
+    result = None
+    for j in range(n_polys):
+        np.random.seed()
+        coefs = np.random.normal(size=deg)
+        coefs=[c*10 for c in coefs]
+        print(coefs)
+
+        powers = list(range(deg))
+
+        for i, xi in enumerate(x):
+            powerterms = [xi**p for p in powers]
+            yi = [a*b for a,b in zip(coefs, powerterms)]
+            yi = sum(yi)
+            yi = yi + np.random.normal(scale=sds[j])
+            y[i] = yi
+
+        current = np.column_stack((x,y))
+
+        theta = np.random.uniform(0, 2*math.pi)
+        rotmatrix = [[math.cos(theta), -math.sin(theta)],[math.sin(theta),math.cos(theta)]]
+
+
+        print('rotation: {}'.format(rotmatrix))
+        for i in range(current.shape[0]):
+            #print('before: {}'.format(current[i,:]))
+            current[i,:] = np.matmul(current[i,:], rotmatrix)
+            #print('after: {}'.format(current[i,:]))
+
+        if result is None:
+            result = current
+        else:
+            result = np.concatenate((result, current), axis=0)
+
+
+
+    result[:,0] = result[:,0]-result[:,0].min(0)
+    result[:,1] = result[:,1]-result[:,1].min(0)
+
+    result[:,0] /= result[:,0].max()
+    result[:,1] /= result[:,1].max()
+    return result
+
+
 
 def get_cmap(n, name='hsv'):
     '''Returns a function that maps each index in 0, 1, ..., n-1 to a distinct
@@ -52,10 +102,23 @@ if __name__ == '__main__':
 
     sizes=[5000]*2
     N=sum(sizes)
-    gauss2D = gauss_test(sizes, 2, 1, [1,0.1,1,1,1])
+    gauss2D = gauss_test(sizes, 2, 2, [1,0.1,1,1,1])
     #gauss2D -= gauss2D.min()
     gauss2D_2 = gauss_test([5000, 200],2,1,[10])
     #print(gauss2D)
+
+    np.random.seed()
+    poly = prettydata(n=1000, deg=5, n_polys=5, sds=[50, 50, 50, 50, 50])
+
+    print('poly:')
+    print(poly)
+    downsampler = gsLSH(poly, gridSize=0.2, opt_grid=False)
+
+
+    downsampler.makeHash()
+    print(downsampler.weights)
+    downsampler.vizData(c=[math.log(x) for x in downsampler.weights])
+
 
 
     # downsampler = densitySampler(gauss2D)
@@ -65,11 +128,11 @@ if __name__ == '__main__':
     # downsampler = centerSampler(gauss2D, numCenters=20, weighted=True)
     # downsampler.downsample(200)
     # downsampler.vizSample(full=True)
-    downsampler = multiscaleSampler(gauss2D, scales=np.arange(1, 0, -0.01))
-    downsampler.makeWeights()
-    # downsampler.downsample(100)
-    # downsampler.vizSample()
-    downsampler.vizWeights()
+    # downsampler = multiscaleSampler(gauss2D, scales=[0.1])
+    # downsampler.makeWeights()
+    # # downsampler.downsample(100)
+    # # downsampler.vizSample()
+    # downsampler.vizWeights()
 
     # downsampler = sigSampler(gauss2D, bins=10)
     # downsampler.sigTransform()

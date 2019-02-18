@@ -97,12 +97,12 @@ if __name__ == '__main__':
     #     lsh=True)
 
     sampler = 'dpp'
-    filename = 'pbmc_dpp_tests_2'
-    picklename = 'pbmc_dpp_downsamples'
+    filename = 'pbmc_dpp_tests_3'
+    picklename = 'pbmc_dpp_downsamples_hausdorff'
 
     iter = 1
     testParams = {
-        'steps': [100000, 200000]
+        'steps': [100000]
     }
 
     tests = ['time','max_min_dist',
@@ -114,7 +114,7 @@ if __name__ == '__main__':
                                   tests=tests,
                                   n_seeds=1,
                                   cell_labels=cell_labels,
-                                  Ns=[1000, 5000, 20000],
+                                  Ns=np.arange(1,100,1).tolist(),
                                   cluster_labels = labels,
                                   backup=filename+'_backup',
                                   picklename = picklename)
@@ -124,6 +124,28 @@ if __name__ == '__main__':
 
     testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
+
+    sampler = 'gsLSH'
+    filename = 'pbmc_gsLSH_hausdorff'
+    iter = 1
+    Ns = np.arange(1, 100, 1).tolist()
+    testParams = {
+        'opt_grid': [True],
+        'target': ['N']
+    }
+
+    tests = ['time','max_min_dist',
+              'cluster_counts', 'occSquares']
+
+    testResults = try_params(X_dimred, sampler,
+                                  params=testParams,
+                                  tests=tests,
+                                  n_seeds=1,
+                                  cell_labels=cell_labels,
+                                  Ns=np.arange(1,100,1).tolist(),
+                                  cluster_labels = labels,
+                                  backup=filename+'_backup',
+                                  picklename = picklename)
 
     # print(np.unique(cell_labels))
     # print(labels[1])

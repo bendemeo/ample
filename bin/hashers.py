@@ -24,8 +24,6 @@ class multiscaleSampler(weightedSampler):
         self.scales = scales
 
 
-
-
     def scaleWeights(self, scale):
         X = self.data - self.data.min(0)
         X /= X.max()
@@ -499,8 +497,8 @@ class diverseLSH(LSH):
         self.centers = None
 
     def makeHash(self):
-        print('data at time of hashing:')
-        print(self.data)
+        # print('data at time of hashing:')
+        # print(self.data)
         # centerSampler = detSampler(self.data, self.batch, self.replace)
         # self.centers = centerSampler.downsample(self.numCenters)
 
@@ -1260,11 +1258,14 @@ class gsLSH(LSH):
             n_iter += 1
 
         self.occSquares = len(grid)
+        self.weights = [0] * self.numObs
+
 
         # enumerate grid squares, and assign each obs to its square index
         keys = list(grid.keys())
         for square in range(len(keys)):
             for idx in grid[keys[square]]:
+                self.weights[idx] = 1./(len(grid[keys[square]]))
                 hashes[idx, 0] = square
 
         self.hash = hashes
