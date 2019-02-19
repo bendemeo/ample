@@ -283,7 +283,8 @@ class dpp(sampler):
             range(self.numObs), sampleSize, replace=False).tolist()
 
         self.kernel = np.matrix(np.matmul(self.data[self.sample, :],
-                                          np.transpose(self.data[self.sample, :])))
+                                          np.transpose(self.data[self.sample, :])),
+                                dtype='float')
 
         self.det = np.linalg.det(self.kernel)
 
