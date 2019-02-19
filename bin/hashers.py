@@ -266,6 +266,7 @@ class dpp(sampler):
         # print(newKernel.shape)
         newKernel = np.hstack(
             [newKernel, np.transpose(np.matrix(np.array(newcol)))])
+        newKernel = np.matrix(newKernel, dtype='float')
 
         newSample = newSample + c.tolist()
         newDet = np.linalg.det(newKernel)
