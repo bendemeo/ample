@@ -180,8 +180,7 @@ def try_params(X_dimred, hasher, params, tests, n_seeds=1, optimizeParams=[], in
                     elif t == 'occSquares':
                         results['occSquares'].append(downsampler.occSquares)
                     elif t == 'lastCounts':
-                        results['lastCounts'].append(
-                            downsampler.getMeanCounts())
+                        results['lastCounts'].append(downsampler.lastCounts)
                     elif t == 'maxCounts':
                         results['maxCounts'].append(downsampler.getMaxCounts())
                     elif t == 'remnants':
