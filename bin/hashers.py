@@ -16,6 +16,120 @@ import pandas as pd
 
 
 
+class softGridSampler(sampler):
+
+
+    def __init__(self, data, alpha=0.1, gridSize=0.1, opt_grid=False, max_iter=200):
+        sampler.__init__(self, data)
+        self.gridSize=gridSize
+
+        grid = {}
+
+        for sample_idx in range(self.numObs):
+            sample = self.data[sample_idx,:]
+            grid_cell = tuple(np.floor(sample / self.gridSize).astype(int))
+
+            if grid_cell not in grid:
+                grid[grid_cell] = set()
+            grid[grid_cell].add(sample_idx)
+
+        self.grid = grid
+
+
+    def findCandidates(self, idx):
+        "find all points from neighboring squares at nearest junction"
+
+        candidates = []
+        sample = self.data[idx, :]
+        grid_cell = tuple(np.floor(sample / self.gridSize).astype(int))
+        grid_shifts = [(x % self.gridSize > (0.5 * self.gridSize))
+                       for x in sample]
+        print(grid_shifts)
+        grid_shifts = [2 * x - 1 for x in grid_shifts]
+        print(grid_shifts)
+
+        for square in list(self.grid.keys()):
+            neighbor = True
+            for i, coord in enumerate(square):
+                if (coord == grid_cell[i]) or (coord == grid_cell[i] + grid_shifts[i]):
+                    continue
+                else:
+                    neighbor = False
+                    break
+
+            if(neighbor):
+                candidates = candidates + list(self.grid[square])
+
+        return(candidates)
+
+
+
+
+
+    def downsample(self, sampleSize='auto'):
+        available = range(self.numObs)
+        included = [True] * self.numObs # all indices available
+        sample = []
+        valid_sample=[True] * self.numObs #true if hasn't been sampled
+        sample_inds = [] # indices relative to available samples
+        count = 0 # how many have been added since reset
+        reset = False  # whether we have reset
+
+        self.lastCounts = []
+
+        while True:
+            if len(available) == 0:  # reset available if not enough
+                reset = True
+
+                log("sampled {} out of {} before reset".format(count, sampleSize))
+                self.lastCounts.append(count)
+
+                if sampleSize == 'auto': #stop sampling when you run out
+                    break
+
+
+                count = 0
+
+                available = list(itertools.compress(range(self.numObs), valid_sample))
+                    #print('available: {}'.format(available))
+                    #available = [x for x in range(self.numObs) if x not in sample]
+
+
+                #reset included so only available indices are true
+                included = [False]*self.numObs
+                for i in available:
+                    included[i] = True
+            #
+            # print('available left')
+            # print(len(available))
+            next = numpy.random.choice(available)
+            sample.append(next)
+            valid_sample[next] = False
+
+            if (sampleSize != 'auto') and (len(sample) >= sampleSize):
+                break
+
+            count = count + 1
+
+            toRemove = self.findCandidates(next)
+            for i in toRemove:
+                included[i]=False
+
+            available = list(itertools.compress(range(self.numObs), included))
+
+
+        if not reset:
+            self.remnants = len(available)
+        else:
+            self.remnants = 0
+
+        self.sample = sorted(numpy.unique(sample))
+        return(self.sample)
+
+
+
+
+
 class multiscaleSampler(weightedSampler):
     def __init__(self, data, scales=[0.1]):
         weightedSampler.__init__(self, data)

@@ -96,25 +96,26 @@ if __name__ == '__main__':
     #     sample_type='dpp',
     #     lsh=True)
 
-    sampler = 'dpp'
-    filename = 'pbmc_dpp_tests_4'
-    picklename = 'pbmc_dpp_downsamples_hausdorff'
+    sampler = 'softGridSampler'
+    filename = 'pbmc_softGrid_tests'
+    picklename = 'pbmc_softGrid_downsamples'
 
     iter = 1
     testParams = {
-        'steps': np.arange(1000,100000,1000).tolist()
+        'gridSize':np.arange(0.01,1,0.01)
     }
 
     tests = ['time','max_min_dist',
-              'cluster_counts']
+              'cluster_counts',
+              'lastCounts']
 
 
     testResults = try_params(X_dimred, sampler,
                                   params=testParams,
                                   tests=tests,
-                                  n_seeds=1,
+                                  n_seeds=3,
                                   cell_labels=cell_labels,
-                                  Ns=[100],
+                                  Ns=['auto'],
                                   cluster_labels = labels,
                                   backup=filename+'_backup',
                                   picklename = picklename)
@@ -123,6 +124,35 @@ if __name__ == '__main__':
     #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
 
     testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+
+    #
+    # sampler = 'dpp'
+    # filename = 'pbmc_dpp_tests_5'
+    # picklename = 'pbmc_dpp_downsamples_hausdorff_2'
+    #
+    # iter = 1
+    # testParams = {
+    #     'steps': [10000]
+    # }
+    #
+    # tests = ['time','max_min_dist',
+    #           'cluster_counts']
+    #
+    #
+    # testResults = try_params(X_dimred, sampler,
+    #                               params=testParams,
+    #                               tests=tests,
+    #                               n_seeds=1,
+    #                               cell_labels=cell_labels,
+    #                               Ns=[100, 500, 1000, 2000, 5000, 10000, 20000],
+    #                               cluster_labels = labels,
+    #                               backup=filename+'_backup',
+    #                               picklename = picklename)
+    #
+    # # with open("gsLSH_gridTest.file", "wb") as f:
+    # #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
+    #
+    # testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
     # sampler = 'gsLSH'

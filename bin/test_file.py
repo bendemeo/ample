@@ -9,6 +9,8 @@ import matplotlib.pyplot as mpl
 from hashers import *
 from experiments import *
 from copy import deepcopy
+from sklearn.metrics.pairwise import pairwise_distances
+
 
 #from lsh_experiments import start_experiment
 #from lsh_sketch import *
@@ -17,6 +19,7 @@ from copy import deepcopy
 
 
 def gauss_test(n=[100], d=1, m=1, stdev=[1]):
+    np.random.seed()
     'n points, m gaussias, d dimensions, specified sds'
     result = numpy.random.randn(0, d)
     centers = numpy.random.normal(0*d, 10, [m, d])
@@ -100,39 +103,139 @@ if __name__ == '__main__':
 
     #np.random.seed()
 
-    sizes=[5000]*2
+    sizes=[100]*4+[5]
+
     N=sum(sizes)
-    gauss2D = gauss_test(sizes, 2, 2, [1,0.1,1,1,1])
+    gauss2D = gauss_test(sizes, 2, 5, [2,0.1,0.1,0.1,0.1])
     #gauss2D -= gauss2D.min()
-    gauss2D_2 = gauss_test([5000, 200],2,1,[10])
+    #gauss2D_2 = gauss_test([5000, 200],2,1,[10])
     #print(gauss2D)
 
+    gauss2D -= gauss2D.min()
+
     np.random.seed()
-    poly = prettydata(n=1000, deg=5, n_polys=5, sds=[50, 50, 50, 50, 50])
-
-    print('poly:')
-    print(poly)
-    downsampler = gsLSH(poly, gridSize=0.2, opt_grid=False)
 
 
-    downsampler.makeHash()
-    print(downsampler.weights)
-    downsampler.vizData(c=[math.log(x) for x in downsampler.weights])
+    # downsampler = dpp(gauss2D, steps=1000)
+
+    downsampler = softGridSampler(gauss2D, gridSize=1)
+    downsampler.downsample('auto')
+
+    sample = downsampler.sample
+    dists = pairwise_distances(gauss2D[sample,:])
+    for i in range(len(sample)):
+        dists[i,i]=float('Inf')
+    print(dists)
+    print(np.min(dists))
+
+
+    downsampler.vizSample(full=True, anno=True)
+
+
+
+    # downsampler = multiscaleSampler(gauss2D, scales=[0.07])
+    # downsampler.makeWeights()
+    # # downsampler.downsample(100)
+    # # downsampler.vizSample()
+    # i=1
+    # downsampler.vizWeights(file='/Users/bdemeo/Desktop/cell_cover/weights_wistia{}'.format(i),dpi=1000, s=5, cmap='Wistia')
+
+
+
+    # sampler = 'dpp'
+    # filename = 'dpp_test'
+    # picklename = None
+    #
+    # iter = 1
+    # testParams = {
+    #     'steps': [10000],
+    # }
+    #
+    # tests = ['time','max_min_dist']
+    #
+    #
+    # testResults = try_params(gauss2D, sampler,
+    #                               params=testParams,
+    #                               tests=tests,
+    #                               n_seeds=1,
+    #                               Ns=[1000],
+    #                               backup=filename+'_backup',
+    #                               picklename = picklename)
+    #
+    # testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+
+    #
+    # sampler = 'gsLSH'
+    # filename = 'gsLSH_test'
+    # picklename = None
+    #
+    # iter = 1
+    # testParams = {
+    #     'target': ['N'],
+    #     'opt_grid':[True]
+    # }
+    #
+    # tests = ['time','max_min_dist']
+    #
+    #
+    # testResults = try_params(gauss2D, sampler,
+    #                               params=testParams,
+    #                               tests=tests,
+    #                               n_seeds=1,
+    #                               Ns=[1000],
+    #                               backup=filename+'_backup',
+    #                               picklename = picklename)
+    #
+    # testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+    #
+    #
+    # sampler = 'diverseLSH'
+    # filename = 'diverseLSH_test'
+    # picklename = None
+    #
+    # iter = 1
+    # testParams = {
+    #     'steps': [10000],
+    #     'numCenters':[10,20, 30]
+    # }
+    #
+    # tests = ['time','max_min_dist']
+    #
+    #
+    # testResults = try_params(gauss2D, sampler,
+    #                               params=testParams,
+    #                               tests=tests,
+    #                               n_seeds=1,
+    #                               Ns=[1000],
+    #                               backup=filename+'_backup',
+    #                               picklename = picklename)
+    #
+    # testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+
+
+    #
+    # poly = prettydata(n=1000, deg=5, n_polys=5, sds=[50, 50, 50, 50, 50])
+    #
+    # print('poly:')
+    # print(poly)
+    # downsampler = gsLSH(poly, gridSize=0.2, opt_grid=False)
+    #
+    #
+    # downsampler.makeHash()
+    # print(downsampler.weights)
+    # downsampler.vizData(c=[math.log(x) for x in downsampler.weights])
 
 
 
     # downsampler = densitySampler(gauss2D)
     # downsampler.makeWeights()
     # downsampler.vizWeights()
-
+    #
     # downsampler = centerSampler(gauss2D, numCenters=20, weighted=True)
     # downsampler.downsample(200)
     # downsampler.vizSample(full=True)
-    # downsampler = multiscaleSampler(gauss2D, scales=[0.1])
-    # downsampler.makeWeights()
-    # # downsampler.downsample(100)
-    # # downsampler.vizSample()
-    # downsampler.vizWeights()
+
+
 
     # downsampler = sigSampler(gauss2D, bins=10)
     # downsampler.sigTransform()
