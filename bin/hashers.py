@@ -44,9 +44,9 @@ class softGridSampler(sampler):
         grid_cell = tuple(np.floor(sample / self.gridSize).astype(int))
         grid_shifts = [(x % self.gridSize > (0.5 * self.gridSize))
                        for x in sample]
-        print(grid_shifts)
+        #print(grid_shifts)
         grid_shifts = [2 * x - 1 for x in grid_shifts]
-        print(grid_shifts)
+        #print(grid_shifts)
 
         for square in list(self.grid.keys()):
             neighbor = True
