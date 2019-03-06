@@ -16,6 +16,66 @@ import pandas as pd
 
 
 
+class gridTrie:
+    def __init__(self, squares):
+        #data structure to allow fast grid neighbor finding
+        ## adapted from https://stackoverflow.com/questions/11015320/how-to-create-a-trie-in-python
+        _end = '_end_'
+        root = dict()
+        for square in squares:
+            current_dict = root
+            for coord in square:
+                current_dict = current_dict.setdefault(coord, {})
+            current_dict[_end]=_end
+
+
+        self.trie = root
+
+    def neighbors(self, pos):
+        # given a grid square, find all occupied squares at most 1 to the left of it
+        #descends grid trie, keeping x and x-1 for each coordinate
+
+        current_dicts = [self.trie]
+        current_squares = [()]
+        for coord in pos:
+             new_dicts = []
+             new_squares = []
+
+
+             for i, d in enumerate(current_dicts):
+                 if coord in d:
+                     new_dicts.append(d[coord])
+                     new_squares.append(current_squares[i]+tuple([coord]))
+                 if (coord-1) in d:
+                     new_dicts.append(d[(coord-1)])
+                     new_squares.append(current_squares[i]+tuple([coord-1]))
+
+             if len(new_dicts)==0:
+                 return(None)
+             current_dicts = new_dicts
+             current_squares = new_squares
+        return(current_squares)
+
+if __name__ == '__main__':
+    tuples = []
+    tuple_len=10
+    tuple_max=40
+    N=200000
+    for i in range(N):
+        tuples.append(tuple(np.random.choice(tuple_max, tuple_len)))
+
+    trie = gridTrie(tuples)
+
+
+    randTuple = tuples[np.random.choice(len(tuples))]
+    print(randTuple)
+    t0 = time()
+    print(trie.neighbors(randTuple))
+    t1 = time()
+    print('it took {} seconds'.format(t1-t0))
+
+
+
 class softGridSampler(sampler):
 
 
@@ -34,6 +94,8 @@ class softGridSampler(sampler):
             grid[grid_cell].add(sample_idx)
 
         self.grid = grid
+        self.trie = gridTrie(grid.keys()) #for fast neighbor computation
+
 
 
     def findCandidates(self, idx):
@@ -42,23 +104,36 @@ class softGridSampler(sampler):
         candidates = []
         sample = self.data[idx, :]
         grid_cell = tuple(np.floor(sample / self.gridSize).astype(int))
+
+
+
+
         grid_shifts = [(x % self.gridSize > (0.5 * self.gridSize))
                        for x in sample]
         #print(grid_shifts)
-        grid_shifts = [2 * x - 1 for x in grid_shifts]
-        #print(grid_shifts)
+        #represents nearest grid intersection
+        grid_intersect = [sum(x)for x in zip(grid_cell, grid_shifts)]
 
-        for square in list(self.grid.keys()):
-            neighbor = True
-            for i, coord in enumerate(square):
-                if (coord == grid_cell[i]) or (coord == grid_cell[i] + grid_shifts[i]):
-                    continue
-                else:
-                    neighbor = False
-                    break
+        neighborsquares = self.trie.neighbors(grid_intersect)
 
-            if(neighbor):
-                candidates = candidates + list(self.grid[square])
+        candidates = []
+        for square in neighborsquares:
+            candidates = candidates + list(self.grid[square])
+        # grid_shifts = [2 * x - 1 for x in grid_shifts]
+        # #print(grid_shifts)
+        #
+        # for square in list(self.grid.keys()):
+        #     neighbor = True
+        #     for i, coord in enumerate(square):
+        #         if (coord == grid_cell[i]) or (coord == grid_cell[i] + grid_shifts[i]):
+        #             continue
+        #         else:
+        #             neighbor = False
+        #             break
+        #
+        #     if(neighbor):
+        #         candidates = candidates + list(self.grid[square])
+
 
         return(candidates)
 
@@ -125,9 +200,6 @@ class softGridSampler(sampler):
 
         self.sample = sorted(numpy.unique(sample))
         return(self.sample)
-
-
-
 
 
 class multiscaleSampler(weightedSampler):
@@ -1568,9 +1640,7 @@ def times(*args):
     return(result)
 
 
-if __name__ == '__main__':
 
-    print(splitLSH.splitDim([1, 2, 10, 3, 11, 5, 12], 2, 0))
     # gauss2D = gauss_test([10,20,100,200], 2, 4, [0.1, 1, 0.01, 2])
     # mpl.scatter(gauss2D[:, 0], gauss2D[:, 1])
     #

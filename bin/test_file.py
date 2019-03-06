@@ -118,7 +118,7 @@ if __name__ == '__main__':
 
     # downsampler = dpp(gauss2D, steps=1000)
 
-    downsampler = softGridSampler(gauss2D, gridSize=1)
+    downsampler = softGridSampler(gauss2D, gridSize=0.5)
     downsampler.downsample('auto')
 
     sample = downsampler.sample
