@@ -54,12 +54,13 @@ class gridTrie:
                  return(None)
              current_dicts = new_dicts
              current_squares = new_squares
+        print('found {} neighbors'.format(len(current_squares)))
         return(current_squares)
 
 if __name__ == '__main__':
     tuples = []
-    tuple_len=10
-    tuple_max=40
+    tuple_len=100
+    tuple_max=3
     N=200000
     for i in range(N):
         tuples.append(tuple(np.random.choice(tuple_max, tuple_len)))
@@ -94,6 +95,7 @@ class softGridSampler(sampler):
             grid[grid_cell].add(sample_idx)
 
         self.grid = grid
+        print('grid size is {}'.format(len(grid)))
         self.trie = gridTrie(grid.keys()) #for fast neighbor computation
 
 
@@ -113,6 +115,7 @@ class softGridSampler(sampler):
         #print(grid_shifts)
         #represents nearest grid intersection
         grid_intersect = [sum(x)for x in zip(grid_cell, grid_shifts)]
+
 
         neighborsquares = self.trie.neighbors(grid_intersect)
 
