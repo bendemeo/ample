@@ -261,7 +261,7 @@ class softGridSampler(sampler):
         #represents nearest grid intersection
         grid_intersect = [sum(x)for x in zip(grid_cell, grid_shifts)]
 
-        print(self.curTrie.tostr())
+        print(self.curTrie.trie.tostr())
         neighborsquares = self.curTrie.removeNeighbors(grid_intersect)
         print(neighborsquares)
         candidates = []
