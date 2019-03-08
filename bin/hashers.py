@@ -238,9 +238,11 @@ class softGridSampler(sampler):
 
         self.grid = grid
         print('grid size is {}'.format(len(grid)))
+        t0 = time()
         self.trie = gridTrie(grid.keys()) #for fast neighbor computation
         self.curTrie = gridTrie(grid.keys()) # updated as neighbors are removed
-
+        t1 = time()
+        print('initialized trie in {} seconds'.format(t1-t0))
 
 
     def findCandidates(self, idx):
@@ -259,9 +261,9 @@ class softGridSampler(sampler):
         #represents nearest grid intersection
         grid_intersect = [sum(x)for x in zip(grid_cell, grid_shifts)]
 
-
+        print(self.curTrie.tostr())
         neighborsquares = self.curTrie.removeNeighbors(grid_intersect)
-
+        print(neighborsquares)
         candidates = []
         for square in neighborsquares:
             candidates = candidates + list(self.grid[square])
@@ -345,7 +347,7 @@ class softGridSampler(sampler):
             self.remnants = 0
 
         self.sample = sorted(numpy.unique(sample))
-        self.curTrie = self.trie
+        self.curTrie = self.trie # done sampling; reset curTrie
         return(self.sample)
 
 
