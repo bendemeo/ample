@@ -222,7 +222,7 @@ if __name__ == '__main__':
     print(trie.removeNeighbors(randTuple))
     t1 = time()
     print('it took {} seconds'.format(t1-t0))
-    print(trie.trie.tostr())
+    #print(trie.trie.tostr())
 
 
 
