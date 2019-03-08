@@ -14,58 +14,195 @@ from sklearn import manifold
 from fbpca import pca
 import pandas as pd
 
+class trieNode:
+    def __init__(self, children, val='START', parent = None):
+        self.parent = parent
+        self.val = val
+        self.children = children # dict of value:trieNode
 
+    def getParent(self):
+        return(self.parent)
+
+    def getValue(self):
+        return(self.val)
+
+    def getChildren(self):
+        return(self.chidren)
+
+    def tostr(self):
+        result = str(self.val)
+        for val in self.children.keys():
+            result += ", ["
+            if self.children[val] == '_end_':
+                result += 'END'
+            else:
+                result += self.children[val].tostr()
+            result += ']'
+        return(result)
 
 class gridTrie:
     def __init__(self, squares):
-        #data structure to allow fast grid neighbor finding
-        ## adapted from https://stackoverflow.com/questions/11015320/how-to-create-a-trie-in-python
-        _end = '_end_'
-        root = dict()
-        for square in squares:
-            current_dict = root
-            for coord in square:
-                current_dict = current_dict.setdefault(coord, {})
-            current_dict[_end]=_end
+        root = trieNode(children = {})
 
+        _end = '_end_'
+        for square in squares:
+            current_node = root
+            for coord in square:
+                defaultTrie = trieNode(children={}, parent=current_node, val = coord)
+
+                current_node = current_node.children.setdefault(coord, defaultTrie)
+            current_node.children[_end] = _end
 
         self.trie = root
 
-    def neighbors(self, pos):
-        # given a grid square, find all occupied squares at most 1 to the left of it
-        #descends grid trie, keeping x and x-1 for each coordinate
+    def removeNeighbors(self, pos):
+        current_nodes = [self.trie]
+        current_squares = [()] #keep track of paths
 
-        current_dicts = [self.trie]
-        current_squares = [()]
+        # all_dicts = [] # all dicts at all time points, O(number of neighbors) avg space
+        # parent_dicts = [] # parent dicts of all_dicts elements
+        #
+
         for coord in pos:
-             new_dicts = []
+             new_nodes = []
              new_squares = []
 
+             coords = []
 
-             for i, d in enumerate(current_dicts):
-                 if coord in d:
-                     new_dicts.append(d[coord])
+
+             last_pairs = []
+             del_pairs = [] # pairs of (dict, coord) to remove
+
+             for i, d in enumerate(current_nodes):
+                 if coord in d.children:
+
+                     new_nodes.append(d.children.get(coord))
+                     #parent_dicts.append(d)
                      new_squares.append(current_squares[i]+tuple([coord]))
-                 if (coord-1) in d:
-                     new_dicts.append(d[(coord-1)])
+
+                 if (coord-1) in d.children:
+                     new_nodes.append(d.children.get(coord-1))
+                     #parent_dicts.append(d)
                      new_squares.append(current_squares[i]+tuple([coord-1]))
 
-             if len(new_dicts)==0:
+             if len(new_nodes)==0:
                  return(None)
-             current_dicts = new_dicts
+             #all_dicts.append(new_dicts)
+             current_nodes = new_nodes
              current_squares = new_squares
+
         print('found {} neighbors'.format(len(current_squares)))
+        #print([x.parent.tostr() for x in current_nodes])
+
+        ## delete neighbors from tree
+
+
+        current_level = set(current_nodes)
+        next_level = current_level
+
+        while len(next_level) > 0:
+            next_level = []
+            #del_nodes = []
+            for node in current_level:
+                if node.parent == None:
+                    # root node
+                    break
+                if len(node.parent.children) == 1:
+                    next_level.append(node.parent)
+                # print(node.parent.children)
+                # print(node.val)
+                del node.parent.children[node.val]
+
+            current_level = next_level
+
+                #
+                # if len(node.parent.children) == 0:
+                #     del_nodes.append(node)
+                #     print(node.val)
+                #     print(node.parent.children.keys())
+                #     del node.parent.children[node.val]
+
+            #current_level = {n.parent for n in del_nodes}
+
+
         return(current_squares)
 
+
+# class gridTrie:
+#     def __init__(self, squares):
+#         #data structure to allow fast grid neighbor finding
+#         ## adapted from https://stackoverflow.com/questions/11015320/how-to-create-a-trie-in-python
+#         _end = '_end_'
+#         root = dict()
+#         for square in squares:
+#             current_dict = root
+#             for coord in square:
+#                 current_dict = current_dict.setdefault(coord, {})
+#             current_dict[_end]=_end
+#
+#
+#         self.trie = root #always stores entire trie
+#         self.curTrie = root #only non-sampled nodes
+#
+#
+#
+#
+#     def neighbors(self, pos):
+#         # given a grid square, find all occupied squares at most 1 to the left of it
+#         #descends grid trie, keeping x and x-1 for each coordinate
+#
+#         current_dicts = [self.trie]
+#         current_squares = [()]
+#         all_dicts = [] # all dicts at all time points, O(number of neighbors) avg space
+#         parent_dicts = [] # parent dicts of all_dicts elements
+#
+#
+#         for coord in pos:
+#              new_dicts = []
+#              new_squares = []
+#
+#
+#
+#              coords = []
+#
+#
+#              last_pairs = []
+#              del_pairs = [] # pairs of (dict, coord) to remove
+#
+#              for i, d in enumerate(current_dicts):
+#                  if coord in d:
+#                      new_dicts.append(d.get(coord))
+#                      parent_dicts.append(d)
+#                      new_squares.append(current_squares[i]+tuple([coord]))
+#
+#                  if (coord-1) in d:
+#                      new_dicts.append(d.get(coord-1))
+#                      parent_dicts.append(d)
+#                      new_squares.append(current_squares[i]+tuple([coord-1]))
+#
+#              if len(new_dicts)==0:
+#                  return(None)
+#              all_dicts.append(new_dicts)
+#
+#              current_dicts = new_dicts
+#              current_squares = new_squares
+#         print('found {} neighbors'.format(len(current_squares)))
+#         return(current_squares)
+
+
+
+
 if __name__ == '__main__':
+
     tuples = []
-    tuple_len=100
+    tuple_len=3
     tuple_max=3
-    N=200000
+    N=5
     for i in range(N):
         tuples.append(tuple(np.random.choice(tuple_max, tuple_len)))
 
-    trie = gridTrie(tuples)
+    trie = gridTrie2(tuples)
+    print(trie.trie.tostr())
 
 
     randTuple = tuples[np.random.choice(len(tuples))]
@@ -74,6 +211,7 @@ if __name__ == '__main__':
     print(trie.neighbors(randTuple))
     t1 = time()
     print('it took {} seconds'.format(t1-t0))
+    print(trie.trie.tostr())
 
 
 
@@ -97,6 +235,7 @@ class softGridSampler(sampler):
         self.grid = grid
         print('grid size is {}'.format(len(grid)))
         self.trie = gridTrie(grid.keys()) #for fast neighbor computation
+        self.curTrie = gridTrie(grid.keys()) # updated as neighbors are removed
 
 
 
@@ -117,7 +256,7 @@ class softGridSampler(sampler):
         grid_intersect = [sum(x)for x in zip(grid_cell, grid_shifts)]
 
 
-        neighborsquares = self.trie.neighbors(grid_intersect)
+        neighborsquares = self.curTrie.removeNeighbors(grid_intersect)
 
         candidates = []
         for square in neighborsquares:
@@ -172,7 +311,7 @@ class softGridSampler(sampler):
                     #print('available: {}'.format(available))
                     #available = [x for x in range(self.numObs) if x not in sample]
 
-
+                self.curTrie = self.trie
                 #reset included so only available indices are true
                 included = [False]*self.numObs
                 for i in available:
