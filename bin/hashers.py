@@ -347,7 +347,7 @@ class softGridSampler(sampler):
             self.remnants = 0
 
         self.sample = sorted(numpy.unique(sample))
-        self.curTrie = self.trie # done sampling; reset curTrie
+        self.curTrie = deepcopy(self.trie) # done sampling; reset curTrie
         return(self.sample)
 
 
