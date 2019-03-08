@@ -222,9 +222,10 @@ if __name__ == '__main__':
 class softGridSampler(sampler):
 
 
-    def __init__(self, data, alpha=0.1, gridSize=0.1, opt_grid=False, max_iter=200):
+    def __init__(self, data, alpha=0.1, gridSize=0.3, opt_grid=False, max_iter=200):
         sampler.__init__(self, data)
         self.gridSize=gridSize
+        print('square size: {}'.format(self.gridSize))
 
         grid = {}
 
