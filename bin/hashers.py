@@ -223,6 +223,12 @@ class softGridSampler(sampler):
 
 
     def __init__(self, data, alpha=0.1, gridSize=0.3, opt_grid=False, max_iter=200):
+
+        #normalize it!
+        data =  data - data.min(0)
+        data = data / data.max()
+
+
         sampler.__init__(self, data)
         self.gridSize=gridSize
         print('square size: {}'.format(self.gridSize))
