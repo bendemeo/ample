@@ -134,7 +134,7 @@ if __name__ == '__main__':
 
     iter = 1
     testParams = {
-        'gridSize':np.arange(0.8,0.01,-0.02)
+        'gridSize':np.arange(0.2,0.01,-0.02)
     }
 
     tests = ['time','max_min_dist',

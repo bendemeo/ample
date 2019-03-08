@@ -201,13 +201,20 @@ if __name__ == '__main__':
     tuples = []
     tuple_len=100
     tuple_max=3
-    N=500000
+    N=100000
+
+    t0 = time()
     for i in range(N):
         tuples.append(tuple(np.random.choice(tuple_max, tuple_len)))
+    t1 = time()
 
+    print('initializing tuples took {} seconds'.format(t1-t0))
+
+    t0 = time()
     trie = gridTrie(tuples)
-    print(trie.trie.tostr())
-
+    #print(trie.trie.tostr())
+    t1 = time()
+    print('initializing trie took {} seconds'.format(t1-t0))
 
     randTuple = tuples[np.random.choice(len(tuples))]
     print(randTuple)
