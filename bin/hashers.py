@@ -56,6 +56,8 @@ class gridTrie:
         self.trie = root
 
     def removeNeighbors(self, pos):
+
+        t0 = time()
         current_nodes = [self.trie]
         current_squares = [()] #keep track of paths
 
@@ -90,13 +92,13 @@ class gridTrie:
              #all_dicts.append(new_dicts)
              current_nodes = new_nodes
              current_squares = new_squares
-
-        print('found {} neighbors'.format(len(current_squares)))
+        t1 = time()
+        print('found {} neighbors in {} seconds'.format(len(current_squares), t1-t0))
         #print([x.parent.tostr() for x in current_nodes])
 
         ## delete neighbors from tree
 
-
+        t0 = time()
         current_level = set(current_nodes)
         next_level = current_level
 
@@ -115,6 +117,8 @@ class gridTrie:
 
             current_level = next_level
 
+        t1 = time()
+        print('removed them in {} seconds'.format(t1-t0))
                 #
                 # if len(node.parent.children) == 0:
                 #     del_nodes.append(node)
@@ -195,20 +199,20 @@ class gridTrie:
 if __name__ == '__main__':
 
     tuples = []
-    tuple_len=3
+    tuple_len=100
     tuple_max=3
-    N=5
+    N=500000
     for i in range(N):
         tuples.append(tuple(np.random.choice(tuple_max, tuple_len)))
 
-    trie = gridTrie2(tuples)
+    trie = gridTrie(tuples)
     print(trie.trie.tostr())
 
 
     randTuple = tuples[np.random.choice(len(tuples))]
     print(randTuple)
     t0 = time()
-    print(trie.neighbors(randTuple))
+    print(trie.removeNeighbors(randTuple))
     t1 = time()
     print('it took {} seconds'.format(t1-t0))
     print(trie.trie.tostr())
@@ -341,6 +345,7 @@ class softGridSampler(sampler):
             self.remnants = 0
 
         self.sample = sorted(numpy.unique(sample))
+        self.curTrie = self.trie
         return(self.sample)
 
 
