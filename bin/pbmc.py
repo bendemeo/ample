@@ -134,7 +134,7 @@ if __name__ == '__main__':
 
     iter = 1
     testParams = {
-        'gridSize':np.arange(0.2,0.01,-0.02)
+        'gridSize':np.arange(0.9,0.01,-0.01).tolist()*3
     }
 
     tests = ['time','max_min_dist',
@@ -145,7 +145,7 @@ if __name__ == '__main__':
     testResults = try_params(X_dimred, sampler,
                                   params=testParams,
                                   tests=tests,
-                                  n_seeds=3,
+                                  n_seeds=1,
                                   cell_labels=cell_labels,
                                   Ns=['auto'],
                                   cluster_labels = labels,
