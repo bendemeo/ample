@@ -127,13 +127,14 @@ if __name__ == '__main__':
     # testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
-    sampler = 'slowBallSampler'
-    filename = 'pbmc_slowBall_tests'
-    picklename = 'pbmc_slowBall_downsamples'
+
+    sampler = 'softGridSampler'
+    filename = 'pbmc_fastBall_tests'
+    picklename = 'pbmc_fastBall_downsamples'
 
     iter = 1
     testParams = {
-        'ballSize':np.arange(0.45,0.01,-0.01).tolist()*3
+        'gridSize':np.arange(0.6,0.01,-0.01).tolist()*3
     }
 
     tests = ['time','max_min_dist',
@@ -155,6 +156,39 @@ if __name__ == '__main__':
     #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
 
     testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+
+
+
+
+    # 
+    # sampler = 'slowBallSampler'
+    # filename = 'pbmc_slowBall_tests'
+    # picklename = 'pbmc_slowBall_downsamples'
+    #
+    # iter = 1
+    # testParams = {
+    #     'ballSize':np.arange(0.6,0.01,-0.01).tolist()*3
+    # }
+    #
+    # tests = ['time','max_min_dist',
+    #           'cluster_counts',
+    #           'lastCounts']
+    #
+    #
+    # testResults = try_params(X_dimred, sampler,
+    #                               params=testParams,
+    #                               tests=tests,
+    #                               n_seeds=1,
+    #                               cell_labels=cell_labels,
+    #                               Ns=['auto'],
+    #                               cluster_labels = labels,
+    #                               backup=filename+'_backup',
+    #                               picklename = picklename)
+    #
+    # # with open("gsLSH_gridTest.file", "wb") as f:
+    # #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
+    #
+    # testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
     # sampler = 'softGridSampler'
     # filename = 'pbmc_softGrid_faster_tests'

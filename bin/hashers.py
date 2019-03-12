@@ -55,7 +55,7 @@ class gridTrie:
 
         self.trie = root
 
-    def removeNeighbors(self, pos):
+    def removeNeighbors(self, pos, remove=True):
 
         t0 = time()
         current_nodes = [self.trie]
@@ -98,27 +98,28 @@ class gridTrie:
 
         ## delete neighbors from tree
 
-        t0 = time()
-        current_level = set(current_nodes)
-        next_level = current_level
+        if(remove):
+            t0 = time()
+            current_level = set(current_nodes)
+            next_level = current_level
 
-        while len(next_level) > 0:
-            next_level = []
-            #del_nodes = []
-            for node in current_level:
-                if node.parent == None:
-                    # root node
-                    break
-                if len(node.parent.children) == 1:
-                    next_level.append(node.parent)
-                # print(node.parent.children)
-                # print(node.val)
-                del node.parent.children[node.val]
+            while len(next_level) > 0:
+                next_level = []
+                #del_nodes = []
+                for node in current_level:
+                    if node.parent == None:
+                        # root node
+                        break
+                    if len(node.parent.children) == 1:
+                        next_level.append(node.parent)
+                    # print(node.parent.children)
+                    # print(node.val)
+                    del node.parent.children[node.val]
 
-            current_level = next_level
+                current_level = next_level
 
-        t1 = time()
-        print('removed them in {} seconds'.format(t1-t0))
+            t1 = time()
+            print('removed them in {} seconds'.format(t1-t0))
                 #
                 # if len(node.parent.children) == 0:
                 #     del_nodes.append(node)
@@ -361,11 +362,24 @@ class softGridSampler(sampler):
         grid_intersect = [sum(x)for x in zip(grid_cell, grid_shifts)]
 
         #print(self.curTrie.trie.tostr())
-        neighborsquares = self.curTrie.removeNeighbors(grid_intersect)
+
+
+        neighborsquares = self.curTrie.removeNeighbors(grid_intersect, remove=(not self.ball))
+
         #print(neighborsquares)
         candidates = []
         for square in neighborsquares:
             candidates = candidates + list(self.grid[square])
+
+        result = candidates
+        if self.ball:
+            result = []
+            for c in candidates:
+                if np.linalg.norm(self.data[c,:]-sample) < (self.gridSize/2.):
+                    result.append(c)
+
+
+
 
         # grid_shifts = [2 * x - 1 for x in grid_shifts]
         # #print(grid_shifts)
@@ -383,7 +397,7 @@ class softGridSampler(sampler):
         #         candidates = candidates + list(self.grid[square])
 
 
-        return(candidates)
+        return(result)
 
 
 
@@ -435,6 +449,7 @@ class softGridSampler(sampler):
             count = count + 1
 
             toRemove = self.findCandidates(next)
+            print(toRemove)
             for i in toRemove:
                 included[i]=False
 
@@ -1827,6 +1842,8 @@ class randomGridLSH(LSH):
                      replace=replace, target=target)
 
         self.gridSize = gridSize
+        self.data -= self.data.min(0)
+        self.data /= self.max()
 
     def makeHash(self):
         t0 = time()
@@ -1842,13 +1859,14 @@ class randomGridLSH(LSH):
             newData = np.matmul(self.data, basis)
             t1 = time()
 
+            X = newData
             # print('making random basis took {} seconds'.format(t1-t0))
 
             # do gridLSH in this new basis
 
-            # make positive and max 1
-            X = newData - newData.min(0)
-            X /= X.max()
+            # # make positive and max 1
+            # X = newData - newData.min(0)
+            # X /= X.max()
 
             grid = {}
 

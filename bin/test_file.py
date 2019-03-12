@@ -111,7 +111,8 @@ if __name__ == '__main__':
     #gauss2D_2 = gauss_test([5000, 200],2,1,[10])
     #print(gauss2D)
 
-    gauss2D -= gauss2D.min()
+    gauss2D -= gauss2D.min(0)
+    gauss2D /= gauss2D.max()
 
     np.random.seed()
 
@@ -120,7 +121,11 @@ if __name__ == '__main__':
 
 
 
-    downsampler = slowBallSampler(gauss2D, ballSize=0.1)
+    # downsampler = slowBallSampler(gauss2D, ballSize=0.1)
+    # downsampler.downsample('auto')
+    # downsampler.vizSample(full=True, anno=True)
+
+    downsampler = softGridSampler(gauss2D, gridSize = 0.1, ball= True)
     downsampler.downsample('auto')
     downsampler.vizSample(full=True, anno=True)
 
