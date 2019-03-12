@@ -449,7 +449,7 @@ class softGridSampler(sampler):
             count = count + 1
 
             toRemove = self.findCandidates(next)
-            print(toRemove)
+            print('removed {}'.format(len(toRemove)))
             for i in toRemove:
                 included[i]=False
 

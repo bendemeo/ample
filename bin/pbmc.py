@@ -134,7 +134,7 @@ if __name__ == '__main__':
 
     iter = 1
     testParams = {
-        'gridSize':np.arange(0.6,0.01,-0.01).tolist()*3,
+        'gridSize':np.arange(0.9,0.01,-0.01).tolist()*3,
         'ball': [True]
     }
 
