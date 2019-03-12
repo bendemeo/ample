@@ -454,6 +454,7 @@ class softGridSampler(sampler):
                 included[i]=False
 
             available = list(itertools.compress(range(self.numObs), included))
+            print('{} remaining'.format(len(available)))
 
 
         if not reset:
