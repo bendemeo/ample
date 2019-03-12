@@ -196,40 +196,124 @@ class gridTrie:
 
 
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
+#
+#     tuples = []
+#     tuple_len=100
+#     tuple_max=3
+#     N=100000
+#
+#     t0 = time()
+#     for i in range(N):
+#         tuples.append(tuple(np.random.choice(tuple_max, tuple_len)))
+#     t1 = time()
+#
+#     print('initializing tuples took {} seconds'.format(t1-t0))
+#
+#     t0 = time()
+#     trie = gridTrie(tuples)
+#     #print(trie.trie.tostr())
+#     t1 = time()
+#     print('initializing trie took {} seconds'.format(t1-t0))
+#
+#     randTuple = tuples[np.random.choice(len(tuples))]
+#     print(randTuple)
+#     t0 = time()
+#     print(trie.removeNeighbors(randTuple))
+#     t1 = time()
+#     print('it took {} seconds'.format(t1-t0))
+#     #print(trie.trie.tostr())
+#
 
-    tuples = []
-    tuple_len=100
-    tuple_max=3
-    N=100000
+class slowBallSampler(sampler):
+    #uses soft grid to get candidates, then removes ball
+    def __init__(self, data, alpha=0.1, ballSize=0.3):
+        data =  data - data.min(0)
+        data = data / data.max()
 
-    t0 = time()
-    for i in range(N):
-        tuples.append(tuple(np.random.choice(tuple_max, tuple_len)))
-    t1 = time()
+        sampler.__init__(self, data)
+        self.ballSize = ballSize
+        print('ball Size: {}'.format(self.ballSize))
 
-    print('initializing tuples took {} seconds'.format(t1-t0))
+    def findCandidates(self, idx):
+        candidates = []
+        sample = self.data[idx, :]
 
-    t0 = time()
-    trie = gridTrie(tuples)
-    #print(trie.trie.tostr())
-    t1 = time()
-    print('initializing trie took {} seconds'.format(t1-t0))
+        for i in range(self.data.shape[0]):
+            cur_sample = self.data[i,]
+            dist = np.linalg.norm(sample - cur_sample)
 
-    randTuple = tuples[np.random.choice(len(tuples))]
-    print(randTuple)
-    t0 = time()
-    print(trie.removeNeighbors(randTuple))
-    t1 = time()
-    print('it took {} seconds'.format(t1-t0))
-    #print(trie.trie.tostr())
+            if dist < self.ballSize:
+                candidates.append(i)
+        return candidates
 
+    def downsample(self, sampleSize='auto'):
+        available = range(self.numObs)
+        included = [True] * self.numObs # all indices available
+        sample = []
+        valid_sample=[True] * self.numObs #true if hasn't been sampled
+        sample_inds = [] # indices relative to available samples
+        count = 0 # how many have been added since reset
+        reset = False  # whether we have reset
+
+        self.lastCounts = []
+
+        while True:
+            if len(available) == 0:  # reset available if not enough
+                reset = True
+
+                log("sampled {} out of {} before reset".format(count, sampleSize))
+                self.lastCounts.append(count)
+
+                if sampleSize == 'auto': #stop sampling when you run out
+                    break
+
+
+                count = 0
+
+                available = list(itertools.compress(range(self.numObs), valid_sample))
+                    #print('available: {}'.format(available))
+                    #available = [x for x in range(self.numObs) if x not in sample]
+
+                #reset included so only available indices are true
+                included = [False]*self.numObs
+                for i in available:
+                    included[i] = True
+            #
+            # print('available left')
+            # print(len(available))
+            next = numpy.random.choice(available)
+            sample.append(next)
+            valid_sample[next] = False
+
+            if (sampleSize != 'auto') and (len(sample) >= sampleSize):
+                break
+
+            count = count + 1
+
+            toRemove = self.findCandidates(next)
+            for i in toRemove:
+                included[i]=False
+
+            available = list(itertools.compress(range(self.numObs), included))
+
+
+        if not reset:
+            self.remnants = len(available)
+        else:
+            self.remnants = 0
+
+        self.sample = sorted(numpy.unique(sample))
+
+        ###copying trie takes O(n) time...
+        #self.curTrie = deepcopy(self.trie) # done sampling; reset curTrie
+        return(self.sample)
 
 
 class softGridSampler(sampler):
 
 
-    def __init__(self, data, alpha=0.1, gridSize=0.3, opt_grid=False, max_iter=200):
+    def __init__(self, data, alpha=0.1, gridSize=0.3, opt_grid=False, max_iter=200, ball=False):
 
         #normalize it!
         data =  data - data.min(0)
@@ -258,6 +342,7 @@ class softGridSampler(sampler):
         t1 = time()
         print('initialized trie in {} seconds'.format(t1-t0))
 
+        self.ball = ball
 
     def findCandidates(self, idx):
         "find all points from neighboring squares at nearest junction"
@@ -281,6 +366,7 @@ class softGridSampler(sampler):
         candidates = []
         for square in neighborsquares:
             candidates = candidates + list(self.grid[square])
+
         # grid_shifts = [2 * x - 1 for x in grid_shifts]
         # #print(grid_shifts)
         #

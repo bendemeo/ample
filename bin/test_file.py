@@ -118,8 +118,11 @@ if __name__ == '__main__':
 
     # downsampler = dpp(gauss2D, steps=1000)
 
-    downsampler = softGridSampler(gauss2D, gridSize=2)
+
+
+    downsampler = slowBallSampler(gauss2D, ballSize=0.1)
     downsampler.downsample('auto')
+    downsampler.vizSample(full=True, anno=True)
 
     sample = downsampler.sample
     dists = pairwise_distances(gauss2D[sample,:])
@@ -128,8 +131,18 @@ if __name__ == '__main__':
     print(dists)
     print(np.min(dists))
 
-
-    downsampler.vizSample(full=True, anno=True)
+    # downsampler = softGridSampler(gauss2D, gridSize=2)
+    # downsampler.downsample('auto')
+    #
+    # sample = downsampler.sample
+    # dists = pairwise_distances(gauss2D[sample,:])
+    # for i in range(len(sample)):
+    #     dists[i,i]=float('Inf')
+    # print(dists)
+    # print(np.min(dists))
+    #
+    #
+    # downsampler.vizSample(full=True, anno=True)
 
 
 
