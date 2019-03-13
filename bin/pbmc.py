@@ -132,7 +132,7 @@ if __name__ == '__main__':
     filename = 'pbmc_fastBall_tests'
     picklename = 'pbmc_fastBall_downsamples'
 
-    iter = 1
+    iter = 2
     testParams = {
         'gridSize':np.arange(0.9,0.01,-0.01).tolist()*3,
         'ball': [True]

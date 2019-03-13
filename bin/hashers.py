@@ -55,6 +55,34 @@ class gridTrie:
 
         self.trie = root
 
+    def delete(self, square):
+        cur_node = self.trie
+        cur_ind = 0
+        cur_val = square[cur_ind]
+
+        #walk down tree to find node
+        while(cur_ind < len(square)):
+            cur_val = square[cur_ind]
+            cur_node = cur_node.children.get(cur_val)
+            cur_ind += 1
+
+
+        while(True):
+            if cur_node.parent is None:
+                #cur_node is root; delete whole trie
+                cur_node.children = {}
+                break
+            elif len(cur_node.parent.children) == 1:
+                #print('walking up tree')
+                #only child, walk up tree
+                cur_node = cur_node.parent
+            else:
+                #print('found branching point: {}'.format(cur_node.parent.tostr()))
+                # found branching point; delete path to node
+                del cur_node.parent.children[cur_node.val]
+                break
+
+
     def removeNeighbors(self, pos, remove=True):
 
         t0 = time()
@@ -133,98 +161,41 @@ class gridTrie:
         return(current_squares)
 
 
-# class gridTrie:
-#     def __init__(self, squares):
-#         #data structure to allow fast grid neighbor finding
-#         ## adapted from https://stackoverflow.com/questions/11015320/how-to-create-a-trie-in-python
-#         _end = '_end_'
-#         root = dict()
-#         for square in squares:
-#             current_dict = root
-#             for coord in square:
-#                 current_dict = current_dict.setdefault(coord, {})
-#             current_dict[_end]=_end
-#
-#
-#         self.trie = root #always stores entire trie
-#         self.curTrie = root #only non-sampled nodes
-#
-#
-#
-#
-#     def neighbors(self, pos):
-#         # given a grid square, find all occupied squares at most 1 to the left of it
-#         #descends grid trie, keeping x and x-1 for each coordinate
-#
-#         current_dicts = [self.trie]
-#         current_squares = [()]
-#         all_dicts = [] # all dicts at all time points, O(number of neighbors) avg space
-#         parent_dicts = [] # parent dicts of all_dicts elements
-#
-#
-#         for coord in pos:
-#              new_dicts = []
-#              new_squares = []
-#
-#
-#
-#              coords = []
-#
-#
-#              last_pairs = []
-#              del_pairs = [] # pairs of (dict, coord) to remove
-#
-#              for i, d in enumerate(current_dicts):
-#                  if coord in d:
-#                      new_dicts.append(d.get(coord))
-#                      parent_dicts.append(d)
-#                      new_squares.append(current_squares[i]+tuple([coord]))
-#
-#                  if (coord-1) in d:
-#                      new_dicts.append(d.get(coord-1))
-#                      parent_dicts.append(d)
-#                      new_squares.append(current_squares[i]+tuple([coord-1]))
-#
-#              if len(new_dicts)==0:
-#                  return(None)
-#              all_dicts.append(new_dicts)
-#
-#              current_dicts = new_dicts
-#              current_squares = new_squares
-#         print('found {} neighbors'.format(len(current_squares)))
-#         return(current_squares)
+
+if __name__ == '__main__':
+
+    tuples = []
+    tuple_len=3
+    tuple_max=30
+    N=30000
+
+    t0 = time()
+    for i in range(N):
+        tuples.append(tuple(np.random.choice(tuple_max, tuple_len)))
+    t1 = time()
+
+    print('initializing tuples took {} seconds'.format(t1-t0))
+
+    t0 = time()
+    trie = gridTrie(tuples)
+    #print(trie.trie.tostr())
+    t1 = time()
+    print('initializing trie took {} seconds'.format(t1-t0))
 
 
 
 
-# if __name__ == '__main__':
-#
-#     tuples = []
-#     tuple_len=100
-#     tuple_max=3
-#     N=100000
-#
-#     t0 = time()
-#     for i in range(N):
-#         tuples.append(tuple(np.random.choice(tuple_max, tuple_len)))
-#     t1 = time()
-#
-#     print('initializing tuples took {} seconds'.format(t1-t0))
-#
-#     t0 = time()
-#     trie = gridTrie(tuples)
-#     #print(trie.trie.tostr())
-#     t1 = time()
-#     print('initializing trie took {} seconds'.format(t1-t0))
-#
-#     randTuple = tuples[np.random.choice(len(tuples))]
-#     print(randTuple)
-#     t0 = time()
-#     print(trie.removeNeighbors(randTuple))
-#     t1 = time()
-#     print('it took {} seconds'.format(t1-t0))
-#     #print(trie.trie.tostr())
-#
+    randTuple = tuples[np.random.choice(len(tuples))]
+    print(randTuple)
+    trie.delete(randTuple)
+    print(trie.trie.tostr())
+
+    # t0 = time()
+    # print(trie.removeNeighbors(randTuple))
+    # t1 = time()
+    # print('it took {} seconds'.format(t1-t0))
+    #print(trie.trie.tostr())
+
 
 class slowBallSampler(sampler):
     #uses soft grid to get candidates, then removes ball
@@ -332,10 +303,11 @@ class softGridSampler(sampler):
             grid_cell = tuple(np.floor(sample / self.gridSize).astype(int))
 
             if grid_cell not in grid:
-                grid[grid_cell] = set()
-            grid[grid_cell].add(sample_idx)
+                grid[grid_cell] = []
+            grid[grid_cell].append(sample_idx)
 
         self.grid = grid
+        self.curGrid = deepcopy(grid)
         print('grid size is {}'.format(len(grid)))
         t0 = time()
         self.trie = gridTrie(grid.keys()) #for fast neighbor computation
@@ -368,8 +340,19 @@ class softGridSampler(sampler):
 
         #print(neighborsquares)
         candidates = []
+
         for square in neighborsquares:
-            candidates = candidates + list(self.grid[square])
+            if self.ball: # check if within ball of sample before adding
+                for i,c in enumerate(self.curGrid[square]):
+                    if np.linalg.norm(self.data[c,:]-sample) < (self.gridSize/2.):
+                        candidates.append(c)
+                        del self.curGrid[square][i]
+
+                if len(self.curGrid[square])==0: #delete empty squares from trie
+                    self.curTrie.delete(square)
+
+            else: # just throw in all square members
+                candidates = candidates + list(self.curGrid[square])
 
         result = candidates
         if self.ball:
@@ -2004,3 +1987,63 @@ def times(*args):
     #     available = list(itertools.compress(range(self.numObs), included))
     #
     #
+# class gridTrie:
+#     def __init__(self, squares):
+#         #data structure to allow fast grid neighbor finding
+#         ## adapted from https://stackoverflow.com/questions/11015320/how-to-create-a-trie-in-python
+#         _end = '_end_'
+#         root = dict()
+#         for square in squares:
+#             current_dict = root
+#             for coord in square:
+#                 current_dict = current_dict.setdefault(coord, {})
+#             current_dict[_end]=_end
+#
+#
+#         self.trie = root #always stores entire trie
+#         self.curTrie = root #only non-sampled nodes
+#
+#
+#
+#
+#     def neighbors(self, pos):
+#         # given a grid square, find all occupied squares at most 1 to the left of it
+#         #descends grid trie, keeping x and x-1 for each coordinate
+#
+#         current_dicts = [self.trie]
+#         current_squares = [()]
+#         all_dicts = [] # all dicts at all time points, O(number of neighbors) avg space
+#         parent_dicts = [] # parent dicts of all_dicts elements
+#
+#
+#         for coord in pos:
+#              new_dicts = []
+#              new_squares = []
+#
+#
+#
+#              coords = []
+#
+#
+#              last_pairs = []
+#              del_pairs = [] # pairs of (dict, coord) to remove
+#
+#              for i, d in enumerate(current_dicts):
+#                  if coord in d:
+#                      new_dicts.append(d.get(coord))
+#                      parent_dicts.append(d)
+#                      new_squares.append(current_squares[i]+tuple([coord]))
+#
+#                  if (coord-1) in d:
+#                      new_dicts.append(d.get(coord-1))
+#                      parent_dicts.append(d)
+#                      new_squares.append(current_squares[i]+tuple([coord-1]))
+#
+#              if len(new_dicts)==0:
+#                  return(None)
+#              all_dicts.append(new_dicts)
+#
+#              current_dicts = new_dicts
+#              current_squares = new_squares
+#         print('found {} neighbors'.format(len(current_squares)))
+#         return(current_squares)

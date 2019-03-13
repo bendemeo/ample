@@ -103,10 +103,10 @@ if __name__ == '__main__':
 
     #np.random.seed()
 
-    sizes=[100]*4+[5]
+    sizes=[1000]*4+[5]
 
     N=sum(sizes)
-    gauss2D = gauss_test(sizes, 2, 5, [2,0.1,0.1,0.1,0.1])
+    gauss2D = gauss_test(sizes, 20, 5, [2,0.1,0.1,0.1,0.1])
     #gauss2D -= gauss2D.min()
     #gauss2D_2 = gauss_test([5000, 200],2,1,[10])
     #print(gauss2D)
