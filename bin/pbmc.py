@@ -135,7 +135,7 @@ if __name__ == '__main__':
 
     # seeds10 = gsLSH(X_dimred, target=10).downsample(10)
     # seeds30 = gsLSH(X_dimred, target=30).downsample(30)
-    seeds200 = gsLSH(X_dimred, target=50).downsample(50)
+    seeds200 = gsLSH(X_dimred, target=150).downsample(150)
 
     iter = 1
     testParams = {
