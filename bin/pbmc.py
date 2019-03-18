@@ -139,10 +139,10 @@ if __name__ == '__main__':
 
     iter = 1
     testParams = {
-        'gridSize':[0.03, 0.003],
+        'gridSize':[0.003],
         'ball': [True],
-        'radius': [10, 100],
-        'seeds':[seeds200]*2
+        'radius': [100],
+        'seeds':[seeds200]*1
     }
 
     tests = ['time','max_min_dist',
