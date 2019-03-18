@@ -14,6 +14,7 @@ from sklearn import manifold
 from fbpca import pca
 import pandas as pd
 from itertools import *
+from sklearn.metrics.pairwise import pairwise_distances
 
 class trieNode:
     def __init__(self, children, val='START', parent = None, budget=None):
