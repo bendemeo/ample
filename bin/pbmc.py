@@ -139,7 +139,7 @@ if __name__ == '__main__':
 
     iter = 1
     testParams = {
-        'gridSize':[0.3, 0.03, 0.003]
+        'gridSize':[0.3, 0.03, 0.003],
         'ball': [True],
         'radius': [1, 10, 100],
         'seeds':[seeds200]*3
