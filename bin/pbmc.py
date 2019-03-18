@@ -133,16 +133,16 @@ if __name__ == '__main__':
     picklename = 'pbmc_ringBall_downsamples'
 
 
-    seeds10 = gsLSH(X_dimred, target=10).downsample(10)
-    seeds30 = gsLSH(X_dimred, target=30).downsample(30)
-    seeds100 = gsLSH(X_dimred, target=100).downsample(100)
+    # seeds10 = gsLSH(X_dimred, target=10).downsample(10)
+    # seeds30 = gsLSH(X_dimred, target=30).downsample(30)
+    seeds200 = gsLSH(X_dimred, target=100).downsample(100)
 
     iter = 1
     testParams = {
-        'gridSize':[0.3, 0.03, 0.003]*2,
+        'gridSize':[0.3, 0.03, 0.003]
         'ball': [True],
-        'radius': [1, 10, 100]*2,
-        'seeds':[seeds30]*3+[seeds100]*3
+        'radius': [1, 10, 100]
+        'seeds':[seeds200]*3
     }
 
     tests = ['time','max_min_dist',
