@@ -141,7 +141,7 @@ if __name__ == '__main__':
     testParams = {
         'gridSize':[0.3, 0.03, 0.003]
         'ball': [True],
-        'radius': [1, 10, 100]
+        'radius': [1, 10, 100],
         'seeds':[seeds200]*3
     }
 
