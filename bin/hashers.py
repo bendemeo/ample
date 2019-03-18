@@ -13,12 +13,14 @@ import sklearn as sk
 from sklearn import manifold
 from fbpca import pca
 import pandas as pd
+from itertools import *
 
 class trieNode:
-    def __init__(self, children, val='START', parent = None):
+    def __init__(self, children, val='START', parent = None, budget=None):
         self.parent = parent
         self.val = val
         self.children = children # dict of value:trieNode
+        self.budget = budget # tolerance to nearby nodes in neighbor searching
 
     def getParent(self):
         return(self.parent)
@@ -81,6 +83,91 @@ class gridTrie:
                 # found branching point; delete path to node
                 del cur_node.parent.children[cur_node.val]
                 break
+
+
+    def ringNeighborhood(self, pos, radius, remove=False):
+        t0 = time()
+        current_nodes = [self.trie]
+        current_squares = [()] #keep track of paths
+
+        # all_dicts = [] # all dicts at all time points, O(number of neighbors) avg space
+        # parent_dicts = [] # parent dicts of all_dicts elements
+        #
+
+        for coord in pos:
+             new_nodes = []
+             new_squares = []
+
+             coords = []
+
+
+             last_pairs = []
+             del_pairs = [] # pairs of (dict, coord) to remove
+
+             for i, d in enumerate(current_nodes):
+                 for c in range(coord-radius, coord+radius):
+                    if c in d.children:
+                        new_nodes.append(d.children.get(c))
+                        #parent_dicts.append(d)
+                        new_squares.append(current_squares[i]+tuple([c]))
+
+             if len(new_nodes)==0:
+                 print('warning: tried to find neighbors of square not in trie')
+                 return(None)
+
+             #all_dicts.append(new_dicts)
+             current_nodes = new_nodes
+             current_squares = new_squares
+        t1 = time()
+        print('found {} neighbors in {} seconds'.format(len(current_squares), t1-t0))
+        return(current_squares)
+        #print([x.parent.tostr() for x in current_nodes])
+
+
+
+    def findNeighborhood(self, pos, radius, remove=False):
+        t0 = time()
+        budget = radius ** 2
+        self.trie.budget = budget
+
+        current_nodes = [self.trie]
+        current_squares = [()]
+
+        examined_nodes = 1
+
+        for coord in pos:
+            new_nodes = []
+            new_squares = []
+
+            coords = []
+
+            for i, d in enumerate(current_nodes):
+                max_cost = int(math.floor(math.sqrt(d.budget))) #conservative cost
+                for child in list(range(coord-max_cost-1, coord+max_cost+1)):
+
+                    if child in d.children:
+                        n = d.children.get(child)
+                        if(child < coord):
+                            cost = coord - child - 1
+                        else:
+                            cost = abs(child-coord)
+
+
+                        n.budget = d.budget - (cost ** 2)
+
+                        new_nodes.append(n)
+                        new_squares.append(current_squares[i]+tuple([child]))
+
+            if len(new_nodes) == 0:
+                return(None)
+
+            current_nodes = new_nodes
+            current_squares = new_squares
+            examined_nodes += len(current_nodes)
+
+        print('{} nodes examined'.format(examined_nodes))
+        return(current_squares)
+
 
 
     def removeNeighbors(self, pos, remove=True):
@@ -165,9 +252,9 @@ class gridTrie:
 if __name__ == '__main__':
 
     tuples = []
-    tuple_len=3
-    tuple_max=30
-    N=30000
+    tuple_len=2
+    tuple_max=5
+    N=3000
 
     t0 = time()
     for i in range(N):
@@ -182,13 +269,18 @@ if __name__ == '__main__':
     t1 = time()
     print('initializing trie took {} seconds'.format(t1-t0))
 
-
-
-
     randTuple = tuples[np.random.choice(len(tuples))]
     print(randTuple)
-    trie.delete(randTuple)
-    print(trie.trie.tostr())
+    t0 = time()
+    print(trie.findNeighborhood(randTuple, radius = 2))
+    t1 = time()
+    print('it took {} seconds'.format(t1-t0))
+
+    #
+    # randTuple = tuples[np.random.choice(len(tuples))]
+    # print(randTuple)
+    # trie.delete(randTuple)
+    # print(trie.trie.tostr())
 
     # t0 = time()
     # print(trie.removeNeighbors(randTuple))
@@ -196,6 +288,175 @@ if __name__ == '__main__':
     # print('it took {} seconds'.format(t1-t0))
     #print(trie.trie.tostr())
 
+class fastBallSampler(neighborhoodSampler):
+    def __init__(self, data, seeds=[1], gridSize = 0.3, ball=True, radius=1):
+        data -= data.min(0)
+        data /= data.max()
+
+        self.gridSize = gridSize
+        neighborhoodSampler.__init__(self, data)
+
+
+        if isinstance(seeds,(list,)):
+            seed_locs = data[seeds,:]
+        else:
+            seed_locs = seeds
+
+        #compute distances to seeds
+        t0 = time()
+        self.gridVals = sk.metrics.pairwise_distances(self.data, seed_locs)
+        t1 = time()
+        print('took {} seconds to make distances'.format(t1-t0))
+
+        grid = {}
+
+        self.gridShifts = np.mod(self.gridVals, self.gridSize)
+        self.gridVals = np.floor_divide(self.gridVals, self.gridSize).astype(int)
+        print(self.gridVals.shape)
+
+
+        for sample_idx in range(self.numObs):
+            grid_cell = tuple(self.gridVals[sample_idx,:])
+            if grid_cell not in grid:
+                grid[grid_cell]=[]
+            grid[grid_cell].append(sample_idx)
+
+        self.grid = grid
+        self.curGrid = deepcopy(grid)
+
+        t0 = time()
+        self.trie = gridTrie(grid.keys())
+        self.curTrie = gridTrie(grid.keys())
+        t1 = time()
+        print('initialized trie twice in {} seconds'.format(t1-t0))
+
+        self.ball = ball
+        self.radius = radius
+
+        ## stats to keep track of
+        self.numExamined = 0 # how many points you checked while sampling
+
+    def fullReset(self):
+        self.curGrid = deepcopy(self.grid)
+        self.curTrie = deepcopy(self.trie)
+
+
+
+
+    def findCandidates(self, idx):
+        print('finding candidates')
+        candidates = []
+
+        sample = self.data[idx,:]
+        grid_cell = tuple(self.gridVals[idx,:])
+
+
+        grid_shifts = (self.gridShifts[idx,:] > (0.5*self.gridSize)).astype(int)
+
+        #nearest grid intersection
+        grid_intersect = [sum(x)for x in zip(grid_cell, grid_shifts)]
+
+        # print(grid_cell)
+        # print(grid_shifts)
+        # print(grid_intersect)
+
+
+        if self.radius is None:
+            neighborsquares = self.curTrie.removeNeighbors(grid_intersect, remove=False)
+        else:
+            neighborsquares = self.curTrie.ringNeighborhood(grid_intersect, radius = self.radius)
+        #find and remove neighboring squares
+        #neighborsquares = self.curTrie.removeNeighbors(grid_intersect, remove=False)
+
+        rad = self.gridSize*(self.radius - 1./2.)
+
+        total = 0
+        for square in neighborsquares:
+            total += len(self.curGrid[square])
+            self.numExamined += len(self.curGrid[square])
+
+            if self.ball: # check if within ball of sample before adding
+                for i in reversed(range(len(self.curGrid[square]))):
+                    c = self.curGrid[square][i]
+                    if np.linalg.norm(self.data[c,:]-sample) < rad:
+                        candidates.append(c)
+                        del self.curGrid[square][i]
+
+                if len(self.curGrid[square])==0: #delete empty squares from trie
+                    self.curTrie.delete(square)
+
+            else: # just throw in all square members
+                candidates = candidates + list(self.curGrid[square])
+
+        print('{} neighboring squares'.format(len(neighborsquares)))
+        print('{} out of {} candidates selected'.format(len(candidates), total))
+
+        return(candidates)
+
+    def downsample(self, sampleSize='auto'):
+        available = range(self.numObs)
+        included = [True] * self.numObs # all indices available
+        sample = []
+        valid_sample=[True] * self.numObs #true if hasn't been sampled
+        sample_inds = [] # indices relative to available samples
+        count = 0 # how many have been added since reset
+        reset = False  # whether we have reset
+
+        self.lastCounts = []
+
+        while True:
+            if len(available) == 0:  # reset available if not enough
+                reset = True
+
+                log("sampled {} out of {} before reset".format(count, sampleSize))
+                self.lastCounts.append(count)
+
+                if sampleSize == 'auto': #stop sampling when you run out
+                    break
+
+
+                count = 0
+
+                available = list(itertools.compress(range(self.numObs), valid_sample))
+                    #print('available: {}'.format(available))
+                    #available = [x for x in range(self.numObs) if x not in sample]
+
+                self.curTrie = self.trie
+                #reset included so only available indices are true
+                included = [False]*self.numObs
+                for i in available:
+                    included[i] = True
+            #
+            # print('available left')
+            # print(len(available))
+            next = numpy.random.choice(available)
+            sample.append(next)
+            valid_sample[next] = False
+
+            if (sampleSize != 'auto') and (len(sample) >= sampleSize):
+                break
+
+            count = count + 1
+
+            toRemove = self.findCandidates(next)
+            print('removed {}'.format(len(toRemove)))
+            for i in toRemove:
+                included[i]=False
+
+            available = list(itertools.compress(range(self.numObs), included))
+            print('{} remaining'.format(len(available)))
+
+
+        if not reset:
+            self.remnants = len(available)
+        else:
+            self.remnants = 0
+
+        self.sample = sorted(numpy.unique(sample))
+
+        ###copying trie takes O(n) time...
+        #self.curTrie = deepcopy(self.trie) # done sampling; reset curTrie
+        return(self.sample)
 
 class slowBallSampler(sampler):
     #uses soft grid to get candidates, then removes ball
@@ -281,11 +542,9 @@ class slowBallSampler(sampler):
         #self.curTrie = deepcopy(self.trie) # done sampling; reset curTrie
         return(self.sample)
 
-
 class softGridSampler(sampler):
 
-
-    def __init__(self, data, alpha=0.1, gridSize=0.3, opt_grid=False, max_iter=200, ball=False):
+    def __init__(self, data, alpha=0.1, gridSize=0.3, opt_grid=False, max_iter=200, ball=False, radius = None):
 
         #normalize it!
         data =  data - data.min(0)
@@ -316,6 +575,7 @@ class softGridSampler(sampler):
         print('initialized trie in {} seconds'.format(t1-t0))
 
         self.ball = ball
+        self.radius = radius
 
     def findCandidates(self, idx):
         "find all points from neighboring squares at nearest junction"
@@ -329,22 +589,42 @@ class softGridSampler(sampler):
 
         grid_shifts = [(x % self.gridSize > (0.5 * self.gridSize))
                        for x in sample]
+        grid_remainders = [(x % self.gridSize) for x in sample]
+
+        #vector to nearest grid squares
+        grid_delta = [min([x, self.gridSize-x]) for x in grid_remainders]
+
+        grid_snapdist = np.linalg.norm(grid_delta)
+        #print('snap dist: {}'.format(grid_snapdist))
+
         #print(grid_shifts)
         #represents nearest grid intersection
         grid_intersect = [sum(x)for x in zip(grid_cell, grid_shifts)]
 
         #print(self.curTrie.trie.tostr())
 
-
-        neighborsquares = self.curTrie.removeNeighbors(grid_intersect, remove=(not self.ball))
+        if self.radius is None:
+            neighborsquares = self.curTrie.removeNeighbors(grid_intersect, remove=(not self.ball))
+        else:
+            neighborsquares = self.curTrie.findNeighborhood(grid_intersect, radius = self.radius+(float(grid_snapdist)/self.gridSize))
 
         #print(neighborsquares)
         candidates = []
 
+        if self.radius is None:
+            rad = self.gridSize / 2.
+        else:
+            rad = self.radius * self.gridSize
+
+        ## looks like there are still false negatives!!!...somehow.
+        total = 0
         for square in neighborsquares:
+            total += len(self.curGrid[square])
+
             if self.ball: # check if within ball of sample before adding
-                for i,c in enumerate(self.curGrid[square]):
-                    if np.linalg.norm(self.data[c,:]-sample) < (self.gridSize/2.):
+                for i in reversed(range(len(self.curGrid[square]))):
+                    c = self.curGrid[square][i]
+                    if np.linalg.norm(self.data[c,:]-sample) < rad:
                         candidates.append(c)
                         del self.curGrid[square][i]
 
@@ -354,12 +634,14 @@ class softGridSampler(sampler):
             else: # just throw in all square members
                 candidates = candidates + list(self.curGrid[square])
 
-        result = candidates
-        if self.ball:
-            result = []
-            for c in candidates:
-                if np.linalg.norm(self.data[c,:]-sample) < (self.gridSize/2.):
-                    result.append(c)
+        print('{} neighboring squares'.format(len(neighborsquares)))
+        print('{} out of {} candidates selected'.format(len(candidates), total))
+        # result = candidates
+        # if self.ball:
+        #     result = []
+        #     for c in candidates:
+        #         if np.linalg.norm(self.data[c,:]-sample) < (self.gridSize/2.):
+        #             result.append(c)
 
 
 
@@ -380,7 +662,7 @@ class softGridSampler(sampler):
         #         candidates = candidates + list(self.grid[square])
 
 
-        return(result)
+        return(candidates)
 
 
 
@@ -450,6 +732,63 @@ class softGridSampler(sampler):
         ###copying trie takes O(n) time...
         #self.curTrie = deepcopy(self.trie) # done sampling; reset curTrie
         return(self.sample)
+
+
+
+class randomSoftGridSampler(softGridSampler):
+    def __init__(self, data, numGrids=1, gridSize=0.3, ball=False, radius = None):
+        #normalize it!
+        data =  data - data.min(0)
+        data = data / data.max()
+
+        sampler.__init__(self, data)
+        self.gridSize = gridSize
+        grid = {}
+
+        gridvals = None
+
+
+        gridTable = None
+        curTable = np.empty([self.numObs, self.numFeatures])
+
+        for i in range(numGrids):
+            basis = rvs(dim=self.numFeatures) # random ortho basis
+            X = np.matmul(self.data, basis) # this might take forever
+            X-=X.min(0)
+
+            for i in range(self.numObs):
+                coords = X[i,:]
+                curTable[i,:]=np.floor(coords / float(self.gridSize)).astype(int)
+
+            if gridTable is None:
+                gridTable = curTable
+            else:
+                gridTable = np.concatenate([gridTable, curTable], axis=1)
+
+        print('shape')
+        print(gridTable.shape)
+        print(gridTable)
+
+        self.grid = {}
+        for i in range(self.numObs):
+            gridsquare = tuple(np.floor(gridTable[i,:]).astype(int))
+            if gridsquare not in self.grid:
+                self.grid[gridsquare] = []
+            self.grid[gridsquare].append(i)
+
+        self.curGrid = deepcopy(grid)
+        print('grid size is {}'.format(len(self.grid)))
+        t0 = time()
+        self.trie = gridTrie(grid.keys()) #for fast neighbor computation
+        self.curTrie = gridTrie(grid.keys()) # updated as neighbors are removed
+        t1 = time()
+        print('initialized trie in {} seconds'.format(t1-t0))
+
+        self.ball = ball
+        self.radius = radius
+
+        ####TODO: currently, computes grid square by modding raw coordinates. Has to store grid squares ahead of time and reference them in findCandidates()
+
 
 
 class multiscaleSampler(weightedSampler):

@@ -6,6 +6,8 @@ import sklearn as sk
 import matplotlib.pyplot as mpl
 import math
 import os
+import itertools
+from utils import *
 from MulticoreTSNE import MulticoreTSNE
 
 
@@ -82,7 +84,7 @@ class sampler:
         mpl.close()
 
 
-    def vizSample(self, file=None, full=False, c='m', cmap='Set1',anno=False, annoMax=100, **kwargs):
+    def vizSample(self, file=None, full=False,  c='m', show=True, cmap='Set1',anno=False, annoMax=100, **kwargs):
         if(full):
             if self.embedding is None:
                 self.embed()
@@ -110,8 +112,9 @@ class sampler:
         if file is not None:
             mpl.savefig('{}.png'.format(file))
 
-        mpl.show()
-        mpl.close()
+        if(show):
+            mpl.show()
+            mpl.close()
 
 class rankSampler(sampler):
     """any sampler that ranks the cells in an order and samples deterministically"""
@@ -163,7 +166,6 @@ class seqSampler(sampler):
 
         return(self.sample)
 
-
 class weightedSampler(sampler):
     def __init__(self, data, strength=1, replace=False):
         sampler.__init__(self, data, replace)
@@ -200,9 +202,77 @@ class weightedSampler(sampler):
         if file is not None:
             mpl.savefig('{}.png'.format(file), dpi=dpi)
 
-
         mpl.show()
         mpl.close()
+
+class neighborhoodSampler(sampler):
+
+    def __init__(self, data, replace=False):
+        sampler.__init__(self, data, replace)
+        self.available = range(self.numObs)
+        self.included = [True] * self.numObs
+        self.valid_sample = [True] * self.numObs
+        self.count = 0
+        self.reset = False #whether we have reset
+
+    def findCandidates(self, idx):
+        print('calling base findCandidates')
+        ##override this
+        return([idx])
+
+    def fullReset(self):
+        """everything that needs to be done to start sampling again"""
+        """override this as necessary"""
+
+    def downsample(self, sampleSize = 'auto'):
+        self.lastCounts = []
+        sample = []
+        self.count = 0
+        self.reset = False
+        while True:
+            if len(self.available) == 0: ## reset if still have more to sample
+                self.reset = True
+                log("sampled {} out of {} before reset".format(self.count, sampleSize))
+                self.lastCounts.append(self.count)
+
+                if sampleSize == 'auto':  # stop sampling when you run out
+                    break
+
+                self.count = 0
+                self.available = list(itertools.compress(range(self.numObs), self.valid_sample))
+
+                #reset included so only available indices are true
+                self.included = [False]*self.numObs
+                for i in self.available:
+                    self.included[i] = True
+
+                self.fullReset()
+
+            next = np.random.choice(self.available)
+            sample.append(next)
+            self.valid_sample[next] = False
+            if (sampleSize != 'auto') and (len(sample) >= sampleSize):
+                break
+
+            self.count += 1
+
+            toRemove = self.findCandidates(next)
+            print(len(toRemove))
+            print(len(self.available))
+            for i in toRemove:
+                self.included[i] = False
+
+            self.available = list(itertools.compress(range(self.numObs), self.included))
+
+            print(len(self.available))
+        if not self.reset:
+            self.remnants = len(self.available)
+        else:
+            self.remnants = 0
+
+        self.sample = sorted(np.unique(sample))
+
+        return(self.sample)
 
 
 

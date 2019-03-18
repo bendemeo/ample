@@ -128,14 +128,21 @@ if __name__ == '__main__':
 
 
 
-    sampler = 'softGridSampler'
-    filename = 'pbmc_fastBall_tests'
-    picklename = 'pbmc_fastBall_downsamples'
+    sampler = 'fastBallSampler'
+    filename = 'pbmc_ringBall_tests'
+    picklename = 'pbmc_ringBall_downsamples'
 
-    iter = 2
+
+    seeds10 = gsLSH(X_dimred, target=10).downsample(10)
+    seeds30 = gsLSH(X_dimred, target=30).downsample(30)
+    seeds100 = gsLSH(X_dimred, target=100).downsample(100)
+
+    iter = 1
     testParams = {
-        'gridSize':np.arange(0.9,0.01,-0.01).tolist()*3,
-        'ball': [True]
+        'gridSize':[0.3, 0.03, 0.03]*3,
+        'ball': [True],
+        'radius': [1, 10, 100]*3,
+        'seeds':[seeds10]*3+[seeds30]*3+[seeds100]*3
     }
 
     tests = ['time','max_min_dist',

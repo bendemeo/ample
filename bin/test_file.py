@@ -32,6 +32,39 @@ def gauss_test(n=[100], d=1, m=1, stdev=[1]):
                                     axis = 0)
     return result
 
+
+
+def gauss_embedding(n=[100], var = 1, extrinsic = 100, intrinsic = 2, normalize=True):
+    np.random.seed()
+    n_centers = len(n)
+    centers = numpy.random.normal(0, 10, (n_centers,extrinsic))
+    print(centers)
+
+    result = np.empty([1, extrinsic])
+    for i in range(centers.shape[0]):
+
+        basis = rvs(dim=extrinsic) # random ortho basis
+
+        subspace = basis[:,numpy.random.choice(extrinsic, size=intrinsic)]
+
+        for j in range(n[i]):
+            coefs = np.random.normal(0,var, (1,intrinsic))
+
+            pt = np.matmul(coefs, np.transpose(subspace))
+
+            pt = pt + centers[i,:]
+            result = numpy.concatenate((result,pt), axis=0)
+
+    if(normalize):
+        result -= result.min()
+        result /= result.max()
+    return(result)
+
+
+
+
+
+
 def prettydata(n=1000, n_polys=1, deg=3, sds=[1]):
     #random polynomial coefs
     x=np.arange(n)
@@ -103,18 +136,94 @@ if __name__ == '__main__':
 
     #np.random.seed()
 
-    sizes=[1000]*4+[5]
-
-    N=sum(sizes)
-    gauss2D = gauss_test(sizes, 20, 5, [2,0.1,0.1,0.1,0.1])
-    #gauss2D -= gauss2D.min()
-    #gauss2D_2 = gauss_test([5000, 200],2,1,[10])
-    #print(gauss2D)
-
-    gauss2D -= gauss2D.min(0)
-    gauss2D /= gauss2D.max()
+    # sizes=[10000]*4+[5]
+    #
+    # N=sum(sizes)
+    # dim = 10
+    # clusters=1
+    # gauss2D = gauss_test(sizes, dim, clusters, [10,5,5,5,5])
+    # #gauss2D -= gauss2D.min()
+    # #gauss2D_2 = gauss_test([5000, 200],2,1,[10])
+    # #print(gauss2D)
+    #
+    # gauss2D -= gauss2D.min(0)
+    # gauss2D /= gauss2D.max()
 
     np.random.seed()
+
+    extrinsic = 20
+    intrinsic = 20
+    gauss = gauss_embedding([2000]*5, extrinsic=extrinsic, intrinsic=intrinsic,
+                            normalize=True, var=10)
+    print(gauss.shape)
+
+    # downsampler = sampler(gauss)
+    # downsampler.downsample(1)
+    # downsampler.vizSample(full=True)
+    #
+    # seeds = gauss_test([50], dim, 1, [1000])
+
+
+    seedsampler = gsLSH(gauss, target=30)
+    seeds = seedsampler.downsample(100)
+    print(seeds)
+
+    #seedsampler.vizSample(full=True)
+
+    #downsampler = randomSoftGridSampler(gauss2D, numGrids=2, gridSize=0.7)
+    #downsampler.downsample(100)
+
+    downsampler = fastBallSampler(gauss, seeds=seeds, gridSize = 0.1, radius = 2, ball=True)
+    #downsampler.sample = downsampler.findCandidates(1)
+    downsampler.downsample('auto')
+
+    print(downsampler.numExamined)
+
+
+
+    sample = downsampler.sample
+    dists = pairwise_distances(gauss[sample,:])
+    for i in range(len(sample)):
+        dists[i,i]=float('Inf')
+    print(dists)
+    print(np.min(dists))
+    print(len(np.unique(downsampler.sample)))
+
+
+    downsampler.vizSample(full=True)
+    seedsampler.vizSample(full=True, file = 'seeds', show=False)
+
+
+    # print('hi')
+    #
+    # sampler = 'softGridSampler'
+    # filename = 'pbmc_gauss_tests'
+    #
+    # iter = 1
+    # testParams = {
+    #     'gridSize':[0.1],
+    #     'ball': [True],
+    #     'radius':[5]
+    # }
+    #
+    # tests = ['time','max_min_dist',
+    #           'lastCounts']
+    #
+    #
+    # testResults = try_params(gauss2D, sampler,
+    #                               params=testParams,
+    #                               tests=tests,
+    #                               n_seeds=1,
+    #                               Ns=['auto'],
+    #                               backup=filename+'_backup')
+    #
+    # # with open("gsLSH_gridTest.file", "wb") as f:
+    # #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
+    #
+    # testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+
+
+
 
 
     # downsampler = dpp(gauss2D, steps=1000)
@@ -125,16 +234,25 @@ if __name__ == '__main__':
     # downsampler.downsample('auto')
     # downsampler.vizSample(full=True, anno=True)
 
-    downsampler = softGridSampler(gauss2D, gridSize = 0.1, ball= True)
-    downsampler.downsample('auto')
-    downsampler.vizSample(full=True, anno=True)
+    # downsampler = softGridSampler(gauss2D, gridSize = 0.0001, ball= True, radius=8000)
+    # downsampler.downsample('auto')
+    #
+    # sample = downsampler.sample
+    # dists = pairwise_distances(gauss2D[sample,:])
+    # for i in range(len(sample)):
+    #     dists[i,i]=float('Inf')
+    # print(dists)
+    # print(np.min(dists))
+    #
+    # downsampler.vizSample(full=True, anno=False)
 
-    sample = downsampler.sample
-    dists = pairwise_distances(gauss2D[sample,:])
-    for i in range(len(sample)):
-        dists[i,i]=float('Inf')
-    print(dists)
-    print(np.min(dists))
+
+
+
+
+
+
+
 
     # downsampler = softGridSampler(gauss2D, gridSize=2)
     # downsampler.downsample('auto')
@@ -398,9 +516,6 @@ if __name__ == '__main__':
     # #print(downsampler.gridLabels)
     # mpl.scatter(gauss2D[:, 0], gauss2D[:, 1])
     # mpl.scatter(gauss2D[subInds, 0], gauss2D[subInds, 1], c='m')
-
-
-    mpl.show()
 
 
 
