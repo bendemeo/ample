@@ -370,6 +370,14 @@ class fastBallSampler(neighborhoodSampler):
 
         rad = self.gridSize*(self.radius - 1./2.)
 
+        print('finding radius of neighborhood...')
+        allCandidates = []
+        for square in neighborsquares:
+            allCandidates += self.curGrid[square]
+
+        dists = pairwise_distances(self.data[allCandidates,:])
+        print('diameter is {}'.format(np.max(dists)))
+
         total = 0
         for square in neighborsquares:
             total += len(self.curGrid[square])
