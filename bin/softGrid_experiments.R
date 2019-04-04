@@ -59,10 +59,26 @@ pbmc_all = melt(pbmc_all, id.vars=c('max_min_dist', 'time', 'method', 'lastCount
 
 
 g1 = ggplot(pbmc_all, aes(x=lastCounts, y=time/60))+
-  geom_line(aes(color=method))
+  geom_line(aes(color=method))+
+  labs(x='points sampled',y='time (minutes)')
+
+
+
 
 g2 = ggplot(pbmc_all, aes(x=lastCounts, y=max_min_dist))+
-  geom_line(aes(color=method))
+  geom_line(aes(color=method))+
+  labs(x='Points sampled', y='Hausdorff Distance')
+
+g2_mod = pbmc_all %>% filter(method %in% c('trie', 'Fastball', 'geometric sketching')) %>%
+  ggplot(aes(x=lastCounts, y=max_min_dist))+
+  geom_line(aes(color = method))+
+  labs(x='Number of Sampled Points', y='Hausdorff Distance')+
+  scale_colour_discrete(breaks=c('geometric sketching','trie', 'Fastball'),
+                        labels=c('Geometric Sketching',
+                                 'Centered Grid Sampling',
+                                 'Ball method (quadratic)'))+
+  ggtitle('Hausdorff distances on PBMC data (~68K cells)')
+  
 
 pbmc_all %>% filter(lastCounts < 2000) %>%ggplot( aes(x=lastCounts, y=value, color=variable))+
   facet_wrap(~method)+
@@ -73,3 +89,9 @@ soft_all %>% ggplot(aes(x=gridSize, y=lastCounts))+
 
 gs %>% ggplot(aes(x=gridSize, y=lastCounts))+
   geom_line()
+
+
+
+pdf('plots/time_and_dimension.pdf', 15, 6)
+grid.arrange(g1,g2, nrow=1)
+dev.off()

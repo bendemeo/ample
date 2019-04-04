@@ -336,6 +336,8 @@ class fastBallSampler(neighborhoodSampler):
 
         ## stats to keep track of
         self.numExamined = 0 # how many points you checked while sampling
+        self.trieBuildingTime = 0
+        self.neighborQueryTime = []
 
     def fullReset(self):
         self.curGrid = deepcopy(self.grid)
@@ -378,6 +380,7 @@ class fastBallSampler(neighborhoodSampler):
 
         dists = pairwise_distances(self.data[allCandidates,:])
         print('diameter is {}'.format(np.max(dists)))
+        print('search diameter is {}'.format(2*rad))
 
         total = 0
         for square in neighborsquares:
@@ -559,11 +562,39 @@ class softGridSampler(sampler):
         data =  data - data.min(0)
         data = data / data.max()
 
+        self.ball = ball
+        self.radius = radius
+        self.max_iter = max_iter
+        self.alpha = alpha
 
         sampler.__init__(self, data)
         self.gridSize=gridSize
         print('square size: {}'.format(self.gridSize))
 
+
+        self.makeGrid()
+        # grid = {}
+
+        # for sample_idx in range(self.numObs):
+        #     sample = self.data[sample_idx,:]
+        #     grid_cell = tuple(np.floor(sample / self.gridSize).astype(int))
+        #
+        #     if grid_cell not in grid:
+        #         grid[grid_cell] = []
+        #     grid[grid_cell].append(sample_idx)
+        #
+        # self.grid = grid
+        # self.curGrid = deepcopy(grid)
+        # print('grid size is {}'.format(len(grid)))
+        # t0 = time()
+        # self.trie = gridTrie(grid.keys()) #for fast neighbor computation
+        # self.curTrie = gridTrie(grid.keys()) # updated as neighbors are removed
+        # t1 = time()
+        # print('initialized trie in {} seconds'.format(t1-t0))
+
+
+
+    def makeGrid(self):
         grid = {}
 
         for sample_idx in range(self.numObs):
@@ -576,15 +607,71 @@ class softGridSampler(sampler):
 
         self.grid = grid
         self.curGrid = deepcopy(grid)
-        print('grid size is {}'.format(len(grid)))
         t0 = time()
         self.trie = gridTrie(grid.keys()) #for fast neighbor computation
         self.curTrie = gridTrie(grid.keys()) # updated as neighbors are removed
         t1 = time()
         print('initialized trie in {} seconds'.format(t1-t0))
 
-        self.ball = ball
-        self.radius = radius
+
+    def optimize_grid(self, target, verbose=1):
+        #binary search until right number of samples is obtained
+        data_ptp=self.data.ptp(0)
+        low_unit, high_unit = 0., max(data_ptp)
+
+        self.gridSize = (low_unit + high_unit) / 4.
+        self.makeGrid()
+
+        n_iter = 0
+        while True:
+            if verbose > 1:
+                log('n_iter = {}'.format(n_iter))
+
+            self.downsample('auto')
+
+            curSize = len(self.sample)
+            if verbose:
+                log('sampled {}'.format(curSize))
+
+            if curSize > target * (1 + self.alpha):
+                # too big, increase grid size
+                low_unit = self.gridSize
+                if high_unit is None:
+                    self.gridSize *= 2.
+                else:
+                    self.gridSize= (self.gridSize + high_unit) / 2.
+
+                if verbose:
+                    log('Grid size {}, increase scale to {}'
+                        .format(curSize, self.gridSize))
+
+            elif curSize < target / (1 + self.alpha):
+                # Too small, decrease grid size.
+                high_unit = self.gridSize
+                if low_unit is None:
+                    self.gridSize /= 2.
+                else:
+                    self.gridSize = (self.gridSize + low_unit) / 2.
+
+                if verbose:
+                    log('Grid size {}, decrease unit to {}'
+                        .format(curSize, self.gridSize))
+            else:
+                break
+
+            self.makeGrid()
+
+            if high_unit is not None and low_unit is not None and \
+               high_unit - low_unit < 1e-20:
+                break
+
+            if n_iter >= self.max_iter:
+                # Should rarely get here.
+                sys.stderr.write('WARNING: Max iterations reached, try increasing alpha parameter.\n')
+                break
+            n_iter += 1
+
+
 
     def findCandidates(self, idx):
         "find all points from neighboring squares at nearest junction"
@@ -614,6 +701,11 @@ class softGridSampler(sampler):
 
         if self.radius is None:
             neighborsquares = self.curTrie.removeNeighbors(grid_intersect, remove=(not self.ball))
+
+            if neighborsquares is None:
+                print(self.curTrie.trie.tostr())
+                print(grid_intersect)
+                print(self.gridSize)
         else:
             neighborsquares = self.curTrie.findNeighborhood(grid_intersect, radius = self.radius+(float(grid_snapdist)/self.gridSize))
 
@@ -627,6 +719,7 @@ class softGridSampler(sampler):
 
         ## looks like there are still false negatives!!!...somehow.
         total = 0
+        print(neighborsquares)
         for square in neighborsquares:
             total += len(self.curGrid[square])
 
@@ -688,6 +781,10 @@ class softGridSampler(sampler):
 
         self.lastCounts = []
 
+        if(sampleSize != 'auto'):
+            self.optimize_grid(target=sampleSize)
+            # return(self.sample)
+
         while True:
             if len(available) == 0:  # reset available if not enough
                 reset = True
@@ -739,7 +836,8 @@ class softGridSampler(sampler):
         self.sample = sorted(numpy.unique(sample))
 
         ###copying trie takes O(n) time...
-        #self.curTrie = deepcopy(self.trie) # done sampling; reset curTrie
+        self.curTrie = deepcopy(self.trie) # done sampling; reset curTrie
+        self.curGrid = deepcopy(self.grid)
         return(self.sample)
 
 

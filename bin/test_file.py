@@ -125,6 +125,26 @@ def get_cmap(n, name='hsv'):
 
 
 if __name__ == '__main__':
+
+    gauss = gauss_test([1000], 2, 1, [1])
+    print(gauss.shape)
+    gauss -= gauss.min(0)
+    gauss /= gauss.max()
+
+    sampler = softGridSampler(gauss,gridSize=0.25)
+    sampler.downsample(100)
+    print(sampler.sample)
+    print(len(sampler.sample))
+    sampler.vizSample(full=True)
+
+
+
+
+
+
+
+
+
     # gauss = numpy.random.randn(100, 99)
     # print(gauss.ndim)
     # scheme = rp.lsh(numProj=100)  # make 20 hash functions
@@ -148,50 +168,58 @@ if __name__ == '__main__':
     #
     # gauss2D -= gauss2D.min(0)
     # gauss2D /= gauss2D.max()
-
-    np.random.seed()
-
-    extrinsic = 20
-    intrinsic = 20
-    gauss = gauss_embedding([2000]*5, extrinsic=extrinsic, intrinsic=intrinsic,
-                            normalize=True, var=10)
-    print(gauss.shape)
-
-    # downsampler = sampler(gauss)
-    # downsampler.downsample(1)
-    # downsampler.vizSample(full=True)
     #
-    # seeds = gauss_test([50], dim, 1, [1000])
-
-
-    seedsampler = gsLSH(gauss, target=30)
-    seeds = seedsampler.downsample(100)
-    print(seeds)
-
-    #seedsampler.vizSample(full=True)
-
-    #downsampler = randomSoftGridSampler(gauss2D, numGrids=2, gridSize=0.7)
-    #downsampler.downsample(100)
-
-    downsampler = fastBallSampler(gauss, seeds=seeds, gridSize = 0.1, radius = 2, ball=True)
-    #downsampler.sample = downsampler.findCandidates(1)
-    downsampler.downsample('auto')
-
-    print(downsampler.numExamined)
-
-
-
-    sample = downsampler.sample
-    dists = pairwise_distances(gauss[sample,:])
-    for i in range(len(sample)):
-        dists[i,i]=float('Inf')
-    print(dists)
-    print(np.min(dists))
-    print(len(np.unique(downsampler.sample)))
-
-
-    downsampler.vizSample(full=True)
-    seedsampler.vizSample(full=True, file = 'seeds', show=False)
+    # np.random.seed()
+    #
+    # # extrinsic = 2
+    # # intrinsic = 2
+    # # gauss = gauss_embedding([2000]*1, extrinsic=extrinsic, intrinsic=intrinsic,
+    # #                         normalize=True, var=10)
+    #
+    # gauss = gauss_test([10000], 10, 1, [1])
+    # print(gauss.shape)
+    # gauss -= gauss.min(0)
+    # gauss /= gauss.max()
+    #
+    # # downsampler = sampler(gauss)
+    # # downsampler.downsample(1)
+    # # downsampler.vizSample(full=True)
+    # #
+    # # seeds = gauss_test([50], dim, 1, [1000])
+    #
+    #
+    # seedsampler = gsLSH(gauss, target=100)
+    # seeds = seedsampler.downsample(20)
+    # print(seeds)
+    #
+    # #seedsampler.vizSample(full=True)
+    #
+    # #downsampler = randomSoftGridSampler(gauss2D, numGrids=2, gridSize=0.7)
+    # #downsampler.downsample(100)
+    #
+    # downsampler = fastBallSampler(gauss, seeds=seeds, gridSize = 0.03, radius = 5, ball=True)
+    # #downsampler.sample = downsampler.findCandidates(1)
+    # downsampler.sample = downsampler.findCandidates(100)
+    #downsampler.vizSample(full=True)
+    #
+    # downsampler.downsample('auto')
+    #
+    #
+    # print(downsampler.numExamined)
+    #
+    #
+    #
+    # sample = downsampler.sample
+    # dists = pairwise_distances(gauss[sample,:])
+    # for i in range(len(sample)):
+    #     dists[i,i]=float('Inf')
+    # print(dists)
+    # print(np.min(dists))
+    # print(len(np.unique(downsampler.sample)))
+    #
+    #
+    # downsampler.vizSample(full=True)
+    # seedsampler.vizSample(full=True, file = 'seeds', show=False)
 
 
     # print('hi')

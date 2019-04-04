@@ -80,36 +80,44 @@ if __name__ == '__main__':
     cell_names = sorted(set(labels))
     cell_labels = le.transform(labels)
 
-
-    sampler = 'centerSampler'
-    filename = 'mouse_brain_centerSamplerTest'
-    iter = 1
-    testParams = {
-        'numCenters':np.arange(1, 100, 1).tolist(),
-        'steps': [1000]
-    }
-
-    tests = ['time','max_min_dist',
-              'cluster_counts']
-
-
-    testResults = try_params(X_dimred, sampler,
-                                  params=testParams,
-                                  tests=tests,
-                                  n_seeds=3,
-                                  cell_labels=cell_labels,
-                                  Ns=[1000],
-                                  cluster_labels = labels,
-                                  backup=filename+'_backup')
-    # with open("gsLSH_gridTest.file", "wb") as f:
-    #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
-
-    testResults.to_csv(
-        'target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
-
-
+    #
+    # sampler = 'centerSampler'
+    # filename = 'mouse_brain_centerSamplerTest'
+    # iter = 1
+    # testParams = {
+    #     'numCenters':np.arange(1, 100, 1).tolist(),
+    #     'steps': [1000]
+    # }
+    #
+    # tests = ['time','max_min_dist',
+    #           'cluster_counts']
+    #
+    #
+    # testResults = try_params(X_dimred, sampler,
+    #                               params=testParams,
+    #                               tests=tests,
+    #                               n_seeds=3,
+    #                               cell_labels=cell_labels,
+    #                               Ns=[1000],
+    #                               cluster_labels = labels,
+    #                               backup=filename+'_backup')
+    # # with open("gsLSH_gridTest.file", "wb") as f:
+    # #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
+    #
+    # testResults.to_csv(
+    #     'target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
+
+    downsampler = softGridSampler(X_dimred, alpha=0.1, gridSize = 0.2, opt_grid=True)
+
+    experiment(downsampler, X_dimred, NAMESPACE, cell_labels=cell_labels,
+    gene_names=viz_genes, genes=genes,
+    gene_expr=vstack(datasets),
+    kmeans=False,
+    visualize_orig=False,
+    sample_type='softGridLSH',
+    lsh=True, optimize_grid_size=False)
 
     # downsampler = randomGridLSH(X_dimred, 0.01, 7, 2,3)
     # downsampler = cosineLSH(X_dimred,
