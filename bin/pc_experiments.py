@@ -51,7 +51,9 @@ def multi_gauss(N=1000, centers=1, intrinsic = 2, extrinsic=100, var = 1, shift_
 
 if __name__ == '__main__':
     multi = multi_gauss(N=1000, centers=10)
-    test_gridSizes(multi, sampler = 'PCALSH', seeds=1, filename='PCALSH_multigauss')
+    # test_gridSizes(multi, sampler = 'PCALSH', seeds=1, filename='PCALSH_multigauss')
+
+    test_gridSizes(multi, sampler = 'gridLSH', seeds=1, filename='gridLSH_multigauss')
     #experiment_1(sampler = 'gridLSH', seeds=5)
 
 

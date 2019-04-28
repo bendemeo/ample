@@ -81,7 +81,7 @@ class PCALSH(LSH):
             subset = data[inds,:]
             #print('subset: {}'.format(subset))
 
-            U, s, Vt = pca(subset, k=1, n_iter=100) #first PC
+            U, s, Vt = pca(subset, k=1) #first PC
 
             dimred = U[:,:1] * s[:1]
             dimred -= dimred.min() #shift to zero
