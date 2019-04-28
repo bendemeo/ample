@@ -55,7 +55,11 @@ class LSH(sampler):
         return self.hash
 
     def vizHash(self, file=None, maxPoints=float("inf"),anno=False, **kwargs):
-        if self.embedding is None:
+        #print(self.data)
+        if self.numFeatures <= 2:
+            self.embedding = self.data
+            self.embeddingInds=range(self.numObs)
+        elif self.embedding is None:
             tsne = sk.manifold.TSNE(**kwargs)
 
             if self.numObs > maxPoints:
@@ -269,8 +273,8 @@ class LSH(sampler):
                 for i in available:
                     included[i] = True
             #
-            print('available left')
-            print(len(available))
+            # print('available left')
+            # print(len(available))
             next = numpy.random.choice(available)
             sample.append(next)
             valid_sample[next] = False

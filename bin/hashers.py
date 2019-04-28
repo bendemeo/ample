@@ -15,6 +15,112 @@ from fbpca import pca
 import pandas as pd
 from itertools import *
 from sklearn.metrics.pairwise import pairwise_distances
+from fbpca import pca
+from scanorama import *
+
+
+class PCALSH(LSH):
+    #builds hashes using PCA-created grids.
+    def __init__(self, data, gridSize, replace=False):
+        numBands=1
+        bandSize=1
+        numHashes=1
+
+        LSH.__init__(self, data, numHashes=numHashes, numBands=numBands, bandSize=bandSize,
+                     replace=replace)
+
+        self.gridSize=gridSize
+        self.occSquares = None
+        #self.data = normalize(self.data) # move mean to zero, for PCA
+
+    def makeHash(self):
+        hashes = np.empty((self.numObs,1))
+
+        X = self.data - self.data.min(0)
+        X /= X.max()
+
+
+        print('old X: {}'.format(X[:10,0]))
+        start_table = {():range(X.shape[0])}
+        cur_table = start_table
+
+        leaf = {h:False for h in cur_table.keys()}
+        for i in range(self.numFeatures):
+            #print(cur_table)
+            cur_table, leaf = self.update(cur_table, X, leaf)
+
+        grid = cur_table
+
+        #print('new X: {}'.format(X[:10,0]))
+        # self.data = X
+
+        self.occSquares = len(grid)
+        keys = list(grid.keys())
+        for square in range(len(keys)):
+            for idx in grid[keys[square]]:
+                hashes[idx, 0] = square
+
+        self.hash = hashes
+
+
+    def update(self, table, data, leaf):
+        new_table = {}
+        new_leaf = {}
+
+        for h in table:
+
+            if leaf[h]: # no more subdividing necessary
+                #print('found a leaf')
+                new_table[h]=table[h]
+                new_leaf[h]=True
+                continue
+
+            inds = table[h]
+            #print('Indices: {}'.format(inds))
+
+            subset = data[inds,:]
+            #print('subset: {}'.format(subset))
+
+            U, s, Vt = pca(subset, k=1, n_iter=100) #first PC
+
+            dimred = U[:,:1] * s[:1]
+            dimred -= dimred.min() #shift to zero
+            #print('dimred: {}'.format(dimred))
+
+            if dimred.max() < self.gridSize/200.:
+                #print('making a leaf')
+                #no more subdividing; this is leaf hash
+                new_table[h] = inds
+                new_leaf[h] = True
+                continue
+
+            #print('s: {}'.format(s))
+            projections = np.matmul(U, Vt)*s[0]
+
+
+            #print('projections: {}'.format(projections))
+            data[inds,:] = data[inds,:] - projections #subtract off components
+
+
+            for i in range(len(inds)):
+                newval = np.floor(dimred[i,0] / float(self.gridSize)).astype(int)
+                new_tuple = h + tuple([newval])
+
+                if new_tuple in new_table:
+                    new_table[new_tuple].append(inds[i])
+                else:
+                    new_table[new_tuple] = [inds[i]]
+                    new_leaf[new_tuple] = False
+
+        return [new_table, new_leaf]
+
+
+
+        #project data orthogonally to PC
+
+
+
+
 
 class trieNode:
     def __init__(self, children, val='START', parent = None, budget=None):
@@ -556,7 +662,8 @@ class slowBallSampler(sampler):
 
 class softGridSampler(sampler):
 
-    def __init__(self, data, alpha=0.1, gridSize=0.3, opt_grid=False, max_iter=200, ball=False, radius = None):
+    def __init__(self, data, alpha=0.1, gridSize=0.3, opt_grid=False, max_iter=200, ball=False, radius = None,
+                 verbose=1):
 
         #normalize it!
         data =  data - data.min(0)
@@ -566,6 +673,7 @@ class softGridSampler(sampler):
         self.radius = radius
         self.max_iter = max_iter
         self.alpha = alpha
+        self.verbose = verbose
 
         sampler.__init__(self, data)
         self.gridSize=gridSize
@@ -614,7 +722,7 @@ class softGridSampler(sampler):
         print('initialized trie in {} seconds'.format(t1-t0))
 
 
-    def optimize_grid(self, target, verbose=1):
+    def optimize_grid(self, target):
         #binary search until right number of samples is obtained
         data_ptp=self.data.ptp(0)
         low_unit, high_unit = 0., max(data_ptp)
@@ -624,13 +732,13 @@ class softGridSampler(sampler):
 
         n_iter = 0
         while True:
-            if verbose > 1:
+            if self.verbose > 1:
                 log('n_iter = {}'.format(n_iter))
 
             self.downsample('auto')
 
             curSize = len(self.sample)
-            if verbose:
+            if self.verbose:
                 log('sampled {}'.format(curSize))
 
             if curSize > target * (1 + self.alpha):
@@ -653,7 +761,7 @@ class softGridSampler(sampler):
                 else:
                     self.gridSize = (self.gridSize + low_unit) / 2.
 
-                if verbose:
+                if self.verbose:
                     log('Grid size {}, decrease unit to {}'
                         .format(curSize, self.gridSize))
             else:

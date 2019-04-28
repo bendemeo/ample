@@ -10,6 +10,7 @@ from hashers import *
 from experiments import *
 from copy import deepcopy
 from sklearn.metrics.pairwise import pairwise_distances
+from transformers import *
 
 
 #from lsh_experiments import start_experiment
@@ -19,7 +20,7 @@ from sklearn.metrics.pairwise import pairwise_distances
 
 
 def gauss_test(n=[100], d=1, m=1, stdev=[1]):
-    np.random.seed()
+    #np.random.seed()
     'n points, m gaussias, d dimensions, specified sds'
     result = numpy.random.randn(0, d)
     centers = numpy.random.normal(0*d, 10, [m, d])
@@ -61,7 +62,35 @@ def gauss_embedding(n=[100], var = 1, extrinsic = 100, intrinsic = 2, normalize=
     return(result)
 
 
+def random_embedding(data, shift_var=10, extrinsic = 100):
+    """Given arbitrary data, embed randomly in a high dimensional space"""
+    basis = rvs(dim = extrinsic)
+    subspace = basis[:, numpy.random.choice(extrinsic, size=data.shape[1], replace=False)]
 
+    print('norms...')
+    print(np.linalg.norm(subspace[:,0]))
+    print(np.linalg.norm(subspace[:,1]))
+    embedded = np.matmul(data, np.transpose(subspace))
+
+    shift = np.random.normal(0,shift_var, extrinsic)
+    print(np.mean(embedded[:,0]))
+    print(np.mean(embedded[:,1]))
+    print(np.mean(embedded))
+
+    for i in range(embedded.shape[0]):
+        embedded[i,:] = embedded[i,:]+shift
+
+    return(embedded)
+
+# def gauss_embedding(n=[100], var=1, extrinsic=100, intrinsic=2, normalize=True):
+#     np.random.seed()
+#     n_centers = len(n)
+#     centers = numpy.random.normal(0, 10, (n_centers,extrinsic))
+#     print(centers)
+#
+#     result = np.empty([1, extrinsic])
+#     for i in range(centers.shape[0]):
+#
 
 
 
@@ -126,16 +155,63 @@ def get_cmap(n, name='hsv'):
 
 if __name__ == '__main__':
 
-    gauss = gauss_test([1000], 2, 1, [1])
-    print(gauss.shape)
+    np.random.seed(10)
+    gauss = gauss_test([10000]*5, 2, 1, [1,1,1,1,1])
     gauss -= gauss.min(0)
     gauss /= gauss.max()
 
-    sampler = softGridSampler(gauss,gridSize=0.25)
-    sampler.downsample(100)
-    print(sampler.sample)
-    print(len(sampler.sample))
-    sampler.vizSample(full=True)
+
+    embedding = random_embedding(gauss, shift_var=10, extrinsic =100)
+    print('mean norm...')
+    print(np.mean(np.linalg.norm(embedding, axis=1)))
+    print(np.mean(np.linalg.norm(gauss, axis=1)))
+
+    tester = PCALSH(embedding, gridSize=0.1)
+    tester.makeHash()
+    #print(tester.hash)
+
+    tester.data = gauss
+    tester.numFeatures = 2
+
+    tester.vizHash()
+    print(tester.occSquares)
+
+    gridTester = gridLSH(embedding, gridSize=0.1)
+    gridTester.makeHash()
+    gridTester.data = gauss
+    gridTester.numFeatures = 2
+    gridTester.vizHash()
+
+    print(gridTester.occSquares)
+
+    # start_table = {():range(gauss.shape[0])}
+    #
+    # updated_table = tester.update(start_table, gauss)
+    #
+    # print(gauss)
+    # print(updated_table)
+
+    # print(gauss)
+    # print(flyTransform(gauss))
+    #
+    # visualizer = gsLSH(gauss)
+    # downsampler = gridLSH(flyTransform(gauss), gridSize=0.8)
+    # downsampler.makeHash
+    # downsampler.downsample(4)
+    #
+    # visualizer.hash = downsampler.hash
+    # visualizer.sample = downsampler.sample
+    # visualizer.vizSample(full=True)
+
+    # print(gauss.shape)
+    # gauss -= gauss.min(0)
+    # gauss /= gauss.max()
+    #
+    # sampler = softGridSampler(gauss,gridSize=0.25)
+    # sampler.downsample(100)
+    # print(sampler.sample)
+    # print(len(sampler.sample))
+    # sampler.vizSample(full=True)
 
 
 
