@@ -102,7 +102,7 @@ if __name__ == '__main__':
                                   tests=tests,
                                   n_seeds=1,
                                   cell_labels=cell_labels,
-                                  Ns=np.arange(10,100,1).tolist(),
+                                  Ns=['auto'],
                                   cluster_labels = labels,
                                   backup=filename+'_backup',
                                   picklename = picklename)
