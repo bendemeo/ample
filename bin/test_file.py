@@ -11,6 +11,7 @@ from experiments import *
 from copy import deepcopy
 from sklearn.metrics.pairwise import pairwise_distances
 from transformers import *
+from vp_tree import *
 
 
 #from lsh_experiments import start_experiment
@@ -155,34 +156,63 @@ def get_cmap(n, name='hsv'):
 
 if __name__ == '__main__':
 
-    np.random.seed(10)
-    gauss = gauss_test([10000]*5, 2, 1, [1,1,1,1,1])
+    np.random.seed()
+    gauss = gauss_test([10000]*5, 2, 5, [.1,.1,.1,.1,.1])
     gauss -= gauss.min(0)
     gauss /= gauss.max()
 
 
-    embedding = random_embedding(gauss, shift_var=10, extrinsic =100)
-    print('mean norm...')
-    print(np.mean(np.linalg.norm(embedding, axis=1)))
-    print(np.mean(np.linalg.norm(gauss, axis=1)))
+    sampler = vpSampler(gauss, 0.01)
+    sampler.downsample('auto')
+    sampler.vizSample(full=True)
 
-    tester = PCALSH(embedding, gridSize=0.1)
-    tester.makeHash()
-    #print(tester.hash)
 
-    tester.data = gauss
-    tester.numFeatures = 2
 
-    tester.vizHash()
-    print(tester.occSquares)
+    tree = vpTree(gauss)
+    #print(tree.tree.tostr())
 
-    gridTester = gridLSH(embedding, gridSize=0.1)
-    gridTester.makeHash()
-    gridTester.data = gauss
-    gridTester.numFeatures = 2
-    gridTester.vizHash()
+    query = [0.2,0,0.1]
 
-    print(gridTester.occSquares)
+    print(sorted(tree.NNSearch(query, 0.1)))
+
+
+    nns = []
+    for i in range(gauss.shape[0]):
+        norm = np.linalg.norm(gauss[i,:]-query)
+        if norm <= .3:
+            nns += [i]
+
+    print(sorted(nns))
+
+
+
+
+
+
+
+    #
+    # embedding = random_embedding(gauss, shift_var=10, extrinsic =100)
+    # print('mean norm...')
+    # print(np.mean(np.linalg.norm(embedding, axis=1)))
+    # print(np.mean(np.linalg.norm(gauss, axis=1)))
+    #
+    # tester = PCALSH(embedding, gridSize=0.1)
+    # tester.makeHash()
+    # #print(tester.hash)
+    #
+    # tester.data = gauss
+    # tester.numFeatures = 2
+    #
+    # tester.vizHash()
+    # print(tester.occSquares)
+    #
+    # gridTester = gridLSH(embedding, gridSize=0.1)
+    # gridTester.makeHash()
+    # gridTester.data = gauss
+    # gridTester.numFeatures = 2
+    # gridTester.vizHash()
+    #
+    # print(gridTester.occSquares)
 
     # start_table = {():range(gauss.shape[0])}
     #

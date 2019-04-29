@@ -17,6 +17,22 @@ from itertools import *
 from sklearn.metrics.pairwise import pairwise_distances
 from fbpca import pca
 from scanorama import *
+from vp_tree import *
+
+
+class vpSampler(neighborhoodSampler):
+
+    def __init__(self, data, radius):
+        neighborhoodSampler.__init__(self,data)
+        self.tree = vpTree(data)
+        self.rad = radius
+
+    def findCandidates(self, idx):
+        query = self.data[idx,:]
+        result = self.tree.NNSearch(query, self.rad)
+        return(result)
+
+
 
 
 class PCALSH(LSH):
