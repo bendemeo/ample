@@ -13,12 +13,12 @@ from transformers import *
 from test_file import gauss_test, random_embedding
 
 
-def test_gridSizes(data, sampler = 'PCALSH', filename = sampler, iter=1, seeds=1):
+def test_gridSizes(data, sampler = 'PCALSH', filename = sampler, iter=1, seeds=1, sizes = np.arange(1, 0.01, -0.01).tolist()):
     sampler = sampler
     filename = '{}_{}_gridTest'.format(filename,sampler)
 
     testParams = {
-        'gridSize':np.arange(1, 0.01, -0.01).tolist()
+        'gridSize':sizes
     }
     tests = ['time','max_min_dist','occSquares']
 
@@ -33,17 +33,18 @@ def test_gridSizes(data, sampler = 'PCALSH', filename = sampler, iter=1, seeds=1
 
 
 
-def multi_gauss(N=1000, centers=1, intrinsic = 2, extrinsic=100, var = 1, shift_var=10):
+def multi_gauss(N=1000, centers=1, intrinsic = 2, extrinsic=100, var = 1, shift_var=1):
     """randomly embedded Gaussians"""
     np.random.seed()
     result = np.empty((1, extrinsic))
 
     for i in range(centers):
-        gauss = gauss_test([N], intrinsic, 1, [1])
+        gauss = gauss_test([N], d=intrinsic, m=1, stdev=[1])
         gauss -= gauss.min(0)
         gauss /= gauss.max()
+        #print(gauss)
 
-        embedding = random_embedding(gauss, shift_var=10, extrinsic =100)
+        embedding = random_embedding(gauss, shift_var=shift_var, extrinsic=extrinsic)
         result = numpy.concatenate((result, embedding), axis=0)
 
     return(result)
@@ -51,9 +52,11 @@ def multi_gauss(N=1000, centers=1, intrinsic = 2, extrinsic=100, var = 1, shift_
 
 if __name__ == '__main__':
     multi = multi_gauss(N=1000, centers=10)
-    # test_gridSizes(multi, sampler = 'PCALSH', seeds=1, filename='PCALSH_multigauss')
+    print(multi.shape)
+    print(multi)
+    # test_gridSizes(multi, sampler = 'PCALSH', seeds=1, filename='PCALSH_multigauss', sizes=np.arange(0.2, 0, -0.002))
 
-    test_gridSizes(multi, sampler = 'gridLSH', seeds=1, filename='gridLSH_multigauss')
+    test_gridSizes(multi, sampler = 'gridLSH', sizes=np.arange(0.2, 0, -0.002), seeds=1, filename='gridLSH_multigauss')
     #experiment_1(sampler = 'gridLSH', seeds=5)
 
 
