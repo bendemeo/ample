@@ -43,7 +43,7 @@ class vpNode:
 class vpTree:
     def __init__(self, data):
         self.data = data
-        self.tree = vpTree.buildTree(data, range(self.data.shape[0]))
+        self.tree = vpTree.buildTree(data, list(range(self.data.shape[0])))
 
     @staticmethod
     def buildTree(data, inds):
