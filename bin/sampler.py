@@ -257,14 +257,14 @@ class neighborhoodSampler(sampler):
             self.count += 1
 
             toRemove = self.findCandidates(next)
-            print(len(toRemove))
-            print(len(self.available))
+            print('removed {}'.format(len(toRemove)))
+
             for i in toRemove:
                 self.included[i] = False
 
             self.available = list(itertools.compress(range(self.numObs), self.included))
 
-            print(len(self.available))
+            print('{} left'.format(len(self.available)))
         if not self.reset:
             self.remnants = len(self.available)
         else:

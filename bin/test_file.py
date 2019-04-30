@@ -157,7 +157,7 @@ def get_cmap(n, name='hsv'):
 if __name__ == '__main__':
 
     np.random.seed()
-    gauss = gauss_test([10000]*5, 2, 5, [.1,.1,.1,.1,.1])
+    gauss = gauss_test([10000], 2, 1, [1])
     gauss -= gauss.min(0)
     gauss /= gauss.max()
 
@@ -169,17 +169,17 @@ if __name__ == '__main__':
 
 
     tree = vpTree(gauss)
-    #print(tree.tree.tostr())
+    print(tree.tree.tostr())
 
-    query = [0.2,0,0.1]
+    query = [0.5,0.5]
 
-    print(sorted(tree.NNSearch(query, 0.1)))
+    print(sorted(tree.NNSearch(query, .01)))
 
 
     nns = []
     for i in range(gauss.shape[0]):
         norm = np.linalg.norm(gauss[i,:]-query)
-        if norm <= .3:
+        if norm <= .01:
             nns += [i]
 
     print(sorted(nns))

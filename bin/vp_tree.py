@@ -20,18 +20,20 @@ from scanorama import *
 
 
 class vpNode:
-    def __init__(self, vp, rad, left, right, ind, leaf=False):
+    def __init__(self, vp=None, rad=None, left=None, right=None, ind=None, parent=None, leaf=False):
         self.vp = vp
         self.ind = ind #index in global data
         self.rad = rad
         self.left = left
         self.right = right
         self.leaf = leaf
+        self.parent = parent
+        self.visited = False
 
     def tostr(self):
 
         if self.leaf:
-            return(str(self.ind))
+            return('END')
         else:
             result = str(self.ind) + ', ['
             result += self.left.tostr() + ', '
@@ -40,10 +42,22 @@ class vpNode:
 
         return(result)
 
+    def prune(self):
+        if self.leaf:
+            print("tried to prune leaf node")
+        elif self.left.leaf and self.right.leaf:
+            self.leaf = True
+            if self.parent is not None and self.parent.visited:
+                self.parent.prune()
+
 class vpTree:
     def __init__(self, data):
         self.data = data
+        t0 = time()
+        print('building tree...')
         self.tree = vpTree.buildTree(data, list(range(self.data.shape[0])))
+        t1 = time()
+        print('built tree in {} seconds'.format(t1-t0))
 
     @staticmethod
     def buildTree(data, inds):
@@ -51,9 +65,12 @@ class vpTree:
 
         numObs, numFeatures = data.shape
         if numObs == 0:
-            return vpNode(None, None, None, None, None, leaf=True)
+            return vpNode(leaf=True)
         if numObs == 1:
-            return vpNode(data[0,:], None, None, None, inds[0], leaf=True)
+            return vpNode(data[0,:], rad=None,
+                          left=vpNode(leaf=True),
+                          right=vpNode(leaf=True),
+                          ind=inds[0])
         else:
             vp_ind = np.random.choice(range(numObs), 1)[0]
             # print(vp_ind)
@@ -64,7 +81,6 @@ class vpTree:
 
             #remove it from data
             data = np.delete(data, (vp_ind), axis=0)
-
             del inds[vp_ind]
 
             dists = euclidean_distances(vp, data)[0,:]
@@ -91,10 +107,14 @@ class vpTree:
             left_child = vpTree.buildTree(left_data, left_inds)
             right_child = vpTree.buildTree(right_data, right_inds)
 
-            return(vpNode(vp, rad, left_child, right_child, ind))
+            result = vpNode(vp, rad, left_child, right_child, ind)
+            left_child.parent = result
+            right_child.parent = result
+
+            return(result)
 
 
-    def NNSearch(self, query, rad):
+    def NNSearch(self, query, rad, prune = True):
         query = np.array(query)
         toSearch = [self.tree]
 
@@ -102,24 +122,27 @@ class vpTree:
 
         while(len(toSearch) > 0):
             currentNode = toSearch.pop(0)
-            if currentNode is None or currentNode.vp is None:
-                #reached leaf node, we're done.
+            if(currentNode.leaf):
                 continue
-            # if currentNode.leaf:
-            #     result = result + [currentNode.ind]
-            #     continue
-
 
             dist = np.linalg.norm(query-currentNode.vp)
 
             if dist <= rad:
-                result = result + [currentNode.ind]
+                if not currentNode.visited:
+                    result = result + [currentNode.ind]
+
+                currentNode.visited = True
+
+                if prune:
+                    currentNode.prune()
+
 
             if currentNode.rad is not None:
                 if dist <= currentNode.rad + rad:
                     toSearch = toSearch + [currentNode.left]
 
-                if dist >= currentNode.rad - rad:
+                if dist > currentNode.rad - rad:
                     toSearch = toSearch + [currentNode.right]
 
+        #print(self.tree.tostr())
         return(result)

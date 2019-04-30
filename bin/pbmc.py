@@ -90,7 +90,7 @@ if __name__ == '__main__':
     filename = 'pbmc_vp_tests'
     picklename = None
 
-    iter = 1
+    iter = 2
     testParams = {
         'radius':np.arange(1,0.01,-0.01).tolist()*3
     }
