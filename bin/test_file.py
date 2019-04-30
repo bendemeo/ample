@@ -157,12 +157,12 @@ def get_cmap(n, name='hsv'):
 if __name__ == '__main__':
 
     np.random.seed()
-    gauss = gauss_test([10000], 2, 1, [1])
+    gauss = gauss_test([50000], 100, 1, [1])
     gauss -= gauss.min(0)
     gauss /= gauss.max()
 
 
-    sampler = vpSampler(gauss, 0.01)
+    sampler = vpSampler(gauss, 0.4)
     sampler.downsample('auto')
     sampler.vizSample(full=True)
 

@@ -10,6 +10,7 @@ soft_slow = fread('target/experiments/pbmc_softGrid_tests_backup.txt')
 fast_ball = fread('target/experiments/pbmc_fastBall_tests_backup.txt')
 slow_ball = fread('target/experiments/pbmc_slowBall_tests_backup.txt')
 gs = fread('target/experiments/pbmc_gsLSH_tests_backup.txt')
+vp = fread('target/experiments/pbmc_vp_tests_backup.txt')
 
 ##### transform and combine ######
 
@@ -29,6 +30,10 @@ fast_ball$lastCounts = as.numeric(fast_ball$lastCounts)
 slow_ball$lastCounts = gsub("\\[|\\]", "", slow_ball$lastCounts)
 slow_ball$lastCounts = as.numeric(slow_ball$lastCounts)
 
+vp$lastCounts = gsub("\\[|\\]", "", vp$lastCounts)
+vp$lastCounts = as.numeric(vp$lastCounts)
+
+
 
 # add method column
 soft_slow$method = rep('exhaustive', nrow(soft_slow))
@@ -36,11 +41,13 @@ soft_fast$method = rep('trie', nrow(soft_fast))
 fast_ball$method = rep('Fastball', nrow(fast_ball))
 gs$method = rep("geometric sketching", nrow(gs))
 slow_ball$method = rep('Slowball', nrow(slow_ball))
+vp$method = rep('vp', nrow(vp))
 
 #delete unnecessary columns and rename cols as necessary
 gs = gs[,-6]
 fast_ball = fast_ball[,-6]
 colnames(slow_ball)[5] <- "gridSize"
+colnames(vp)[5] <- "gridSize"
 
 
 #combine data

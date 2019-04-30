@@ -119,12 +119,14 @@ class vpTree:
         toSearch = [self.tree]
 
         result = []
+        searched = 0
 
         while(len(toSearch) > 0):
             currentNode = toSearch.pop(0)
             if(currentNode.leaf):
                 continue
 
+            searched += 1
             dist = np.linalg.norm(query-currentNode.vp)
 
             if dist <= rad:
@@ -145,4 +147,5 @@ class vpTree:
                     toSearch = toSearch + [currentNode.right]
 
         #print(self.tree.tostr())
+        print('{} nodes searched'.format(searched))
         return(result)

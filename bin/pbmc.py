@@ -92,7 +92,7 @@ if __name__ == '__main__':
 
     iter = 2
     testParams = {
-        'radius':np.arange(1,0.01,-0.01).tolist()*3
+        'radius':np.arange(.4,0.01,-0.01).tolist()*3
     }
 
     tests = ['time','max_min_dist',
