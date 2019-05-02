@@ -80,6 +80,10 @@ if __name__ == '__main__':
     cell_names = sorted(set(labels))
     cell_labels = le.transform(labels)
 
+    labels = labels[valid_idx]
+    print(len(labels))
+    print(labels.shape)
+
 
     print(X_dimred.shape)
 

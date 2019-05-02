@@ -22,6 +22,7 @@ pbmc_gs$method = rep('gsLSH', nrow(pbmc_gs))
 pbmc_pcalsh$method = rep('pcaLSH', nrow(pbmc_pcalsh))
 
 
+
 multigauss_pcalsh = fread('target/experiments/PCALSH_multigauss_PCALSH_gridTest.txt.1')
 multigauss_gridlsh = fread('target/experiments/gridLSH_multigauss_gridLSH_gridTest.txt.1')
 
@@ -31,6 +32,24 @@ multigauss_gridlsh$method = rep('gridLSH', nrow(multigauss_gridlsh))
 gauss_all = rbind(gauss_pcalsh, gauss_grid)
 multigauss_all = rbind(multigauss_pcalsh, multigauss_gridlsh)
 pbmc_all = rbind(pbmc_gs, pbmc_pcalsh)
+
+
+cell_types = c("CD14+_Monocyte","CD19+_B","CD4+/CD25_T_Reg",
+               "CD4+/CD45RA+/CD25-_Naive_T","CD4+/CD45RO+_Memory",
+               "CD4+_T_Helper2","CD56+_NK","CD8+/CD45RA+_Naive_Cytotoxic",
+               "CD8+_Cytotoxic_T","Dendritic")
+
+cell_counts = c(3817,3306,2812,3126,5859,11445,14112,21975,1865,262)
+
+c = colnames(pbmc_all)
+pbmc_all=data.frame(pbmc_all)
+colnames(pbmc_all)=c
+for(i in 1:length(cell_counts)){
+  col = which(colnames(pbmc_all) == cell_types[i])[1]
+  pbmc_all[,col]= pbmc_all[,col] / cell_counts[i]
+}
+
+
 
 
 ###### Single Gaussian ######
@@ -78,10 +97,7 @@ multigauss_all %>%
   geom_line(aes(color=method))
 
 
-cell_types = c("CD14+_Monocyte","CD19+_B","CD4+/CD25_T_Reg",
-               "CD4+/CD45RA+/CD25-_Naive_T","CD4+/CD45RO+_Memory",
-               "CD4+_T_Helper2","CD56+_NK","CD8+/CD45RA+_Naive_Cytotoxic",
-               "CD8+_Cytotoxic_T","Dendritic")
+
 
 pbmc_clusts = melt(pbmc_all, id.vars=c("max_min_dist","time","occSquares","gridSize", "N", "method"), 
           measure.vars = cell_types)
@@ -115,7 +131,7 @@ pbmc_clusts %>% filter(method == 'pcaLSH') %>%
   facet_wrap(~variable)+
   geom_line()
 
-pbmc_clusts %>% filter(method == 'gsLSH') %>%
-  ggplot(aes(x=occSquares, y=value, color=variable))+
+pbmc_clusts %>% 
+  ggplot(aes(x=occSquares, y=value, color=method))+
   facet_wrap(~variable)+
   geom_line()
