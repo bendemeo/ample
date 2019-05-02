@@ -91,8 +91,7 @@ if __name__ == '__main__':
             else:
                 freq[item] = 1
 
-        for key, value in freq.items():
-            print ("% d : % d"%(key, value))
+        print(freq)
 
     CountFrequency(labels)
 
