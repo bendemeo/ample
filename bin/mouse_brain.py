@@ -82,7 +82,7 @@ if __name__ == '__main__':
 
     downsampler = PCALSH(X_dimred, alpha=0.5, gridSize = 0.2)
 
-    experiment(downsampler, X_dimred, NAMESPACE+'_PCALSH', cell_labels=cell_labels,
+    experiment(downsampler, X_dimred, NAMESPACE, cell_labels=cell_labels,
     gene_names=viz_genes, genes=genes,
     gene_expr=vstack(datasets),
     kmeans=False,
