@@ -84,9 +84,6 @@ if __name__ == '__main__':
     print(X_dimred.shape)
 
     downsampler = PCALSH(X_dimred, alpha=0.5, gridSize = 0.2)
-    print('trying a downsample')
-    downsampler.downsample(1000)
-    print('dowsampling done')
 
 
 
