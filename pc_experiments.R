@@ -74,7 +74,7 @@ multigauss_all %>%
 
 #sample size vs time: fairly comparable. Theoretical analysis needed.
 multigauss_all %>%
-  ggplot(aes(x=occSquares, y=time))+
+  ggplot(aes(x=gridSize, y=time))+
   geom_line(aes(color=method))
 
 
@@ -87,18 +87,24 @@ pbmc_clusts = melt(pbmc_all, id.vars=c("max_min_dist","time","occSquares","gridS
           measure.vars = cell_types)
 
 ###### PBMC #######
-pbmc_all %>% filter(max_min_dist<2, occSquares < 10000) %>%
+pbmc_3 = pbmc_all %>% filter(max_min_dist<2, occSquares < 2000) %>%
   group_by(occSquares, method) %>%
   summarize(max_min_dist = mean(max_min_dist)) %>%
   ggplot(aes(x=occSquares, y=max_min_dist))+
   geom_line(aes(color=method))
 
 # grid size vs. number occupied squares: PCALSH uses grid squares better, also smoother.
-pbmc_all %>%
+pbmc_1 = pbmc_all %>%
+  filter(occSquares > 50) %>%
   ggplot(aes(x=gridSize, y=occSquares))+
-  geom_line(aes(color=method))
+  geom_line(aes(color=method))+
+  xlab("Box side length")+
+  ylab("Boxes used in cover")+
+  scale_color_discrete(name='Covering Method', labels=c("Plaid Covering", "Learned Covers"))
+  
 
-pbmc_all %>%
+pbmc_2 = pbmc_all %>% group_by(occSquares, method) %>%
+  summarize(time= mean(time)) %>%
   ggplot(aes(x=occSquares, y=time))+
   geom_line(aes(color=method))
 

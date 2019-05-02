@@ -82,6 +82,21 @@ if __name__ == '__main__':
     le = LabelEncoder().fit(labels)
     cell_labels = le.transform(labels)
 
+    def CountFrequency(my_list):
+        # Creating an empty dictionary
+        freq = {}
+        for item in my_list:
+            if (item in freq):
+                freq[item] += 1
+            else:
+                freq[item] = 1
+
+        for key, value in freq.items():
+            print ("% d : % d"%(key, value))
+
+    CountFrequency(cell_labels)
+
+
 
     viz_genes = []
     genes = []
