@@ -94,7 +94,7 @@ if __name__ == '__main__':
         for key, value in freq.items():
             print ("% d : % d"%(key, value))
 
-    CountFrequency(cell_labels)
+    CountFrequency(labels)
 
 
 
