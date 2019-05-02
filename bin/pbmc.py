@@ -101,9 +101,7 @@ if __name__ == '__main__':
     genes = []
 
 
-
-
-    filename = 'pbmc_dpp_subsample'
+    filename = 'pbmc_PCALSH_subsample'
     downsampler = PCALSH(X_dimred, gridSize=0.1)
 
     experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels=cell_labels,
