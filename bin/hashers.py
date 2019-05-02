@@ -206,6 +206,7 @@ class PCALSH(LSH):
             self.optimize_grid(target=sampleSize)
 
         LSH.downsample(self, sampleSize, replace)
+        return(self.sample)
 
 
 class trieNode:
