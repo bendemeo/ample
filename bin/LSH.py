@@ -60,7 +60,7 @@ class LSH(sampler):
             self.embedding = self.data
             self.embeddingInds=range(self.numObs)
         elif self.embedding is None:
-            tsne = sk.manifold.TSNE(**kwargs)
+            tsne = sk.manifold.TSNE()
 
             if self.numObs > maxPoints:
                 self.embeddingInds = np.random.choice(self.numObs, maxPoints, replace=False)
@@ -76,7 +76,7 @@ class LSH(sampler):
             log('too many hashes to vizualize; visualiing only first hash')
 
         cols = self.hash[self.embeddingInds,0]
-        mpl.scatter(self.embedding[:, 0], self.embedding[:,1], c=cols)
+        mpl.scatter(self.embedding[:, 0], self.embedding[:,1], c=cols, **kwargs)
         if(anno):
             for i, h in enumerate(self.hash[self.embeddingInds,0]):
                 mpl.annotate(int(h), (self.embedding[self.embeddingInds[i],0],
@@ -236,6 +236,8 @@ class LSH(sampler):
             self.makeFinder()
 
 
+        print('starting sampling')
+
         available = range(self.numObs)
         included = [True] * self.numObs # all indices available
         sample = []
@@ -251,7 +253,7 @@ class LSH(sampler):
             if len(available) == 0:  # reset available if not enough
                 reset = True
 
-                #log("sampled {} out of {} before reset".format(count, sampleSize))
+                print("sampled {} out of {} before reset".format(count, sampleSize))
                 if(self.keepStats):
                     self.lastCounts.append(count)
 
@@ -275,9 +277,12 @@ class LSH(sampler):
             #
             # print('available left')
             # print(len(available))
+
             next = numpy.random.choice(available)
             sample.append(next)
             valid_sample[next] = False
+
+            #print('new point')
 
             if (sampleSize != 'auto') and (len(sample) >= sampleSize):
                 break
@@ -330,7 +335,7 @@ class LSH(sampler):
             print('target: {}'.format(self.target))
         cur_val = getattr(self, param)
 
-        subsample = self.downSample(sampleSize='auto') #sample until exhausted
+        subsample = self.downsample(sampleSize='auto') #sample until exhausted
         counts = self.getMaxCounts()
 
         iter = 1

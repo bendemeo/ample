@@ -80,6 +80,15 @@ if __name__ == '__main__':
     cell_names = sorted(set(labels))
     cell_labels = le.transform(labels)
 
+    downsampler = PCALSH(X_dimred, alpha=0.5, gridSize = 0.2)
+
+    experiment(downsampler, X_dimred, NAMESPACE+'_PCALSH', cell_labels=cell_labels,
+    gene_names=viz_genes, genes=genes,
+    gene_expr=vstack(datasets),
+    kmeans=False,
+    visualize_orig=False,
+    sample_type='PCALSH',
+    lsh=True, optimize_grid_size=False)
     #
     # sampler = 'centerSampler'
     # filename = 'mouse_brain_centerSamplerTest'
@@ -109,15 +118,15 @@ if __name__ == '__main__':
 
 
 
-    downsampler = softGridSampler(X_dimred, alpha=0.1, gridSize = 0.2, opt_grid=True)
-
-    experiment(downsampler, X_dimred, NAMESPACE, cell_labels=cell_labels,
-    gene_names=viz_genes, genes=genes,
-    gene_expr=vstack(datasets),
-    kmeans=False,
-    visualize_orig=False,
-    sample_type='softGridLSH',
-    lsh=True, optimize_grid_size=False)
+    #
+    #
+    # experiment(downsampler, X_dimred, NAMESPACE, cell_labels=cell_labels,
+    # gene_names=viz_genes, genes=genes,
+    # gene_expr=vstack(datasets),
+    # kmeans=False,
+    # visualize_orig=False,
+    # sample_type='softGridLSH',
+    # lsh=True, optimize_grid_size=False)
 
     # downsampler = randomGridLSH(X_dimred, 0.01, 7, 2,3)
     # downsampler = cosineLSH(X_dimred,

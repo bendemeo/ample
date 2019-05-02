@@ -37,7 +37,7 @@ class vpSampler(neighborhoodSampler):
 
 class PCALSH(LSH):
     #builds hashes using PCA-created grids.
-    def __init__(self, data, gridSize, replace=False):
+    def __init__(self, data, gridSize, replace=False, target='N', alpha=0.05, max_iter=200):
         numBands=1
         bandSize=1
         numHashes=1
@@ -47,21 +47,24 @@ class PCALSH(LSH):
 
         self.gridSize=gridSize
         self.occSquares = None
+        self.alpha = alpha
+        self.max_iter=max_iter
         #self.data = normalize(self.data) # move mean to zero, for PCA
 
     def makeHash(self):
+        print(self.gridSize)
         hashes = np.empty((self.numObs,1))
 
-        X = self.data - self.data.min(0)
-        X /= X.max()
+        X = deepcopy(self.data) #need to copy, otherwise data projects itself permanently
 
 
-        print('old X: {}'.format(X[:10,0]))
+        #print('old X: {}'.format(X[:10,0]))
         start_table = {():range(X.shape[0])}
         cur_table = start_table
 
         leaf = {h:False for h in cur_table.keys()}
         for i in range(self.numFeatures):
+            #print('updating... {}'.format(i))
             #print(cur_table)
             cur_table, leaf = self.update(cur_table, X, leaf)
 
@@ -76,6 +79,8 @@ class PCALSH(LSH):
             for idx in grid[keys[square]]:
                 hashes[idx, 0] = square
 
+        #print('finished making hashes')
+        print(hashes)
         self.hash = hashes
 
 
@@ -131,11 +136,76 @@ class PCALSH(LSH):
         return [new_table, new_leaf]
 
 
+    def optimize_grid(self, target):
+        data_ptp=self.data.ptp(0)
+        low_unit, high_unit = 0., max(data_ptp)
 
+        self.gridSize = (low_unit + high_unit) / 4.
+
+        verbose=4
+        n_iter = 0
+        while True:
+            if self.verbose > 1:
+                print('n_iter = {}'.format(n_iter))
+
+            print('downsampling with grid size {}'.format(self.gridSize))
+            self.downsample('auto')
+
+            print('finished downsampling')
+
+            curSize = len(self.sample)
+
+            if self.verbose:
+                print('sampled {}'.format(curSize))
+
+            if curSize > target * (1 + self.alpha):
+                # too big, increase grid size
+                low_unit = self.gridSize
+                if high_unit is None:
+                    self.gridSize *= 2.
+                else:
+                    self.gridSize= (self.gridSize + high_unit) / 2.
+
+                if verbose:
+                    log('Grid size {}, increase scale to {}'
+                        .format(curSize, self.gridSize))
+
+            elif curSize < target / (1 + self.alpha):
+                # Too small, decrease grid size.
+                high_unit = self.gridSize
+                if low_unit is None:
+                    self.gridSize /= 2.
+                else:
+                    self.gridSize = (self.gridSize + low_unit) / 2.
+
+                if self.verbose:
+                    log('Grid size {}, decrease unit to {}'
+                        .format(curSize, self.gridSize))
+            else:
+                break
+
+            print('hashing... grid size {}'.format(self.gridSize))
+            self.makeHash()
+            self.makeFinder()
+
+
+            if high_unit is not None and low_unit is not None and \
+               high_unit - low_unit < 1e-20:
+                break
+
+            if n_iter >= self.max_iter:
+                # Should rarely get here.
+                sys.stderr.write('WARNING: Max iterations reached, try increasing alpha parameter.\n')
+                break
+            n_iter += 1
         #project data orthogonally to PC
 
+    def downsample(self, sampleSize, replace=False):
+        if sampleSize != 'auto':
+            #binary search to make the grid the right size
+            self.optimize_grid(target=sampleSize)
 
-
+        LSH.downsample(self, sampleSize, replace)
 
 
 class trieNode:
@@ -2186,6 +2256,7 @@ class gsLSH(LSH):
 
         if self.gridSize is None:
             self.gridSize = (low_unit + high_unit) / 4
+
 
         unit = self.gridSize
 

@@ -54,10 +54,10 @@ class vpTree:
     def __init__(self, data):
         self.data = data
         t0 = time()
-        print('building tree...')
+        #print('building tree...')
         self.tree = vpTree.buildTree(data, list(range(self.data.shape[0])))
         t1 = time()
-        print('built tree in {} seconds'.format(t1-t0))
+        #print('built tree in {} seconds'.format(t1-t0))
 
     @staticmethod
     def buildTree(data, inds):
@@ -114,7 +114,7 @@ class vpTree:
             return(result)
 
 
-    def NNSearch(self, query, rad, prune = True):
+    def NNSearch(self, query, rad, prune = True, nearest = False):
         query = np.array(query)
         toSearch = [self.tree]
 
@@ -132,6 +132,9 @@ class vpTree:
             if dist <= rad:
                 if not currentNode.visited:
                     result = result + [currentNode.ind]
+                if nearest:
+                    result = [currentNode.ind]
+                    rad = dist
 
                 currentNode.visited = True
 
@@ -148,4 +151,5 @@ class vpTree:
 
         #print(self.tree.tostr())
         print('{} nodes searched'.format(searched))
+        print('{} nodes returned'.format(len(result)))
         return(result)

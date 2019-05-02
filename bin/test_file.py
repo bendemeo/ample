@@ -26,8 +26,8 @@ def gauss_test(n=[100], d=1, m=1, stdev=[1]):
     result = numpy.random.randn(0, d)
     centers = numpy.random.normal(0*d, 10, [m, d])
     for i in range(len(centers)):
-        print(n[i])
-        print(d)
+        # print(n[i])
+        # print(d)
         c = centers[i]
         result = numpy.concatenate((result,
                                     numpy.random.normal(c, stdev[i], (n[i], d))),
@@ -68,15 +68,15 @@ def random_embedding(data, shift_var=10, extrinsic = 100):
     basis = rvs(dim = extrinsic)
     subspace = basis[:, numpy.random.choice(extrinsic, size=data.shape[1], replace=False)]
 
-    print('norms...')
-    print(np.linalg.norm(subspace[:,0]))
-    print(np.linalg.norm(subspace[:,1]))
+    # print('norms...')
+    # print(np.linalg.norm(subspace[:,0]))
+    # print(np.linalg.norm(subspace[:,1]))
     embedded = np.matmul(data, np.transpose(subspace))
 
     shift = np.random.normal(0,shift_var, extrinsic)
-    print(np.mean(embedded[:,0]))
-    print(np.mean(embedded[:,1]))
-    print(np.mean(embedded))
+    # print(np.mean(embedded[:,0]))
+    # print(np.mean(embedded[:,1]))
+    # print(np.mean(embedded))
 
     for i in range(embedded.shape[0]):
         embedded[i,:] = embedded[i,:]+shift
@@ -157,62 +157,63 @@ def get_cmap(n, name='hsv'):
 if __name__ == '__main__':
 
     np.random.seed()
-    gauss = gauss_test([50000], 100, 1, [1])
+    gauss = gauss_test([5000], 2, 1, [1])
     gauss -= gauss.min(0)
     gauss /= gauss.max()
 
-
-    sampler = vpSampler(gauss, 0.4)
-    sampler.downsample('auto')
-    sampler.vizSample(full=True)
-
-
-
-    tree = vpTree(gauss)
-    print(tree.tree.tostr())
-
-    query = [0.5,0.5]
-
-    print(sorted(tree.NNSearch(query, .01)))
-
-
-    nns = []
-    for i in range(gauss.shape[0]):
-        norm = np.linalg.norm(gauss[i,:]-query)
-        if norm <= .01:
-            nns += [i]
-
-    print(sorted(nns))
-
-
-
-
-
-
-
     #
-    # embedding = random_embedding(gauss, shift_var=10, extrinsic =100)
-    # print('mean norm...')
-    # print(np.mean(np.linalg.norm(embedding, axis=1)))
-    # print(np.mean(np.linalg.norm(gauss, axis=1)))
+    # sampler = vpSampler(gauss, 0.1)
+    # sampler.downsample('auto')
+    # sampler.vizSample(full=True)
     #
-    # tester = PCALSH(embedding, gridSize=0.1)
-    # tester.makeHash()
-    # #print(tester.hash)
     #
-    # tester.data = gauss
-    # tester.numFeatures = 2
     #
-    # tester.vizHash()
-    # print(tester.occSquares)
+    # tree = vpTree(gauss)
+    # print(tree.tree.tostr())
     #
-    # gridTester = gridLSH(embedding, gridSize=0.1)
-    # gridTester.makeHash()
-    # gridTester.data = gauss
-    # gridTester.numFeatures = 2
-    # gridTester.vizHash()
+    # query = [0.5,0.5]
     #
-    # print(gridTester.occSquares)
+    # print(sorted(tree.NNSearch(query, .01)))
+    #
+    #
+    # nns = []
+    # for i in range(gauss.shape[0]):
+    #     norm = np.linalg.norm(gauss[i,:]-query)
+    #     if norm <= .01:
+    #         nns += [i]
+    #
+    # print(sorted(nns))
+
+
+
+
+
+
+
+
+    embedding = random_embedding(gauss, shift_var=10, extrinsic =100)
+
+    tester = PCALSH(embedding, gridSize=0.296, target=1000)
+    tester.downsample(1000)
+    tester.data = gauss
+    tester.numFeatures=2
+    tester.vizSample(full=True)
+    # tester.downsample(1000)
+    #print(tester.hash)
+
+    tester.data = gauss
+    tester.numFeatures = 2
+
+    tester.vizHash()
+    print(tester.occSquares)
+
+    gridTester = gridLSH(embedding, gridSize=0.1)
+    gridTester.makeHash()
+    gridTester.data = gauss
+    gridTester.numFeatures = 2
+    gridTester.vizHash()
+
+    print(gridTester.occSquares)
 
     # start_table = {():range(gauss.shape[0])}
     #
