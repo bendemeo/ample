@@ -100,34 +100,49 @@ if __name__ == '__main__':
     viz_genes = []
     genes = []
 
-    sampler = 'vpSampler'
-    filename = 'pbmc_vp_tests'
-    picklename = None
-
-    iter = 2
-    testParams = {
-        'radius':np.arange(.4,0.01,-0.01).tolist()*3
-    }
-
-    tests = ['time','max_min_dist',
-              'cluster_counts',
-              'lastCounts']
 
 
-    testResults = try_params(X_dimred, sampler,
-                                  params=testParams,
-                                  tests=tests,
-                                  n_seeds=1,
-                                  cell_labels=cell_labels,
-                                  Ns=['auto'],
-                                  cluster_labels = labels,
-                                  backup=filename+'_backup',
-                                  picklename = picklename)
 
-    # with open("gsLSH_gridTest.file", "wb") as f:
-    #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
+    filename = 'pbmc_dpp_subsample'
+    downsampler = PCALSH(X_dimred, gridSize=0.1)
 
-    testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+    experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels=cell_labels,
+        gene_names=viz_genes, genes=genes,
+        kmeans=False,
+        visualize_orig=False,
+        sample_type='dpp',
+        lsh=True)
+
+
+    #
+    # sampler = 'vpSampler'
+    # filename = 'pbmc_vp_tests'
+    # picklename = None
+    #
+    # iter = 2
+    # testParams = {
+    #     'radius':np.arange(.4,0.01,-0.01).tolist()*3
+    # }
+    #
+    # tests = ['time','max_min_dist',
+    #           'cluster_counts',
+    #           'lastCounts']
+    #
+    #
+    # testResults = try_params(X_dimred, sampler,
+    #                               params=testParams,
+    #                               tests=tests,
+    #                               n_seeds=1,
+    #                               cell_labels=cell_labels,
+    #                               Ns=['auto'],
+    #                               cluster_labels = labels,
+    #                               backup=filename+'_backup',
+    #                               picklename = picklename)
+    #
+    # # with open("gsLSH_gridTest.file", "wb") as f:
+    # #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
+    #
+    # testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
     # sampler = 'PCALSH'
@@ -154,15 +169,15 @@ if __name__ == '__main__':
 
 
     #
-    # filename = 'pbmc_dpp_subsample'
-    # downsampler = dpp(X_dimred, steps=100000)
-    #
-    # experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels=cell_labels,
-    #     gene_names=viz_genes, genes=genes,
-    #     kmeans=False,
-    #     visualize_orig=False,
-    #     sample_type='dpp',
-    #     lsh=True)
+    filename = 'pbmc_dpp_subsample'
+    downsampler = dpp(X_dimred, steps=100000)
+
+    experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels=cell_labels,
+        gene_names=viz_genes, genes=genes,
+        kmeans=False,
+        visualize_orig=False,
+        sample_type='dpp',
+        lsh=True)
 
     # sampler = 'gsLSH'
     # filename = 'pbmc_gsLSH_tests'
