@@ -76,18 +76,12 @@ if __name__ == '__main__':
         open('data/cell_labels/mouse_brain_cluster.txt')
         .read().rstrip().split('\n')
     )
+
     print(len(labels))
-    print(labels.shape)
-
-
-    labels = labels[valid_idx]
 
     le = LabelEncoder().fit(labels)
     cell_names = sorted(set(labels))
     cell_labels = le.transform(labels)
-
-    labels = labels[valid_idx]
-
 
     print(X_dimred.shape)
 
