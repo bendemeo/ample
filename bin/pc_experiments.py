@@ -56,8 +56,31 @@ if __name__ == '__main__':
     gridSize=0.01
     X = multi_gauss(N, centers=50, intrinsic=2, extrinsic=100, var=1, shift_var=2)
 
-    sampler = 'PCALSH'
-    filename = 'PCALSH_multigauss_hausdorff'
+    # sampler = 'PCALSH'
+    # filename = 'PCALSH_multigauss_hausdorff'
+    #
+    # testParams = {
+    #     'gridSize':np.arange(1, 0.5, -0.1).tolist()+np.arange(0.4,0.3, -0.05).tolist()+np.arange(0.3, 0.01, -0.01).tolist()
+    # }
+    # tests = ['time','max_min_dist','occSquares']
+    #
+    # testResults = try_params(X, sampler,
+    #                               params=testParams,
+    #                               tests=tests,
+    #                               n_seeds=10,
+    #                               Ns=['auto'],
+    #                               backup=filename+'_backup')
+    #
+    #
+    #
+    # testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+    #
+    # N=5000
+    # gridSize=0.01
+    # X = multi_gauss(N, centers=50, intrinsic=2, extrinsic=100, var=1, shift_var=2)
+
+    sampler = 'gsLSH'
+    filename = 'gsLSH_multigauss_hausdorff'
 
     testParams = {
         'gridSize':np.arange(1, 0.5, -0.1).tolist()+np.arange(0.4,0.3, -0.05).tolist()+np.arange(0.3, 0.01, -0.01).tolist()
@@ -74,8 +97,6 @@ if __name__ == '__main__':
 
 
     testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
-
-
     #
     # N=5000
     # gridSize=0.01
