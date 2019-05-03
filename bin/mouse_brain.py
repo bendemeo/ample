@@ -89,7 +89,6 @@ if __name__ == '__main__':
     downsampler = gsLSH(X_dimred, alpha=0.2, gridSize = 0.2, opt_grid=True)
 
 
-
     experiment(downsampler, X_dimred, NAMESPACE, cell_labels=cell_labels,
     gene_names=viz_genes, genes=genes,
     gene_expr=vstack(datasets),
