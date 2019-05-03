@@ -61,7 +61,7 @@ if __name__ == '__main__':
             normalize(X), method=METHOD, dimred=DIMRED
         )
         log('Dimensionality = {}'.format(X_dimred.shape[1]))
-        np.savetxt('data/dimred/{}_{}.txt'.format(METHOD, NAMESPACE), X_dimred)
+        np.savetxt('dimred/{}_{}.txt'.format(METHOD, NAMESPACE), X_dimred)
     else:
         X_dimred = np.loadtxt('dimred/{}_{}.txt'.format(METHOD, NAMESPACE))
 
