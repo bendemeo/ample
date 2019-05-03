@@ -228,7 +228,7 @@ class LSH(sampler):
 
         if self.target == 'N':
             self.target = sampleSize
-
+        self.target = sampleSize
 
         if self.hash is None:
             self.makeHash()
@@ -283,7 +283,7 @@ class LSH(sampler):
             valid_sample[next] = False
 
             print(self.target)
-            if len(sample) > self.target * 1.2:
+            if len(sample) > (self.target * 1.2):
                 print('sample got too big, so stopped the process')
                 self.sample = sorted(numpy.unique(sample))
                 return(self.sample)
