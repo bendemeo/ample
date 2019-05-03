@@ -67,7 +67,7 @@ if __name__ == '__main__':
     testResults = try_params(X, sampler,
                                   params=testParams,
                                   tests=tests,
-                                  n_seeds=10,
+                                  n_seeds=5,
                                   Ns=['auto'],
                                   backup=filename+'_backup')
 
