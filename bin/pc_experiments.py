@@ -84,7 +84,7 @@ if __name__ == '__main__':
 
     testParams = {
         'gridSize':np.arange(1, 0.5, -0.1).tolist()+np.arange(0.4,0.3, -0.05).tolist()+np.arange(0.3, 0.01, -0.01).tolist(),
-        'opt_grid': False
+        'opt_grid': [False]
     }
     tests = ['time','max_min_dist','occSquares']
 
