@@ -2260,7 +2260,7 @@ class gsLSH(LSH):
 
         X_ptp = X.ptp(0)  # list of ranges for each feature
 
-        low_unit, high_unit = 0.28685, 0.3
+        low_unit, high_unit = 0., max(X_ptp)
 
         if self.gridSize is None:
             self.gridSize = (low_unit + high_unit) / 4

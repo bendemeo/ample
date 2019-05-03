@@ -86,18 +86,42 @@ if __name__ == '__main__':
 
     print(X_dimred.shape)
 
-    downsampler = PCALSH(X_dimred, alpha=0.01, gridSize = 0.2)
+
+    sampler = 'PCALSH'
+    filename = 'mouse_brain_PCALSH_hausdorff'
+    iter = 1
+    testParams = {
+        'gridSize':np.arange(1, 0.01,-0.05).tolist()
+    }
+
+    tests = ['time','max_min_dist',
+              'cluster_counts', 'occSquares']
+
+    testResults = try_params(X_dimred, sampler,
+                                  params=testParams,
+                                  tests=tests,
+                                  n_seeds=1,
+                                  cell_labels=cell_labels,
+                                  Ns=['auto'],
+                                  cluster_labels = labels,
+                                  backup=filename+'_backup',
+                                  picklename = None)
+    testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
 
-    experiment(downsampler, X_dimred, NAMESPACE, cell_labels=cell_labels,
-    gene_names=viz_genes, genes=genes,
-    gene_expr=vstack(datasets),
-    kmeans=False,
-    visualize_orig=False,
-    sample_type='PCALSH',
-    lsh=True, optimize_grid_size=False,
-    filename='mouse_brain_PCALSH')
+    #
+    # downsampler = PCALSH(X_dimred, alpha=0.01, gridSize = 0.2)
+    #
+    #
+    # experiment(downsampler, X_dimred, NAMESPACE, cell_labels=cell_labels,
+    # gene_names=viz_genes, genes=genes,
+    # gene_expr=vstack(datasets),
+    # kmeans=False,
+    # visualize_orig=False,
+    # sample_type='PCALSH',
+    # lsh=True, optimize_grid_size=False,
+    # filename='mouse_brain_PCALSH')
     #
     # sampler = 'centerSampler'
     # filename = 'mouse_brain_centerSamplerTest'
