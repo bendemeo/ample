@@ -98,54 +98,55 @@ if __name__ == '__main__':
                                   n_seeds=10,
                                   Ns=['auto'],
                                   backup=filename+'_backup')
+    testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+
+
+
 
     #
+    # N=5000
+    # gridSize=0.01
+    # X = multi_gauss(N, centers=50, intrinsic=2, extrinsic=100, var=1, shift_var=1)
     #
-    # testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
     #
-    N=5000
-    gridSize=0.01
-    X = multi_gauss(N, centers=50, intrinsic=2, extrinsic=100, var=1, shift_var=1)
-
-
-
-
-
-    U, s, Vt = pca(X, k=X.shape[1])
-    X= U[:, :X.shape[1]] * s[:X.shape[1]]
-    print(X.shape)
-
-    X-= X.min(0)
-    X /= X.max()
-
-    sampler = PCALSH(X, gridSize=gridSize)
-    sampler.makeHash()
-
-    single = X[:N,:]
-
-
-    U, s, Vt = pca(single, k=2)
-    single_dimred = U[:, :2] * s[:2]
-
-    visualizer = PCALSH(single_dimred,.1)
-    visualizer.hash = sampler.hash[:N,:]
-    print(single)
-    visualizer.vizHash(cmap = 'tab10')
-
-
-    iter=2
-    result = np.concatenate((visualizer.data, visualizer.hash), axis=1)
-    print(result)
-    np.savetxt('target/experiments/pc_multigauss_{}.csv'.format(iter), result)
-
-    grid = gsLSH(X, gridSize=gridSize, opt_grid=False)
-    grid.makeHash()
-
-    visualizer.hash = grid.hash[:N,:]
-    visualizer.vizHash(cmap='tab10')
-    result = np.concatenate((visualizer.data, visualizer.hash), axis=1)
-    np.savetxt('target/experiments/gs_multigauss_{}.csv'.format(iter), result)
-
+    #
+    #
+    #
+    # U, s, Vt = pca(X, k=X.shape[1])
+    # X= U[:, :X.shape[1]] * s[:X.shape[1]]
+    # print(X.shape)
+    #
+    # X-= X.min(0)
+    # X /= X.max()
+    #
+    # sampler = PCALSH(X, gridSize=gridSize)
+    # sampler.makeHash()
+    #
+    # single = X[:N,:]
+    #
+    #
+    # U, s, Vt = pca(single, k=2)
+    # single_dimred = U[:, :2] * s[:2]
+    #
+    # visualizer = PCALSH(single_dimred,.1)
+    # visualizer.hash = sampler.hash[:N,:]
+    # print(single)
+    # visualizer.vizHash(cmap = 'tab10')
+    #
+    #
+    # iter=2
+    # result = np.concatenate((visualizer.data, visualizer.hash), axis=1)
+    # print(result)
+    # np.savetxt('target/experiments/pc_multigauss_{}.csv'.format(iter), result)
+    #
+    # grid = gsLSH(X, gridSize=gridSize, opt_grid=False)
+    # grid.makeHash()
+    #
+    # visualizer.hash = grid.hash[:N,:]
+    # visualizer.vizHash(cmap='tab10')
+    # result = np.concatenate((visualizer.data, visualizer.hash), axis=1)
+    # np.savetxt('target/experiments/gs_multigauss_{}.csv'.format(iter), result)
+    #
 
 
 
