@@ -282,6 +282,7 @@ class LSH(sampler):
             sample.append(next)
             valid_sample[next] = False
 
+            print(self.target)
             if len(sample) > self.target * 1.2:
                 print('sample got too big, so stopped the process')
                 self.sample = sorted(numpy.unique(sample))
