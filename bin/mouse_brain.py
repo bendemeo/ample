@@ -87,11 +87,13 @@ if __name__ == '__main__':
     print(X_dimred.shape)
 
 
-    sampler = 'PCALSH'
-    filename = 'mouse_brain_PCALSH_hausdorff'
+
+    sampler = 'gsLSH'
+    filename = 'mouse_brain_gsLSH_hausdorff'
     iter = 1
     testParams = {
-        'gridSize':np.arange(1, 0.01,-0.05).tolist()
+        'gridSize':np.arange(1, 0.01,-0.05).tolist(),
+        'opt_grid':[False]
     }
 
     tests = ['time','max_min_dist',
@@ -107,6 +109,29 @@ if __name__ == '__main__':
                                   backup=filename+'_backup',
                                   picklename = None)
     testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+
+
+    #
+    # sampler = 'PCALSH'
+    # filename = 'mouse_brain_PCALSH_hausdorff'
+    # iter = 1
+    # testParams = {
+    #     'gridSize':np.arange(1, 0.01,-0.05).tolist()
+    # }
+    #
+    # tests = ['time','max_min_dist',
+    #           'cluster_counts', 'occSquares']
+    #
+    # testResults = try_params(X_dimred, sampler,
+    #                               params=testParams,
+    #                               tests=tests,
+    #                               n_seeds=1,
+    #                               cell_labels=cell_labels,
+    #                               Ns=['auto'],
+    #                               cluster_labels = labels,
+    #                               backup=filename+'_backup',
+    #                               picklename = None)
+    # testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
 
