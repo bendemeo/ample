@@ -86,7 +86,7 @@ if __name__ == '__main__':
 
     print(X_dimred.shape)
 
-    downsampler = PCALSH(X_dimred, alpha=0.5, gridSize = 0.2)
+    downsampler = gsLSH(X_dimred, alpha=0.2, gridSize = 0.2, opt_grid=True)
 
 
 
@@ -96,7 +96,8 @@ if __name__ == '__main__':
     kmeans=False,
     visualize_orig=False,
     sample_type='PCALSH',
-    lsh=True, optimize_grid_size=False)
+    lsh=True, optimize_grid_size=False,
+    filename='mouse_brain_gsLSH')
     #
     # sampler = 'centerSampler'
     # filename = 'mouse_brain_centerSamplerTest'

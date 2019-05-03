@@ -30,7 +30,8 @@ multigauss_pcalsh = fread('target/experiments/PCALSH_multigauss_hausdorff_backup
 multigauss_gslsh = fread('target/experiments/gsLSH_multigauss_hausdorff_backup.txt')
 
 multigauss_pcalsh$method = rep('pcaLSH', nrow(multigauss_pcalsh))
-multigauss_gslsh$method = rep('gridLSH', nrow(multigauss_gslsh))
+multigauss_gslsh$method = rep('gsLSH', nrow(multigauss_gslsh))
+multigauss_gslsh$opt_grid = NULL
 
 gauss_all = rbind(gauss_pcalsh, gauss_grid)
 multigauss_all = rbind(multigauss_pcalsh, multigauss_gslsh)
