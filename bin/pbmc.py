@@ -101,14 +101,14 @@ if __name__ == '__main__':
     genes = []
 
 
-    filename = 'pbmc_PCALSH_subsample'
-    downsampler = PCALSH(X_dimred, gridSize=0.1)
+    filename = 'pbmc_gsLSH_subsample'
+    downsampler = gsLSH(X_dimred, opt_grid=True, target='N')
 
     experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels=cell_labels,
         gene_names=viz_genes, genes=genes,
         kmeans=False,
         visualize_orig=False,
-        sample_type='dpp',
+        sample_type='gsLSH',
         lsh=True)
 
 
@@ -166,16 +166,16 @@ if __name__ == '__main__':
     # testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
+    # #
+    # filename = 'pbmc_dpp_subsample'
+    # downsampler = dpp(X_dimred, steps=100000)
     #
-    filename = 'pbmc_dpp_subsample'
-    downsampler = dpp(X_dimred, steps=100000)
-
-    experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels=cell_labels,
-        gene_names=viz_genes, genes=genes,
-        kmeans=False,
-        visualize_orig=False,
-        sample_type='dpp',
-        lsh=True)
+    # experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels=cell_labels,
+    #     gene_names=viz_genes, genes=genes,
+    #     kmeans=False,
+    #     visualize_orig=False,
+    #     sample_type='dpp',
+    #     lsh=True)
 
     # sampler = 'gsLSH'
     # filename = 'pbmc_gsLSH_tests'
