@@ -43,7 +43,7 @@ class PCALSH(LSH):
         numHashes=1
 
         LSH.__init__(self, data, numHashes=numHashes, numBands=numBands, bandSize=bandSize,
-                     replace=replace)
+                     replace=replace, target=target)
 
         self.gridSize=gridSize
         self.occSquares = None
@@ -56,6 +56,7 @@ class PCALSH(LSH):
         hashes = np.empty((self.numObs,1))
 
         X = deepcopy(self.data) #need to copy, otherwise data projects itself permanently
+        #X -= X.min(0)
 
 
         #print('old X: {}'.format(X[:10,0]))
@@ -108,7 +109,7 @@ class PCALSH(LSH):
             dimred -= dimred.min() #shift to zero
             #print('dimred: {}'.format(dimred))
 
-            if dimred.max() < self.gridSize/200.:
+            if dimred.max() < self.gridSize/2.:
                 #print('making a leaf')
                 #no more subdividing; this is leaf hash
                 new_table[h] = inds
@@ -184,9 +185,9 @@ class PCALSH(LSH):
             else:
                 break
 
-            print('hashing... grid size {}'.format(self.gridSize))
-            self.makeHash()
-            self.makeFinder()
+            # print('hashing... grid size {}'.format(self.gridSize))
+            # self.makeHash()
+            # self.makeFinder()
 
 
             if high_unit is not None and low_unit is not None and \
@@ -205,6 +206,9 @@ class PCALSH(LSH):
             #binary search to make the grid the right size
             self.optimize_grid(target=sampleSize)
 
+        #make sure hash and finder are up to date with grid size!!
+        self.makeHash()
+        self.makeFinder()
         LSH.downsample(self, sampleSize, replace)
         return(self.sample)
 

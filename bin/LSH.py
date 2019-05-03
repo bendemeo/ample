@@ -282,6 +282,12 @@ class LSH(sampler):
             sample.append(next)
             valid_sample[next] = False
 
+            if len(sample) > self.target * 1.2:
+                print('sample got too big, so stopped the process')
+                self.sample = sorted(numpy.unique(sample))
+                return(self.sample)
+                break
+
             #print('new point')
 
             if (sampleSize != 'auto') and (len(sample) >= sampleSize):
@@ -321,8 +327,8 @@ class LSH(sampler):
 
 
 
-        if sampleSize != 'auto':
-            assert(len(sample)==sampleSize)
+        # if sampleSize != 'auto':
+        #     assert(len(sample)==sampleSize)
 
         self.sample = sorted(numpy.unique(sample))
         return(self.sample)

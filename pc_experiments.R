@@ -13,6 +13,7 @@ gauss_grid$method = rep('gridLSH', nrow(gauss_grid))
 pbmc_pcalsh = fread('target/experiments/pbmc_PCALSH_hausdorff_backup.txt')
 pbmc_gs = fread('target/experiments/pbmc_gsLSH_tests_backup.txt')
 
+
 pbmc_gs$lastCounts = gsub("\\[|\\]", "", pbmc_gs$lastCounts)
 pbmc_gs$lastCounts = as.numeric(pbmc_gs$lastCounts)
 colnames(pbmc_gs)[4] <- "occSquares"
@@ -23,14 +24,16 @@ pbmc_pcalsh$method = rep('pcaLSH', nrow(pbmc_pcalsh))
 
 
 
-multigauss_pcalsh = fread('target/experiments/PCALSH_multigauss_PCALSH_gridTest.txt.1')
-multigauss_gridlsh = fread('target/experiments/gridLSH_multigauss_gridLSH_gridTest.txt.1')
+
+
+multigauss_pcalsh = fread('target/experiments/PCALSH_multigauss_hausdorff_backup.txt')
+multigauss_gslsh = fread('target/experiments/gsLSH_multigauss_hausdorff_backup.txt')
 
 multigauss_pcalsh$method = rep('pcaLSH', nrow(multigauss_pcalsh))
-multigauss_gridlsh$method = rep('gridLSH', nrow(multigauss_gridlsh))
+multigauss_gslsh$method = rep('gridLSH', nrow(multigauss_gslsh))
 
 gauss_all = rbind(gauss_pcalsh, gauss_grid)
-multigauss_all = rbind(multigauss_pcalsh, multigauss_gridlsh)
+multigauss_all = rbind(multigauss_pcalsh, multigauss_gslsh)
 pbmc_all = rbind(pbmc_gs, pbmc_pcalsh)
 
 
@@ -39,15 +42,15 @@ cell_types = c("CD14+_Monocyte","CD19+_B","CD4+/CD25_T_Reg",
                "CD4+_T_Helper2","CD56+_NK","CD8+/CD45RA+_Naive_Cytotoxic",
                "CD8+_Cytotoxic_T","Dendritic")
 
-cell_counts = c(3817,3306,2812,3126,5859,11445,14112,21975,1865,262)
-
-c = colnames(pbmc_all)
-pbmc_all=data.frame(pbmc_all)
-colnames(pbmc_all)=c
-for(i in 1:length(cell_counts)){
-  col = which(colnames(pbmc_all) == cell_types[i])[1]
-  pbmc_all[,col]= pbmc_all[,col] / cell_counts[i]
-}
+# cell_counts = c(3817,3306,2812,3126,5859,11445,14112,21975,1865,262)
+# 
+# c = colnames(pbmc_all)
+# pbmc_all=data.frame(pbmc_all)
+# colnames(pbmc_all)=c
+# for(i in 1:length(cell_counts)){
+#   col = which(colnames(pbmc_all) == cell_types[i])[1]
+#   pbmc_all[,col]= pbmc_all[,col] / cell_counts[i]
+# }
 
 
 
@@ -135,3 +138,9 @@ pbmc_clusts %>%
   ggplot(aes(x=occSquares, y=value, color=method))+
   facet_wrap(~variable)+
   geom_line()
+
+pbmc_clusts %>% 
+  filter(variable == 'CD14+_Monocyte') %>%
+  ggplot(aes(x=occSquares, y=value, color=method))+
+  geom_line()
+
