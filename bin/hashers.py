@@ -206,6 +206,9 @@ class PCALSH(LSH):
             #binary search to make the grid the right size
             self.optimize_grid(target=sampleSize)
 
+        # if sampleSize != 'auto' and sampleSize != 'N':
+        #     self.target=sampleSize
+
         #make sure hash and finder are up to date with grid size!!
         self.makeHash()
         self.makeFinder()
