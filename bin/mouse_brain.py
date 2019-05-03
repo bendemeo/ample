@@ -87,12 +87,12 @@ if __name__ == '__main__':
     print(X_dimred.shape)
 
 
-
+    iter = 2
     sampler = 'gsLSH'
-    filename = 'mouse_brain_gsLSH_hausdorff'
-    iter = 1
+    filename = 'mouse_brain_gsLSH_hausdorff_{}'.format(iter)
+
     testParams = {
-        'gridSize':np.arange(1, 0.01,-0.05).tolist(),
+        'gridSize':np.arange(0.4, 0.01,-0.05).tolist(),
         'opt_grid':[False]
     }
 
