@@ -82,9 +82,11 @@ if __name__ == '__main__':
     N=5000
     gridSize=0.01
     X = multi_gauss(N, centers=50, intrinsic=2, extrinsic=100, var=1, shift_var=1)
+    X-=X.min(0)
+    X/=X.max()
 
     sampler = 'gsLSH'
-    filename = 'gsLSH_multigauss_hausdorff'
+    filename = 'gsLSH_multigauss_hausdorff_mine'
 
     testParams = {
         'gridSize':np.arange(1, 0.5, -0.1).tolist()+np.arange(0.4,0.3, -0.05).tolist()+np.arange(0.3, 0.01, -0.01).tolist(),
