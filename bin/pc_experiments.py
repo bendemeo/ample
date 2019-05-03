@@ -78,6 +78,11 @@ if __name__ == '__main__':
     # # gridSize=0.01
     # # X = multi_gauss(N, centers=50, intrinsic=2, extrinsic=100, var=1, shift_var=2)
     #
+
+    N=5000
+    gridSize=0.01
+    X = multi_gauss(N, centers=50, intrinsic=2, extrinsic=100, var=1, shift_var=1)
+
     sampler = 'gsLSH'
     filename = 'gsLSH_multigauss_hausdorff'
 
