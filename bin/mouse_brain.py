@@ -87,7 +87,7 @@ if __name__ == '__main__':
     print(X_dimred.shape)
 
 
-    sampler = bSampler(X_dimred, 0.35, backup_interval=500)
+    sampler = bSampler(X_dimred, 0.4, backup_interval=500)
     sampler.downsample(filename = 'mouse_brain_perfect')
     sampler.downsample(filaname = 'mouse_brain_viz')
 
