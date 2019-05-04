@@ -18,6 +18,90 @@ from sklearn.metrics.pairwise import pairwise_distances
 from fbpca import pca
 from scanorama import *
 from vp_tree import *
+import pickle
+
+
+class bSampler(sampler):
+    def __init__(self, data, radius, verbose=True, backup=True, backup_interval = 1000, picklename = 'ballsample', cell_labels = None, cell_types=None):
+        self.radius=radius
+        self.numObs, self.numFeatures = data.shape
+        self.data = data
+        self.verbose = verbose
+        self.backup_interval = backup_interval
+        self.backup = backup
+
+        if cell_labels is None:
+            cell_labels = [1]*self.numObs
+        self.cell_labels = cell_labels
+
+        if cell_types is None:
+            cell_types = ['cell']*self.numObs
+
+        self.cell_types = np.array(cell_types)
+
+    def downsample(self, filename=''): # cover data with balls, pick one point from each
+        verbose= self.verbose
+        if(verbose):
+            print('building cover of {} points'.format(self.numObs))
+
+        sample = []
+
+        for i in range(self.numObs):
+            add = True
+            if verbose:
+                print('examining point {} of {}'.format(i, self.numObs))
+            new = self.data[i,:]
+
+            for j in sample:
+                old = self.data[j,:]
+                if np.linalg.norm(old - new) < self.radius:
+                    add = False
+                    break
+
+            if add:
+                if verbose:
+                    print('adding {}th point to sample'.format(len(sample)+1))
+                sample.append(i)
+
+            print(len(sample))
+            if self.backup and (len(sample) % self.backup_interval) == 0:
+                if verbose > 1:
+                    print(sample)
+                print('pickling sample so far...')
+                with open(filename+'_backup', "wb") as f:
+                    pickle.dump(sample, f, pickle.HIGHEST_PROTOCOL)
+
+
+        if verbose:
+            print('finished sampling! final size: {}'.format(len(sample)))
+        self.sample = sample
+        if self.backup:
+            print('pickling full sample...')
+            with open(filename, "wb") as f:
+                pickle.dump(sample, f, pickle.HIGHEST_PROTOCOL)
+
+        return(sample)
+
+
+    def vizSample(self, filename):
+        N = len(self.sample)
+        samp_idx = self.sample
+
+        print('visualizing...')
+        print('filename is {}'.format(filename + '_{}'.format(N)))
+
+        self.data= np.array(self.data)
+        self.cell_labels = np.array(self.cell_labels)
+        print(samp_idx)
+        print(self.data[samp_idx, :].shape)
+        visualize([self.data[samp_idx, :]], self.cell_labels[samp_idx],
+                  filename + '_{}'.format(N),
+                  self.cell_types,
+                  perplexity=max(N/200, 50), n_iter=500,
+                  size=max(int(30000/N), 1), image_suffix='.png')
+
+
+
 
 
 class vpSampler(neighborhoodSampler):

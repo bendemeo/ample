@@ -87,29 +87,34 @@ if __name__ == '__main__':
     print(X_dimred.shape)
 
 
-    iter = 2
-    sampler = 'gsLSH'
-    filename = 'mouse_brain_gsLSH_hausdorff_{}'.format(iter)
+    sampler = bSampler(X_dimred, 0.35, backup_interval=500)
+    sampler.downsample(filename = 'mouse_brain_perfect')
+    sampler.downsample(filaname = 'mouse_brain_viz')
 
-    testParams = {
-        'gridSize':np.arange(0.4, 0.01,-0.05).tolist(),
-        'opt_grid':[False]
-    }
-
-    tests = ['time','max_min_dist',
-              'cluster_counts', 'occSquares']
-
-    testResults = try_params(X_dimred, sampler,
-                                  params=testParams,
-                                  tests=tests,
-                                  n_seeds=1,
-                                  cell_labels=cell_labels,
-                                  Ns=['auto'],
-                                  cluster_labels = labels,
-                                  backup=filename+'_backup',
-                                  picklename = None)
-    testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
-
+    #
+    # iter = 2
+    # sampler = 'gsLSH'
+    # filename = 'mouse_brain_gsLSH_hausdorff_{}'.format(iter)
+    #
+    # testParams = {
+    #     'gridSize':np.arange(0.4, 0.01,-0.05).tolist(),
+    #     'opt_grid':[False]
+    # }
+    #
+    # tests = ['time','max_min_dist',
+    #           'cluster_counts', 'occSquares']
+    #
+    # testResults = try_params(X_dimred, sampler,
+    #                               params=testParams,
+    #                               tests=tests,
+    #                               n_seeds=1,
+    #                               cell_labels=cell_labels,
+    #                               Ns=['auto'],
+    #                               cluster_labels = labels,
+    #                               backup=filename+'_backup',
+    #                               picklename = None)
+    # testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+    #
 
     #
     # sampler = 'PCALSH'

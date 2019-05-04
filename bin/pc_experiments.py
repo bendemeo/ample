@@ -79,28 +79,35 @@ if __name__ == '__main__':
     # # X = multi_gauss(N, centers=50, intrinsic=2, extrinsic=100, var=1, shift_var=2)
     #
 
-    N=5000
+    N=500
     gridSize=0.01
     X = multi_gauss(N, centers=50, intrinsic=2, extrinsic=100, var=1, shift_var=1)
     X-=X.min(0)
     X/=X.max()
 
-    sampler = 'gsLSH'
-    filename = 'gsLSH_multigauss_hausdorff_mine'
 
-    testParams = {
-        'gridSize':np.arange(1, 0.5, -0.1).tolist()+np.arange(0.4,0.3, -0.05).tolist()+np.arange(0.3, 0.01, -0.01).tolist(),
-        'opt_grid': [False]
-    }
-    tests = ['time','max_min_dist','occSquares']
+    sampler = bSampler(X, 0.02, backup_interval=10)
+    sampler.downsample(filename = 'testy')
+    print(sampler.sample)
+    sampler.vizSample(filename='testytest')
 
-    testResults = try_params(X, sampler,
-                                  params=testParams,
-                                  tests=tests,
-                                  n_seeds=10,
-                                  Ns=['auto'],
-                                  backup=filename+'_backup')
-    testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+
+    # sampler = 'gsLSH'
+    # filename = 'gsLSH_multigauss_hausdorff_mine'
+    #
+    # testParams = {
+    #     'gridSize':np.arange(1, 0.5, -0.1).tolist()+np.arange(0.4,0.3, -0.05).tolist()+np.arange(0.3, 0.01, -0.01).tolist(),
+    #     'opt_grid': [False]
+    # }
+    # tests = ['time','max_min_dist','occSquares']
+    #
+    # testResults = try_params(X, sampler,
+    #                               params=testParams,
+    #                               tests=tests,
+    #                               n_seeds=10,
+    #                               Ns=['auto'],
+    #                               backup=filename+'_backup')
+    # testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
 
