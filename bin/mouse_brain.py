@@ -87,13 +87,14 @@ if __name__ == '__main__':
     print(X_dimred.shape)
 
 
-    gridSize=0.40
-    sampler = bSampler(X_dimred, gridSize, backup_interval=500, cell_labels=cell_labels, cell_types = cell_names)
+    # gridSize=0.40
+    # sampler = bSampler(X_dimred, gridSize, backup_interval=500, cell_labels=cell_labels, cell_types = cell_names)
+    #
+    # sampler.sample = pickle.load(open('mouse_brain_perfect_0.37', "rb"))
+    #
+    #
+    # sampler.vizSample(filename = 'mouse_brain_viz_{}_colored'.format(gridSize))
 
-    sampler.sample = pickle.load(open('mouse_brain_perfect_0.37', "rb"))
-
-
-    sampler.vizSample(filename = 'mouse_brain_viz_{}_colored'.format(gridSize))
     # sampler.downsample(filename = 'mouse_brain_perfect_{}'.format(gridSize))
     # sampler.vizSample(filename = 'mouse_brain_viz_{}'.format(gridSize))
 
@@ -146,18 +147,17 @@ if __name__ == '__main__':
 
 
 
-    #
-    # downsampler = PCALSH(X_dimred, alpha=0.01, gridSize = 0.2)
-    #
-    #
-    # experiment(downsampler, X_dimred, NAMESPACE, cell_labels=cell_labels,
-    # gene_names=viz_genes, genes=genes,
-    # gene_expr=vstack(datasets),
-    # kmeans=False,
-    # visualize_orig=False,
-    # sample_type='PCALSH',
-    # lsh=True, optimize_grid_size=False,
-    # filename='mouse_brain_PCALSH')
+
+    downsampler = gsLSH(X_dimred, alpha=0.01, gridSize = 0.2, target='N')
+
+
+    experiment(downsampler, X_dimred, NAMESPACE, cell_labels=cell_labels,
+    gene_expr=vstack(datasets),
+    kmeans=False,
+    visualize_orig=False,
+    sample_type='gsLSH',
+    lsh=True, optimize_grid_size=False,
+    filename='mouse_brain_gsLSH')
     #
     # sampler = 'centerSampler'
     # filename = 'mouse_brain_centerSamplerTest'
