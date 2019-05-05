@@ -147,17 +147,17 @@ if __name__ == '__main__':
 
 
 
-
-    downsampler = gsLSH(X_dimred, alpha=0.01, gridSize = 0.2, target='N')
-
-
-    experiment(downsampler, X_dimred, NAMESPACE, cell_labels=cell_labels,
-    gene_expr=vstack(datasets),
-    kmeans=False,
-    visualize_orig=False,
-    sample_type='gsLSH',
-    lsh=True, optimize_grid_size=False,
-    filename='mouse_brain_gsLSH')
+    #
+    # downsampler = gsLSH(X_dimred, alpha=0.01, gridSize = 0.2, target='N')
+    #
+    #
+    # experiment(downsampler, X_dimred, NAMESPACE, cell_labels=cell_labels,
+    # gene_expr=vstack(datasets),
+    # kmeans=False,
+    # visualize_orig=False,
+    # sample_type='gsLSH',
+    # lsh=True, optimize_grid_size=False,
+    # filename='mouse_brain_gsLSH')
     #
     # sampler = 'centerSampler'
     # filename = 'mouse_brain_centerSamplerTest'
@@ -231,12 +231,12 @@ if __name__ == '__main__':
     # exit()
     # from differential_entropies import differential_entropies
     # differential_entropies(X_dimred, labels)
-    # experiment_gs(
-    #     X_dimred, NAMESPACE, cell_labels=cell_labels,
-    #     gene_names=viz_genes, genes=genes,
-    #     gene_expr=vstack(datasets),
-    #     kmeans=False, visualize_orig=False
-    # )
+    experiment_gs(
+        X_dimred, NAMESPACE, cell_labels=cell_labels,
+        gene_names=viz_genes, genes=genes,
+        gene_expr=vstack(datasets),
+        kmeans=False, visualize_orig=False
+    )
     # experiment_uni(
     #     X_dimred, NAMESPACE, cell_labels=cell_labels,
     #     gene_names=viz_genes, genes=genes,
