@@ -143,27 +143,24 @@ if __name__ == '__main__':
     # testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
-    # sampler = 'PCALSH'
-    # filename = 'pbmc_PCALSH_hausdorff'
-    # picklename = 'pbmc_PCALSH_hausdorff'
-    # iter = 1
-    # testParams = {
-    #     'gridSize':np.arange(1, 0.01,-0.01).tolist()
-    # }
-    #
-    # tests = ['time','max_min_dist',
-    #           'cluster_counts', 'occSquares']
-    #
-    # testResults = try_params(X_dimred, sampler,
-    #                               params=testParams,
-    #                               tests=tests,
-    #                               n_seeds=10,
-    #                               cell_labels=cell_labels,
-    #                               Ns=['auto'],
-    #                               cluster_labels = labels,
-    #                               backup=filename+'_backup',
-    #                               picklename = None)
-    # testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+    sampler = 'Uniform'
+    filename = 'pbmc_Uniform_hausdorff'
+    iter = 1
+    testParams = {}
+
+    tests = ['time','max_min_dist',
+              'cluster_counts', 'occSquares']
+
+    testResults = try_params(X_dimred, sampler,
+                                  params=testParams,
+                                  tests=tests,
+                                  n_seeds=10,
+                                  cell_labels=cell_labels,
+                                  Ns=['auto'],
+                                  cluster_labels = labels,
+                                  backup=filename+'_backup',
+                                  picklename = None)
+    testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
     # #

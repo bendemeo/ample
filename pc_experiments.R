@@ -27,7 +27,7 @@ pbmc_pcalsh$method = rep('pcaLSH', nrow(pbmc_pcalsh))
 
 
 multigauss_pcalsh = fread('target/experiments/PCALSH_multigauss_hausdorff_backup.txt')
-multigauss_gslsh = fread('target/experiments/gsLSH_multigauss_hausdorff_backup.txt')
+multigauss_gslsh = fread('target/experiments/gsLSH_multigauss_hausdorff_mine_backup.txt')
 
 multigauss_pcalsh$method = rep('pcaLSH', nrow(multigauss_pcalsh))
 multigauss_gslsh$method = rep('gsLSH', nrow(multigauss_gslsh))

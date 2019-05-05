@@ -236,7 +236,7 @@ if __name__ == '__main__':
         gene_names=viz_genes, genes=genes,
         gene_expr=vstack(datasets),
         kmeans=False, visualize_orig=False,
-        filename='gsLSH_orig_fn_singlept_kfixed'
+        filename='gsLSH_orig_fn_kfixed'
     )
 
     # experiments(X_dimred, name='gsLSH_orig_hausdorff', n_seeds=1, max_min_dist=True)

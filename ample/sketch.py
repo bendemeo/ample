@@ -132,7 +132,7 @@ def gs_gap(X, N, k='auto', seed=None, replace=False,
     return sorted(gs_idx)
 
 def gs_grid(X, N, k='auto', seed=None, replace=False,
-            alpha=0.1, max_iter=200, verbose=0, labels=None):
+            alpha=0.1, max_iter=200, verbose=5, labels=None):
     n_samples, n_features = X.shape
 
     # Error checking and initialization.
@@ -144,7 +144,8 @@ def gs_grid(X, N, k='auto', seed=None, replace=False,
     if not replace and N == n_samples:
         return range(N)
     if k == 'auto':
-        k = int(np.sqrt(n_samples))
+        k = N
+        #k = int(np.sqrt(n_samples))
 
     X -= X.min(0)
     X /= X.max()
