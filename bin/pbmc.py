@@ -155,7 +155,7 @@ if __name__ == '__main__':
                                   tests=tests,
                                   n_seeds=5,
                                   cell_labels=cell_labels,
-                                  Ns=['auto'],
+                                  Ns=np.arange(0, 50000, 1000).tolist(),
                                   cluster_labels = labels,
                                   backup=filename+'_backup',
                                   picklename = None)
