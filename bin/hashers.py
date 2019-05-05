@@ -21,6 +21,12 @@ from vp_tree import *
 import pickle
 
 
+
+class uniformSampler(sampler):
+    def __init__(self, data, NAMESPACE = '', labels=None, replace=False):
+        sampler.__init__(self, data, NAMESPACE, labels, replace)
+
+
 class bSampler(sampler):
     def __init__(self, data, radius, verbose=True, backup=True, backup_interval = 1000, picklename = 'ballsample', cell_labels = None, cell_types=None):
         self.radius=radius

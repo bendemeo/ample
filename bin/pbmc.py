@@ -101,15 +101,15 @@ if __name__ == '__main__':
     genes = []
 
 
-    filename = 'pbmc_gsLSH_subsample'
-    downsampler = gsLSH(X_dimred, opt_grid=True, target='N')
-
-    experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels=cell_labels,
-        gene_names=viz_genes, genes=genes,
-        kmeans=False,
-        visualize_orig=False,
-        sample_type='gsLSH',
-        lsh=True)
+    # filename = 'pbmc_gsLSH_subsample'
+    # downsampler = gsLSH(X_dimred, opt_grid=True, target='N')
+    #
+    # experiment(downsampler, X_dimred, NAMESPACE, filename = filename, cell_labels=cell_labels,
+    #     gene_names=viz_genes, genes=genes,
+    #     kmeans=False,
+    #     visualize_orig=False,
+    #     sample_type='gsLSH',
+    #     lsh=True)
 
 
     #
@@ -143,7 +143,7 @@ if __name__ == '__main__':
     # testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
-    sampler = 'Uniform'
+    sampler = 'uniformSampler'
     filename = 'pbmc_Uniform_hausdorff'
     iter = 1
     testParams = {}
