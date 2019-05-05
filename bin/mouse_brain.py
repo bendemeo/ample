@@ -87,11 +87,14 @@ if __name__ == '__main__':
     print(X_dimred.shape)
 
 
-
     gridSize=0.40
-    sampler = bSampler(X_dimred, gridSize, backup_interval=500)
-    sampler.downsample(filename = 'mouse_brain_perfect_{}'.format(gridSize))
-    sampler.vizSample(filename = 'mouse_brain_viz_{}'.format(gridSize))
+    sampler = bSampler(X_dimred, gridSize, backup_interval=500, cell_labels=cell_labels, cell_types = cell_names)
+
+    sampler.sample = pickle.load(open('mouse_brain_perfect_0.37', "rb"))
+
+
+    # sampler.downsample(filename = 'mouse_brain_perfect_{}'.format(gridSize))
+    # sampler.vizSample(filename = 'mouse_brain_viz_{}'.format(gridSize))
 
     #
     # iter = 2
