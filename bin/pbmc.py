@@ -148,13 +148,12 @@ if __name__ == '__main__':
     iter = 1
     testParams = {}
 
-    tests = ['time','max_min_dist',
-              'cluster_counts', 'occSquares']
+    tests = ['time','max_min_dist']
 
     testResults = try_params(X_dimred, sampler,
                                   params=testParams,
                                   tests=tests,
-                                  n_seeds=10,
+                                  n_seeds=5,
                                   cell_labels=cell_labels,
                                   Ns=['auto'],
                                   cluster_labels = labels,
