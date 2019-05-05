@@ -22,7 +22,8 @@ def gs_gap(X, N, k='auto', seed=None, replace=False,
     if not replace and N == n_samples:
         return range(N)
     if k == 'auto':
-        k = int(np.sqrt(n_samples))
+        k = N
+        #k = int(np.sqrt(n_samples))
 
     X -= X.min(0)
     X /= X.max()
@@ -110,22 +111,22 @@ def gs_gap(X, N, k='auto', seed=None, replace=False,
 
     gs_idx = []
 
-    for k in range(len(list(grid.keys()))):
-        grid_cell = grid_cells[k]
-        samples = list(grid[grid_cell])
-        sample = samples[np.random.choice(len(samples))]
-        gs_idx.append(sample)
-    #
-    # for n in range(N):
-    #     grid_cells = list(grid.keys())
-    #     grid_cell = grid_cells[np.random.choice(len(grid_cells))]
+    # for k in range(len(list(grid.keys()))):
+    #     grid_cell = grid_cells[k]
     #     samples = list(grid[grid_cell])
     #     sample = samples[np.random.choice(len(samples))]
-    #     if not replace:
-    #         grid[grid_cell].remove(sample)
-    #         if len(grid[grid_cell]) == 0:
-    #             del grid[grid_cell]
     #     gs_idx.append(sample)
+    #
+    for n in range(N):
+        grid_cells = list(grid.keys())
+        grid_cell = grid_cells[np.random.choice(len(grid_cells))]
+        samples = list(grid[grid_cell])
+        sample = samples[np.random.choice(len(samples))]
+        if not replace:
+            grid[grid_cell].remove(sample)
+            if len(grid[grid_cell]) == 0:
+                del grid[grid_cell]
+        gs_idx.append(sample)
 
     return sorted(gs_idx)
 
