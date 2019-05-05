@@ -89,7 +89,7 @@ if __name__ == '__main__':
 
     sampler = bSampler(X_dimred, 0.6, backup_interval=500)
     sampler.downsample(filename = 'mouse_brain_perfect')
-    sampler.visualize(filename = 'mouse_brain_viz')
+    sampler.vizSample(filename = 'mouse_brain_viz')
 
     #
     # iter = 2
