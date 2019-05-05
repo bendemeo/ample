@@ -146,7 +146,7 @@ if __name__ == '__main__':
     sampler = 'uniformSampler'
     filename = 'pbmc_Uniform_hausdorff'
     iter = 1
-    testParams = {}
+    testParams = {'p':[1]}
 
     tests = ['time','max_min_dist']
 

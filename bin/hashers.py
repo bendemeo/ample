@@ -23,7 +23,7 @@ import pickle
 
 
 class uniformSampler(sampler):
-    def __init__(self, data, NAMESPACE = '', labels=None, replace=False):
+    def __init__(self, data, NAMESPACE = '', labels=None, replace=False, p=1):
         sampler.__init__(self, data, NAMESPACE, labels, replace)
 
 
