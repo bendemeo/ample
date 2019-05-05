@@ -288,8 +288,6 @@ def experiments(X_dimred, name, n_seeds=10, **kwargs):
     Ns = [ 100, 500, 1000, 5000, 10000, 20000 ]
 
     sampling_fns = [
-        uniform,
-        gs_grid,
         gs_gap
     ]
     #     # srs,
@@ -301,8 +299,6 @@ def experiments(X_dimred, name, n_seeds=10, **kwargs):
     # ]
 
     sampling_fn_names = [
-        'uniform',
-        'gs_grid',
         'gs_gap'
     ]
     #     # 'srs',

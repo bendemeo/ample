@@ -231,13 +231,15 @@ if __name__ == '__main__':
     # exit()
     # from differential_entropies import differential_entropies
     # differential_entropies(X_dimred, labels)
-    experiment_gs(
-        X_dimred, NAMESPACE, cell_labels=cell_labels,
-        gene_names=viz_genes, genes=genes,
-        gene_expr=vstack(datasets),
-        kmeans=False, visualize_orig=False,
-        filename='gsLSH_orig_fn_singlept'
-    )
+    # experiment_gs(
+    #     X_dimred, NAMESPACE, cell_labels=cell_labels,
+    #     gene_names=viz_genes, genes=genes,
+    #     gene_expr=vstack(datasets),
+    #     kmeans=False, visualize_orig=False,
+    #     filename='gsLSH_orig_fn_singlept'
+    # )
+
+    experiments(X_dimred, name='gsLSH_orig_hausdorff', n_seeds=1, max_min_dist=True)
     # experiment_uni(
     #     X_dimred, NAMESPACE, cell_labels=cell_labels,
     #     gene_names=viz_genes, genes=genes,
