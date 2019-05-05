@@ -111,6 +111,7 @@ def gs_gap(X, N, k='auto', seed=None, replace=False,
 
     gs_idx = []
 
+    # print('sampling one from each')
     # for k in range(len(list(grid.keys()))):
     #     grid_cell = grid_cells[k]
     #     samples = list(grid[grid_cell])
