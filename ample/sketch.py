@@ -109,16 +109,23 @@ def gs_gap(X, N, k='auto', seed=None, replace=False,
         log('Found {} grid cells'.format(len(grid)))
 
     gs_idx = []
-    for n in range(N):
-        grid_cells = list(grid.keys())
-        grid_cell = grid_cells[np.random.choice(len(grid_cells))]
+
+    for k in range(len(list(grid.keys()))):
+        grid_cell = grid_cells[k]
         samples = list(grid[grid_cell])
         sample = samples[np.random.choice(len(samples))]
-        if not replace:
-            grid[grid_cell].remove(sample)
-            if len(grid[grid_cell]) == 0:
-                del grid[grid_cell]
         gs_idx.append(sample)
+    #
+    # for n in range(N):
+    #     grid_cells = list(grid.keys())
+    #     grid_cell = grid_cells[np.random.choice(len(grid_cells))]
+    #     samples = list(grid[grid_cell])
+    #     sample = samples[np.random.choice(len(samples))]
+    #     if not replace:
+    #         grid[grid_cell].remove(sample)
+    #         if len(grid[grid_cell]) == 0:
+    #             del grid[grid_cell]
+    #     gs_idx.append(sample)
 
     return sorted(gs_idx)
 
