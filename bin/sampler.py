@@ -24,7 +24,7 @@ class sampler:
 
     def downsample(self, sampleSize):
         self.sampleEmbedding = None # clear previous sample embeddings
-        self.sample = np.random.choice(range(self.numObs), sampleSize)
+        self.sample = np.random.choice(list(range(self.numObs)), sampleSize)
         return self.sample
 
     def embed(self, subset=None, **kwargs):
