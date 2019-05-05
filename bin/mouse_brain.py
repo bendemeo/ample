@@ -87,9 +87,11 @@ if __name__ == '__main__':
     print(X_dimred.shape)
 
 
-    sampler = bSampler(X_dimred, 0.37, backup_interval=500)
-    sampler.downsample(filename = 'mouse_brain_perfect')
-    sampler.vizSample(filename = 'mouse_brain_viz')
+
+    gridSize=0.37
+    sampler = bSampler(X_dimred, gridSize, backup_interval=500)
+    sampler.downsample(filename = 'mouse_brain_perfect_{}'.format(gridSize))
+    sampler.vizSample(filename = 'mouse_brain_viz_{}'.format(gridSize))
 
     #
     # iter = 2
