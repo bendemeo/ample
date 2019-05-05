@@ -51,7 +51,7 @@ colnames(vp)[5] <- "gridSize"
 
 
 #combine data
-pbmc_all = rbind(soft_fast, soft_slow, fast_ball, slow_ball, gs)
+pbmc_all = rbind(soft_fast, soft_slow, fast_ball, slow_ball, gs, vp)
 soft_all = rbind(soft_fast, soft_slow)
 
 # melt data

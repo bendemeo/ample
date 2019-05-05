@@ -258,12 +258,12 @@ if __name__ == '__main__':
     # )
 
     # experiments(X_dimred, name='gsLSH_orig_hausdorff', n_seeds=1, max_min_dist=True)
-    # experiment_uni(
-    #     X_dimred, NAMESPACE, cell_labels=cell_labels,
-    #     gene_names=viz_genes, genes=genes,
-    #     gene_expr=vstack(datasets),
-    #     kmeans=False, visualize_orig=False
-    # )
+    experiment_uni(
+        X_dimred, NAMESPACE, cell_labels=cell_labels,
+        gene_expr=vstack(datasets),
+        kmeans=False, visualize_orig=False,
+        filename='mouse_brain_uniform'
+    )
     # experiment_srs(
     #     X_dimred, NAMESPACE, cell_labels=cell_labels,
     #     gene_names=viz_genes, genes=genes,

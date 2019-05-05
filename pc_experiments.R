@@ -13,6 +13,10 @@ gauss_grid$method = rep('gridLSH', nrow(gauss_grid))
 pbmc_pcalsh = fread('target/experiments/pbmc_PCALSH_hausdorff_backup.txt')
 pbmc_gs = fread('target/experiments/pbmc_gsLSH_tests_backup.txt')
 
+pbmc_uni = fread('target/experiments/pbmc_Uniform_hausdorff_backup.txt')
+pbmc_uni$method = rep('Uniform', nrow(pbmc_uni))
+colnames(pbmc_uni)[5]='occSquares'
+
 
 pbmc_gs$lastCounts = gsub("\\[|\\]", "", pbmc_gs$lastCounts)
 pbmc_gs$lastCounts = as.numeric(pbmc_gs$lastCounts)
@@ -36,7 +40,6 @@ multigauss_gslsh$opt_grid = NULL
 gauss_all = rbind(gauss_pcalsh, gauss_grid)
 multigauss_all = rbind(multigauss_pcalsh, multigauss_gslsh)
 pbmc_all = rbind(pbmc_gs, pbmc_pcalsh)
-
 
 cell_types = c("CD14+_Monocyte","CD19+_B","CD4+/CD25_T_Reg",
                "CD4+/CD45RA+/CD25-_Naive_T","CD4+/CD45RO+_Memory",
@@ -102,9 +105,10 @@ multigauss_all %>%
 
 
 
+pbmc_uniall = merge(pbmc_all, pbmc_uni,all=TRUE)
 
-pbmc_clusts = melt(pbmc_all, id.vars=c("max_min_dist","time","occSquares","gridSize", "N", "method"), 
-          measure.vars = cell_types)
+
+
 
 ###### PBMC #######
 pbmc_3 = pbmc_all %>% filter(max_min_dist<2, occSquares < 2000) %>%
@@ -123,25 +127,30 @@ pbmc_1 = pbmc_all %>%
   scale_color_discrete(name='Covering Method', labels=c("Plaid Covering", "Learned Covers"))
   
 
-pbmc_2 = pbmc_all %>% group_by(occSquares, method) %>%
+pbmc_2 = pbmc_all %>% filter(occSquares < 20000) %>%
+  group_by(occSquares, method) %>%
   summarize(time= mean(time)) %>%
   ggplot(aes(x=occSquares, y=time))+
   geom_line(aes(color=method))
 
 
 
-pbmc_clusts %>% filter(method == 'pcaLSH') %>%
-  ggplot(aes(x=occSquares, y=value, color=variable))+
-  facet_wrap(~variable)+
-  geom_line()
-
-pbmc_clusts %>% 
-  ggplot(aes(x=occSquares, y=value, color=method))+
-  facet_wrap(~variable)+
-  geom_line()
-
-pbmc_clusts %>% 
-  filter(variable == 'CD14+_Monocyte') %>%
-  ggplot(aes(x=occSquares, y=value, color=method))+
-  geom_line()
+# pbmc_clusts = melt(pbmc_all, id.vars=c("max_min_dist","time","occSquares","gridSize", "N", "method"), 
+#                    measure.vars = cell_types)
+# 
+# 
+# pbmc_clusts %>% filter(method == 'pcaLSH') %>%
+#   ggplot(aes(x=occSquares, y=value, color=variable))+
+#   facet_wrap(~variable)+
+#   geom_line()
+# 
+# pbmc_clusts %>% 
+#   ggplot(aes(x=occSquares, y=value, color=method))+
+#   facet_wrap(~variable)+
+#   geom_line()
+# 
+# pbmc_clusts %>% 
+#   filter(variable == 'CD14+_Monocyte') %>%
+#   ggplot(aes(x=occSquares, y=value, color=method))+
+#   geom_line()
 
