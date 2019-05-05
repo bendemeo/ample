@@ -87,23 +87,23 @@ if __name__ == '__main__':
     print(X_dimred.shape)
 
 
-    sampler = 'uniformSampler'
-    filename = 'mouse_brain_Uniform_hausdorff'
-    iter = 1
-    testParams = {'p':[1]}
-
-    tests = ['time','max_min_dist']
-
-    testResults = try_params(X_dimred, sampler,
-                                  params=testParams,
-                                  tests=tests,
-                                  n_seeds=3,
-                                  cell_labels=cell_labels,
-                                  Ns=np.arange(1000, 50000, 1000).tolist(),
-                                  cluster_labels = labels,
-                                  backup=filename+'_backup',
-                                  picklename = None)
-    testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+    # sampler = 'uniformSampler'
+    # filename = 'mouse_brain_Uniform_hausdorff'
+    # iter = 1
+    # testParams = {'p':[1]}
+    #
+    # tests = ['time','max_min_dist']
+    #
+    # testResults = try_params(X_dimred, sampler,
+    #                               params=testParams,
+    #                               tests=tests,
+    #                               n_seeds=3,
+    #                               cell_labels=cell_labels,
+    #                               Ns=np.arange(1000, 50000, 1000).tolist(),
+    #                               cluster_labels = labels,
+    #                               backup=filename+'_backup',
+    #                               picklename = None)
+    # testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
     # gridSize=0.40
     # sampler = bSampler(X_dimred, gridSize, backup_interval=500, cell_labels=cell_labels, cell_types = cell_names)
