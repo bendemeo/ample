@@ -236,7 +236,7 @@ if __name__ == '__main__':
         gene_names=viz_genes, genes=genes,
         gene_expr=vstack(datasets),
         kmeans=False, visualize_orig=False,
-        filename='gsLSH_orig_fn'
+        filename='gsLSH_orig_fn_singlept'
     )
     # experiment_uni(
     #     X_dimred, NAMESPACE, cell_labels=cell_labels,
