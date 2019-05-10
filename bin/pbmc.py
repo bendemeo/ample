@@ -121,10 +121,17 @@ if __name__ == '__main__':
     picklename = None
 
     iter = 1
+    dimreds = [2,3,4,5,6,7,8,9]+np.arange(10, 100, 5).tolist()
+
+
+
+    radii=np.arange(.2, 0.01, -0.01).tolist()
+
+
     testParams = {
-        'rad':np.arange(.1,0.01,-0.01).tolist()*3,
+        'rad':radii*len(dimreds),
         'dist_fn':[euclidean],
-        'DIMRED':[5]
+        'DIMRED':np.repeat(dimreds, len(radii)).tolist()
     }
 
     tests = ['time','max_min_dist',
