@@ -195,7 +195,7 @@ class VPTree:
                                        node.right_min - d if d < node.right_min
                                        else d - node.right_max))
 
-        print('{} visited'.format(n_visited))
+        #print('{} visited'.format(n_visited))
 
         return [n[1] for n in list(neighbors)] # just return indices
 
