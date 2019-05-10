@@ -121,7 +121,7 @@ if __name__ == '__main__':
     picklename = None
 
     iter = 1
-    dimreds = [4,5,6,7,8,9]+np.arange(10, 100, 5).tolist()
+    dimreds = [8,9]+np.arange(10, 100, 5).tolist()
 
 
 
