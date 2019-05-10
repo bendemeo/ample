@@ -126,12 +126,7 @@ if __name__ == '__main__':
         'dist_fn':[euclidean],
         'DIMRED':[5]
     }
-
-    tests = ['time','max_min_dist',
-              'cluster_counts',python
-              'occSquares']
-
-
+    
     testResults = try_params(X_dimred, sampler,
                                   params=testParams,
                                   tests=tests,
