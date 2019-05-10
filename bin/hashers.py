@@ -51,14 +51,12 @@ class fastBall(sampler):
                 #print(tree)
                 nearest = tree.get_nearest_neighbor(nextPt)
                 dist = self.dist_fn(nextPt, self.data[nearest,:])
-
-
-                dists = [self.dist_fn(nextPt, p) for p in sampleData]
-                if min(dists) < dist:
-                    print('BAD DIST')
-                    print(min(dists))
-                    print(dist)
-                    print(tree)
+                # dists = [self.dist_fn(nextPt, p) for p in sampleData]
+                # if min(dists) < dist:
+                #     print('BAD DIST')
+                #     print(min(dists))
+                #     print(dist)
+                #     print(tree)
 
                 if dist > self.rad: #add point
                     sampled.append(nextInd)
@@ -66,7 +64,7 @@ class fastBall(sampler):
 
                     if len(sampled) % 100 == 0:
                         print('sampled {}'.format(len(sampled)))
-                        print(print('last visited {}'.format(tree.visited)))
+                        rint(print('last visited {}'.format(tree.visited)))
 
                     if len(sampled) > 2*lastBuild: #rebalance tree
                         lastBuild = len(sampled)
