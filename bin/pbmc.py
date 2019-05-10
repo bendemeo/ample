@@ -128,7 +128,7 @@ if __name__ == '__main__':
     }
 
     tests = ['time','max_min_dist',
-              'cluster_counts',python
+              'cluster_counts',
               'occSquares']
 
 
