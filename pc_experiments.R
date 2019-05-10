@@ -40,6 +40,7 @@ multigauss_gslsh$opt_grid = NULL
 gauss_all = rbind(gauss_pcalsh, gauss_grid)
 multigauss_all = rbind(multigauss_pcalsh, multigauss_gslsh)
 pbmc_all = rbind(pbmc_gs, pbmc_pcalsh)
+#pbmc_all = merge(pbmc_all, pbmc_uni, all=TRUE)
 
 cell_types = c("CD14+_Monocyte","CD19+_B","CD4+/CD25_T_Reg",
                "CD4+/CD45RA+/CD25-_Naive_T","CD4+/CD45RO+_Memory",
@@ -105,13 +106,12 @@ multigauss_all %>%
 
 
 
-pbmc_uniall = merge(pbmc_all, pbmc_uni,all=TRUE)
 
 
 
 
 ###### PBMC #######
-pbmc_3 = pbmc_all %>% filter(max_min_dist<2, occSquares < 2000) %>%
+pbmc_3 = pbmc_all %>% filter(max_min_dist<2) %>%
   group_by(occSquares, method) %>%
   summarize(max_min_dist = mean(max_min_dist)) %>%
   ggplot(aes(x=occSquares, y=max_min_dist))+
@@ -127,7 +127,7 @@ pbmc_1 = pbmc_all %>%
   scale_color_discrete(name='Covering Method', labels=c("Plaid Covering", "Learned Covers"))
   
 
-pbmc_2 = pbmc_all %>% filter(occSquares < 20000) %>%
+pbmc_2 = pbmc_all %>%
   group_by(occSquares, method) %>%
   summarize(time= mean(time)) %>%
   ggplot(aes(x=occSquares, y=time))+

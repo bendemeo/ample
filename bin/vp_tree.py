@@ -51,11 +51,14 @@ class vpNode:
                 self.parent.prune()
 
 class vpTree:
-    def __init__(self, data):
+    def __init__(self, data, inds=None):
         self.data = data
+        if inds is None:
+            inds = list(range(self.data.shape[0]))
+
         t0 = time()
         #print('building tree...')
-        self.tree = vpTree.buildTree(data, list(range(self.data.shape[0])))
+        self.tree = vpTree.buildTree(data, inds)
         t1 = time()
         #print('built tree in {} seconds'.format(t1-t0))
 
@@ -114,7 +117,7 @@ class vpTree:
             return(result)
 
 
-    def NNSearch(self, query, rad, prune = True, nearest = False):
+    def NNSearch(self, query, rad, prune = True, nearest = True):
         query = np.array(query)
         toSearch = [self.tree]
 
@@ -136,7 +139,7 @@ class vpTree:
                     result = [currentNode.ind]
                     rad = dist
 
-                currentNode.visited = True
+
 
                 if prune:
                     currentNode.prune()

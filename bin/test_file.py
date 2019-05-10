@@ -12,6 +12,7 @@ from copy import deepcopy
 from sklearn.metrics.pairwise import pairwise_distances
 from transformers import *
 from vp_tree import *
+from vptree import *
 
 
 #from lsh_experiments import start_experiment
@@ -157,11 +158,59 @@ def get_cmap(n, name='hsv'):
 if __name__ == '__main__':
 
     np.random.seed()
-    gauss = gauss_test([5000], 2, 1, [1])
+    gauss = gauss_test([500,500], 5, 2, [1,1])
     gauss -= gauss.min(0)
     gauss /= gauss.max()
 
+    def euclidean(p1, p2):
+        return np.sqrt(np.sum(np.power(p2 - p1, 2)))
+
+
+    sampler = fastBall(gauss, 0.01, euclidean)
+    sampler.downsample()
+    print(sampler.sample)
+    sampler.vizSample(full=True)
+
+
+
+
+
+    # print(gauss)
+    # t0 = time()
+    # tree2=VPTree(gauss, euclidean)
+    # t1 = time()
+    # print('BUILD TREE: other method took {} seconds'.format(t1-t0))
     #
+    # print(tree2)
+    # tree2.add([0,0,0],11111)
+    # tree2.add([100,100,100],2222)
+    # print(tree2)
+
+
+    # t0 = time()
+    # tree1 = vpTree(gauss)
+    # t1 = time()
+    # print('BUILD TREE: my method took {} seconds'.format(t1-t0))
+    #
+
+    #
+    # t0 = time()
+    # mine = tree1.NNSearch(gauss[10,:],rad=0.1, nearest=False)
+    # t1 = time()
+    # print('QUERY TREE: my method took {} seconds'.format(t1-t0))
+    #
+    # t0 = time()
+    # #theirs = tree2.get_nearest_neighbor(gauss[10,:])
+    # theirs = tree2.get_all_in_range(gauss[10,:], 0.1)
+    # t1 = time()
+    # print('QUERY TREE: their method took {} seconds'.format(t1-t0))
+
+    # print(sorted(mine))
+    # print(sorted(theirs))
+
+
+
+    # #
     # sampler = vpSampler(gauss, 0.1)
     # sampler.downsample('auto')
     # sampler.vizSample(full=True)
@@ -173,47 +222,47 @@ if __name__ == '__main__':
     #
     # query = [0.5,0.5]
     #
-    # print(sorted(tree.NNSearch(query, .01)))
+    # print(sorted(tree.NNSearch(query, .1)))
     #
     #
     # nns = []
     # for i in range(gauss.shape[0]):
     #     norm = np.linalg.norm(gauss[i,:]-query)
-    #     if norm <= .01:
+    #     if norm <= .1:
     #         nns += [i]
     #
     # print(sorted(nns))
+    #
+    #
+    #
+    #
 
 
-
-
-
-
-
-
-    embedding = random_embedding(gauss, shift_var=10, extrinsic =100)
-
-    tester = PCALSH(embedding, gridSize=0.296, target=1000)
-    tester.downsample(1000)
-    tester.data = gauss
-    tester.numFeatures=2
-    tester.vizSample(full=True)
+    #
+    #
+    # embedding = random_embedding(gauss, shift_var=10, extrinsic =100)
+    #
+    # tester = PCALSH(embedding, gridSize=0.296, target=1000)
     # tester.downsample(1000)
-    #print(tester.hash)
-
-    tester.data = gauss
-    tester.numFeatures = 2
-
-    tester.vizHash()
-    print(tester.occSquares)
-
-    gridTester = gridLSH(embedding, gridSize=0.1)
-    gridTester.makeHash()
-    gridTester.data = gauss
-    gridTester.numFeatures = 2
-    gridTester.vizHash()
-
-    print(gridTester.occSquares)
+    # tester.data = gauss
+    # tester.numFeatures=2
+    # tester.vizSample(full=True)
+    # # tester.downsample(1000)
+    # #print(tester.hash)
+    #
+    # tester.data = gauss
+    # tester.numFeatures = 2
+    #
+    # tester.vizHash()
+    # print(tester.occSquares)
+    #
+    # gridTester = gridLSH(embedding, gridSize=0.1)
+    # gridTester.makeHash()
+    # gridTester.data = gauss
+    # gridTester.numFeatures = 2
+    # gridTester.vizHash()
+    #
+    # print(gridTester.occSquares)
 
     # start_table = {():range(gauss.shape[0])}
     #

@@ -17,8 +17,67 @@ from itertools import *
 from sklearn.metrics.pairwise import pairwise_distances
 from fbpca import pca
 from scanorama import *
-from vp_tree import *
+from vptree import *
 import pickle
+#import vptree
+
+class fastBall(sampler):
+    def __init__(self, data, rad, dist_fn):
+        sampler.__init__(self,data)
+        self.rad = rad
+        self.dist_fn = dist_fn
+
+    def downsample(self, sampleSize='auto'):
+        sampled = []
+        sampleData = []
+        # sampleData = np.array([],dtype=np.float64).reshape(0, self.numFeatures)
+        available = list(range(self.numObs))
+        lastBuild = 1 # how large it was when you last rebuilt tree
+
+
+        while len(available) > 0:
+            idx = np.random.choice(len(available))
+            nextInd = available.pop(idx)
+            nextPt = self.data[nextInd,:]
+
+            if len(sampled) == 0: #first iteration; initialize tree
+                tree = VPTree([nextPt], self.dist_fn, [nextInd])
+                sampled.append(nextInd)
+                sampleData.append(nextPt)
+            else:
+                #print(tree)
+                nearest = tree.get_nearest_neighbor(nextPt)
+                dist = self.dist_fn(nextPt, self.data[nearest,:])
+
+
+                dists = [self.dist_fn(nextPt, p) for p in sampleData]
+                if min(dists) < dist:
+                    print('BAD DIST')
+                    print(min(dists))
+                    print(dist)
+                    print(tree)
+
+                if dist > self.rad: #add point
+                    sampled.append(nextInd)
+                    sampleData.append(nextPt)
+
+                    if len(sampled) % 100 == 0:
+                        print('sampled {}'.format(len(sampled)))
+
+                    if len(sampled) > 2*lastBuild: #rebalance tree
+                        lastBuild = len(sampled)
+                        print('rebuilding tree of size {}'.format(len(sampled)))
+                        tree = VPTree(sampleData,self.dist_fn, sampled)
+                    else:
+                        tree.add(nextPt, nextInd)
+
+        self.sample = sampled
+        self.occSquares = len(sampled)
+        return(sampled)
+
+
+
+
 
 
 
@@ -107,7 +166,8 @@ class bSampler(sampler):
                   size=max(int(30000/N), 1), image_suffix='.png')
 
 
-
+# class vpSampler2(neighborhoodSampler):
+#     def __init__(self, data, radius)
 
 
 class vpSampler(neighborhoodSampler):
@@ -116,12 +176,70 @@ class vpSampler(neighborhoodSampler):
         neighborhoodSampler.__init__(self,data)
         self.tree = vpTree(data)
         self.rad = radius
+        self.rebuilt = self.numObs
 
     def findCandidates(self, idx):
         query = self.data[idx,:]
         result = self.tree.NNSearch(query, self.rad)
         return(result)
 
+
+    def downsample(self, sampleSize = 'auto'):
+        self.lastCounts = []
+        sample = []
+        self.count = 0
+        self.reset = False
+        while True:
+            if len(self.available) == 0: ## reset if still have more to sample
+                self.reset = True
+                log("sampled {} out of {} before reset".format(self.count, sampleSize))
+                self.lastCounts.append(self.count)
+
+                if sampleSize == 'auto':  # stop sampling when you run out
+                    break
+
+                self.count = 0
+                self.available = list(itertools.compress(range(self.numObs), self.valid_sample))
+
+                #reset included so only available indices are true
+                self.included = [False]*self.numObs
+                for i in self.available:
+                    self.included[i] = True
+
+                self.fullReset()
+
+            next = np.random.choice(self.available)
+            sample.append(next)
+            self.valid_sample[next] = False
+            if (sampleSize != 'auto') and (len(sample) >= sampleSize):
+                break
+
+            self.count += 1
+
+            toRemove = self.findCandidates(next)
+            #print('removed {}'.format(len(toRemove)))
+
+            for i in toRemove:
+                self.included[i] = False
+
+            self.available = list(itertools.compress(range(self.numObs), self.included))
+
+            #rebuild tree to rebalance if necessary
+            if len(self.available) < self.rebuilt / 2.:
+                print('{} available')
+                print('rebuilding tree with {} nodes'.format(len(self.available)))
+                self.tree = vpTree(self.data[self.available,:],inds=self.available)
+                self.rebuilt = len(self.available)
+
+            #print('{} left'.format(len(self.available)))
+        if not self.reset:
+            self.remnants = len(self.available)
+        else:
+            self.remnants = 0
+
+        self.sample = sorted(np.unique(sample))
+
+        return(self.sample)
 
 
 

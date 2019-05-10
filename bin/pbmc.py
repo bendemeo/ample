@@ -95,11 +95,42 @@ if __name__ == '__main__':
 
     CountFrequency(labels)
 
-
+    def euclidean(p1, p2):
+        return np.sqrt(np.sum(np.power(p2 - p1, 2)))
 
     viz_genes = []
     genes = []
 
+
+    sampler = 'fastBall'
+    filename = 'pbmc_fastball_test'
+    picklename = None
+
+    iter = 1
+    testParams = {
+        'rad':np.arange(.4,0.01,-0.01).tolist()*3,
+        'dist_fn':[euclidean]
+    }
+
+    tests = ['time','max_min_dist',
+              'cluster_counts',
+              'occSquares']
+
+
+    testResults = try_params(X_dimred, sampler,
+                                  params=testParams,
+                                  tests=tests,
+                                  n_seeds=1,
+                                  cell_labels=cell_labels,
+                                  Ns=['auto'],
+                                  cluster_labels = labels,
+                                  backup=filename+'_backup',
+                                  picklename = picklename)
+
+    # with open("gsLSH_gridTest.file", "wb") as f:
+    #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
+
+    testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
     # filename = 'pbmc_gsLSH_subsample'
     # downsampler = gsLSH(X_dimred, opt_grid=True, target='N')
@@ -142,24 +173,24 @@ if __name__ == '__main__':
     #
     # testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
-
-    sampler = 'uniformSampler'
-    filename = 'pbmc_Uniform_hausdorff'
-    iter = 1
-    testParams = {'p':[1]}
-
-    tests = ['time','max_min_dist']
-
-    testResults = try_params(X_dimred, sampler,
-                                  params=testParams,
-                                  tests=tests,
-                                  n_seeds=5,
-                                  cell_labels=cell_labels,
-                                  Ns=np.arange(1000, 50000, 1000).tolist(),
-                                  cluster_labels = labels,
-                                  backup=filename+'_backup',
-                                  picklename = None)
-    testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+    #
+    # sampler = 'uniformSampler'
+    # filename = 'pbmc_Uniform_hausdorff'
+    # iter = 1
+    # testParams = {'p':[1]}
+    #
+    # tests = ['time','max_min_dist']
+    #
+    # testResults = try_params(X_dimred, sampler,
+    #                               params=testParams,
+    #                               tests=tests,
+    #                               n_seeds=5,
+    #                               cell_labels=cell_labels,
+    #                               Ns=np.arange(1000, 50000, 1000).tolist(),
+    #                               cluster_labels = labels,
+    #                               backup=filename+'_backup',
+    #                               picklename = None)
+    # testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
     # #
