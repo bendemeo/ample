@@ -30,6 +30,9 @@ class VPTree:
         self.dist_fn = dist_fn
         self.split = 0
 
+
+
+
         if inds is None:
             inds = list(range(points.shape[0]))
         self.inds = inds

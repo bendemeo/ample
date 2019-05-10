@@ -22,10 +22,13 @@ import pickle
 #import vptree
 
 class fastBall(sampler):
-    def __init__(self, data, rad, dist_fn):
-        sampler.__init__(self,data)
+    def __init__(self, data, rad, dist_fn, DIMRED=5):
+        data_dimred = data[:,:DIMRED]
+
+        sampler.__init__(self,data_dimred)
         self.rad = rad
         self.dist_fn = dist_fn
+
 
     def downsample(self, sampleSize='auto'):
         sampled = []

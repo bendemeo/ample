@@ -102,6 +102,20 @@ if __name__ == '__main__':
     genes = []
 
 
+    # X_dimred = X_dimred[:,:5]
+    # t0 = time()
+    # tree2 = VPTree(X_dimred, dist_fn = euclidean)
+    # t1 = time()
+    # print('{} to make tree on whole data'.format(t1-t0))
+    #
+    #
+    # t0 = time()
+    # #theirs = tree2.get_nearest_neighbor(gauss[10,:])
+    # theirs = tree2.get_nearest_neighbor(X_dimred[10,:])
+    # t1 = time()
+    # print('QUERY TREE: their method took {} seconds'.format(t1-t0))
+
+    #
     sampler = 'fastBall'
     filename = 'pbmc_fastball_test'
     picklename = None
@@ -109,7 +123,8 @@ if __name__ == '__main__':
     iter = 1
     testParams = {
         'rad':np.arange(.4,0.01,-0.01).tolist()*3,
-        'dist_fn':[euclidean]
+        'dist_fn':[euclidean],
+        'DIMRED':[5]
     }
 
     tests = ['time','max_min_dist',
