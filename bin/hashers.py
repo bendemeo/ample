@@ -66,6 +66,7 @@ class fastBall(sampler):
 
                     if len(sampled) % 100 == 0:
                         print('sampled {}'.format(len(sampled)))
+                        print(print('last visited {}'.format(tree.visted)))
 
                     if len(sampled) > 2*lastBuild: #rebalance tree
                         lastBuild = len(sampled)
