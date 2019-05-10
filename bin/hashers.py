@@ -26,7 +26,7 @@ class fastBall(sampler):
         data_dimred = data[:,:DIMRED]
         self.treeData = data_dimred
 
-        sampler.__init__(self,data_dimred)
+        sampler.__init__(self,data)
         self.rad = rad
         self.dist_fn = dist_fn
 
@@ -38,6 +38,8 @@ class fastBall(sampler):
         available = list(range(self.numObs))
         lastBuild = 1 # how large it was when you last rebuilt tree
 
+        print(self.treeData)
+        print(self.data)
 
         while len(available) > 0:
             idx = np.random.choice(len(available))
@@ -51,7 +53,9 @@ class fastBall(sampler):
             else:
                 #print(tree)
                 nearest = tree.get_nearest_neighbor(nextPt)
-                dist = self.dist_fn(nextPt, self.data[nearest,:])
+
+                nextPt_fulldimension = self.data[nextInd,:]
+                dist = self.dist_fn(nextPt_fulldimension, self.data[nearest,:])
                 # dists = [self.dist_fn(nextPt, p) for p in sampleData]
                 # if min(dists) < dist:
                 #     print('BAD DIST')

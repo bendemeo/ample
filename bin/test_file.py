@@ -166,10 +166,10 @@ if __name__ == '__main__':
         return np.sqrt(np.sum(np.power(p2 - p1, 2)))
 
     #
-    # sampler = fastBall(gauss, 0.01, euclidean)
-    # sampler.downsample()
-    # print(sampler.sample)
-    # sampler.vizSample(full=True)
+    sampler = fastBall(gauss, 0.05, euclidean, DIMRED=4)
+    sampler.downsample()
+    print(sampler.sample)
+    sampler.vizSample(full=True)
     #
     #
     #
