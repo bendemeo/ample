@@ -24,6 +24,7 @@ import pickle
 class fastBall(sampler):
     def __init__(self, data, rad, dist_fn, DIMRED=5):
         data_dimred = data[:,:DIMRED]
+        self.treeData = data_dimred
 
         sampler.__init__(self,data_dimred)
         self.rad = rad
@@ -41,7 +42,7 @@ class fastBall(sampler):
         while len(available) > 0:
             idx = np.random.choice(len(available))
             nextInd = available.pop(idx)
-            nextPt = self.data[nextInd,:]
+            nextPt = self.treeData[nextInd,:]
 
             if len(sampled) == 0: #first iteration; initialize tree
                 tree = VPTree([nextPt], self.dist_fn, [nextInd])

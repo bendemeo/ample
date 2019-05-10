@@ -122,13 +122,13 @@ if __name__ == '__main__':
 
     iter = 1
     testParams = {
-        'rad':np.arange(.1,0.01,-0.01).tolist()*3,
+        'rad':np.arange(.3,0.01,-0.01).tolist()*3,
         'dist_fn':[euclidean],
         'DIMRED':[5]
     }
 
     tests = ['time','max_min_dist',
-              'cluster_counts',
+              'cluster_counts',python
               'occSquares']
 
 
