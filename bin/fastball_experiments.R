@@ -5,7 +5,7 @@ library(gridExtra)
 setwd('~/Documents/bergerlab/lsh/ample/')
 
 
-pbmc_fb = fread('target/experiments/pbmc_fastball_test_backup.txt')
+pbmc_fb = fread('target/experiments/pbmc_fastball_test_fulldim_backup.txt')
 pbmc_fb$method = rep('fastball', nrow(pbmc_fb))
 
 pbmc_gs = fread('target/experiments/pbmc_gsLSH_tests_backup.txt')
@@ -19,7 +19,11 @@ pbmc_all = merge(pbmc_gs, pbmc_fb, all=TRUE)
 
 ### make some plots
 pbmc_all %>% ggplot(aes(x=occSquares, y=max_min_dist))+
-  geom_line(aes(color=method))
+  geom_line(aes(color=as.character(DIMRED)))
+
+pbmc_all %>%
+  ggplot(aes(x=gridSize, y=occSquares))+
+  geom_line(aes(color=as.character(DIMRED)))
 
 pbmc_all %>% ggplot(aes(x=occSquares,y=time))+
-  geom_line(aes(color=method))
+  geom_line(aes(color=as.character(DIMRED)))
