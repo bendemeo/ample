@@ -117,10 +117,10 @@ if __name__ == '__main__':
 
     #
     sampler = 'fastBall'
-    filename = 'pbmc_fastball_test_fulldim'
+    filename = 'pbmc_fastball_test_2_fulldim'
     picklename = None
 
-    iter = 1
+    iter = 2
     dimreds = [5,6,7,8,9]+np.arange(10, 100, 5).tolist()
 
 
