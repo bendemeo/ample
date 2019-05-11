@@ -67,7 +67,7 @@ class fastBall(sampler):
                 if dist > self.rad: #add point
                     sampled.append(nextInd)
                     sampleData.append(nextPt)
-                    if len(sampled) > maxSize:
+                    if len(sampled) > self.maxSize:
                         break
 
                     if len(sampled) % 100 == 0:
