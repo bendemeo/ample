@@ -22,13 +22,14 @@ import pickle
 #import vptree
 
 class fastBall(sampler):
-    def __init__(self, data, rad, dist_fn, DIMRED=5):
+    def __init__(self, data, rad, dist_fn, DIMRED=5, maxSize=np.inf):
         data_dimred = data[:,:DIMRED]
         self.treeData = data_dimred
 
         sampler.__init__(self,data)
         self.rad = rad
         self.dist_fn = dist_fn
+        self.maxSize = maxSize
 
 
     def downsample(self, sampleSize='auto'):
@@ -66,6 +67,8 @@ class fastBall(sampler):
                 if dist > self.rad: #add point
                     sampled.append(nextInd)
                     sampleData.append(nextPt)
+                    if len(sampled) > maxSize:
+                        break
 
                     if len(sampled) % 100 == 0:
                         print('sampled {}'.format(len(sampled)))

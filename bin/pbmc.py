@@ -125,13 +125,17 @@ if __name__ == '__main__':
 
 
 
-    radii=np.arange(1, 0.01, -0.01).tolist()
+    #radii=np.arange(1, 0.01, -0.01).tolist()
 
+    sizes = np.arange(1, 30000, 500).tolist()
+    N=X_dimred.shape[0]
+    radii = [1-math.log(s)/math.log(N) for s in sizes]
 
     testParams = {
         'rad':radii*len(dimreds),
         'dist_fn':[euclidean],
-        'DIMRED':np.repeat(dimreds, len(radii)).tolist()
+        'DIMRED':np.repeat(dimreds, len(radii)).tolist(),
+        'maxSize':[25000]
     }
 
     tests = ['time','max_min_dist',
