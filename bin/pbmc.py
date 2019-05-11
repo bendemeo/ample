@@ -117,7 +117,7 @@ if __name__ == '__main__':
 
     #
     sampler = 'fastBall'
-    filename = 'pbmc_fastball_test_2_fulldim'
+    filename = 'pbmc_fastball_test_3_fulldim'
     picklename = None
 
     iter = 2
