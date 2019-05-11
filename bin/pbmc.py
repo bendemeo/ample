@@ -121,7 +121,8 @@ if __name__ == '__main__':
     picklename = None
 
     iter = 2
-    dimreds = [5,6,7,8,9]+np.arange(10, 100, 5).tolist()
+    #dimreds = [5,6,7,8,9]+np.arange(10, 100, 5).tolist()
+    dimreds=[2,3,100]
 
 
 
@@ -129,8 +130,8 @@ if __name__ == '__main__':
 
     sizes = np.arange(1, 30000, 500).tolist()
     N=X_dimred.shape[0]
-    #radii = np.arange(1, 0.7, -0.1).tolist()+np.arange(0.65, 0.35, -0.05).tolist()+np.arange(0.3, 0.1, -0.02).tolist()
-    radii=[1,2,3,100]
+    radii = np.arange(1, 0.7, -0.1).tolist()+np.arange(0.65, 0.35, -0.05).tolist()+np.arange(0.3, 0.1, -0.02).tolist()
+
 
 
     [1-(math.log(s)/math.log(N)) for s in sizes]
