@@ -98,12 +98,10 @@ if __name__ == '__main__':
 
     #radii=np.arange(1, 0.01, -0.01).tolist()
 
-    #sizes = np.arange(1, 30000, 500).tolist()
+    sizes = np.arange(1, 30000, 500).tolist()
     N=X_dimred.shape[0]
     radii = np.arange(1, 0.7, -0.1).tolist()+np.arange(0.65, 0.35, -0.05).tolist()+np.arange(0.3, 0.1, -0.02).tolist()
 
-
-    [1-(math.log(s)/math.log(N)) for s in sizes]
     print(radii)
 
     testParams = {
