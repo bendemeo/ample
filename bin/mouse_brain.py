@@ -115,7 +115,7 @@ if __name__ == '__main__':
         'rad':radii*len(dimreds),
         'dist_fn':[euclidean],
         'DIMRED':np.repeat(dimreds, len(radii)).tolist(),
-        'maxSize':[22000]
+        'maxSize':[10000]
     }
 
     tests = ['time','max_min_dist',
