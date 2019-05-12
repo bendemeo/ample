@@ -89,6 +89,9 @@ if __name__ == '__main__':
     def euclidean(p1, p2):
         return np.sqrt(np.sum(np.power(p2 - p1, 2)))
 
+    #normalize to 1
+    X_dimred -= X_dimred.min(0)
+    X_dimred /= X_dimred.max()
 
     sampler = 'fastBall'
     filename = 'mouse_brain_fastball_fulldim'
