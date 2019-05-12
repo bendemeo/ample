@@ -86,6 +86,10 @@ if __name__ == '__main__':
 
     print(X_dimred.shape)
 
+    def euclidean(p1, p2):
+        return np.sqrt(np.sum(np.power(p2 - p1, 2)))
+
+
     sampler = 'fastBall'
     filename = 'mouse_brain_fastball_fulldim'
     picklename = None
