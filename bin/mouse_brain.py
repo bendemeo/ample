@@ -118,7 +118,7 @@ if __name__ == '__main__':
         'maxSize':[10000]
     }
 
-    tests = ['time','max_min_dist',
+    tests = ['time',
               'cluster_counts',
               'occSquares']
 
