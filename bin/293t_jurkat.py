@@ -99,9 +99,9 @@ if __name__ == '__main__':
 
 
 
-    downsampler = centerSampler(X_dimred, numCenters=100, transformed=True)
-    downsampler.downsample(500)
-    downsampler.vizSample(file='293t_centerSample_transformed', anno=True, full=True)
+    # downsampler = centerSampler(X_dimred, numCenters=100, transformed=True)
+    # downsampler.downsample(500)
+    # downsampler.vizSample(file='293t_centerSample_transformed', anno=True, full=True)
 
     # downsampler = sigSampler(X_dimred, bins=10)
     # downsampler.downsample(500)
@@ -212,17 +212,18 @@ if __name__ == '__main__':
     # downsampler.makeHash()
     # downsampler.downsample(500)
     # downsampler.vizHash(file='293t_gsLSH_vizhash')
+    for dimred in range(5,20):
+        downsampler = diverseLSH(X_dimred, numCenters = 2, batch=1000,pca=dimred)
 
-    # downsampler = diverseLSH(X_dimred, numCenters = 2, batch=1000)
-    # for k in range(2,20):
-    #     print(downsampler)
-    #     downsampler.numCenters=k
-    #     downsampler.makeHash()
-    #     downsampler.makeFinder()
-    #     downsampler.downsample(100)
-    #     downsampler.vizHash(file='293t_diverseLSH_vizhash_{}'.format(k))
-    #     downsampler.vizSample(file='293t_diverseLSH_vizsample_{}'.format(k))
-    #     print('k={} done'.format(k))
+        for k in [2,3,5,10,20]:
+            #print(downsampler)
+            downsampler.numCenters=k
+            downsampler.makeHash()
+            downsampler.makeFinder()
+            downsampler.downsample(100)
+            downsampler.vizHash(file='293t_diverseLSH_vizhash_{}_dimred_{}'.format(k, dimred))
+            downsampler.vizSample(file='293t_diverseLSH_vizsample_{}_dimred_{}'.format(k,dimred))
+            print('k={} done'.format(k))
 
     # downsampler = svdSampler(X_dimred, batch=500)
     # # downsampler.normalize()

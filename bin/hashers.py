@@ -21,6 +21,21 @@ from vptree import *
 import pickle
 #import vptree
 
+class PCAFastBall(sampler):
+    def __init__(self, data, rad, dist_fn, maxSize=np.inf,DIMRED=3):
+        sampler.__init__(self,data)
+        self.rad = rad
+        self.dist_fn = dist_fn
+        self.maxSize = maxSize
+        self.DIMRED = DIMRED
+
+    def downsample(sampleSize='auto'):
+        sampled = []
+        sampleData = []
+
+
+
+
 class fastBall(sampler):
     def __init__(self, data, rad, dist_fn, DIMRED=5, maxSize=np.inf):
         data_dimred = data[:,:DIMRED]
@@ -1787,7 +1802,7 @@ class diverseLSH(LSH):
     """uses a DPP-like process to select diverse centers,
      then assigns points to their nearest one"""
 
-    def __init__(self, data, numCenters=10, batch=100, steps=1000, replace=False, **kwargs):
+    def __init__(self, data, numCenters=10, batch=100, steps=1000, replace=False, pcs=5, **kwargs):
         numBands = 1
         bandSize = 1
         numHashes = 1
@@ -1815,8 +1830,8 @@ class diverseLSH(LSH):
         for i in range(self.numObs):
             centerDists = []
             for c in self.centers:
-                centerDists.append(np.linalg.norm(self.data[i, :]
-                                                  - self.data[c, :]))
+                centerDists.append(np.linalg.norm(self.data[i, :pcs]
+                                                  - self.data[c, :pcs]))
             hashes[i, 0] = self.centers[centerDists.index(min(centerDists))]
 
         self.hash = hashes

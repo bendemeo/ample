@@ -2,6 +2,8 @@
 import numpy as np
 
 
+
+
 class VPTree:
 
     """ VP-Tree data structure for efficient nearest neighbor search.
@@ -20,7 +22,7 @@ class VPTree:
         Minimum number of points in leaves (IGNORED).
     """
 
-    def __init__(self, points, dist_fn, inds=None):
+    def __init__(self, points, dist_fn, inds=None, PCA=False, rawPoints=None, PC_dims=3):
         self.left = None
         self.right = None
         self.left_min = np.inf
@@ -30,6 +32,9 @@ class VPTree:
         self.dist_fn = dist_fn
         self.split = 0
 
+
+        if rawPoints = None:
+            rawPoints = points
 
 
 
@@ -79,6 +84,11 @@ class VPTree:
                 else:
                     left_points.append(point)
                     left_inds.append(idx)
+
+        if(PCA):
+            U,s,Vt = pca(points, k=DIMRED)
+            dimred = U[:,:DIMRED] * s[:DIMRED]
+            dimred -= dimred.min()
 
         if len(left_points) > 0:
             self.left = VPTree(points=left_points, dist_fn=self.dist_fn, inds=left_inds)

@@ -23,6 +23,8 @@ pbmc_gs$method = rep('gs', nrow(pbmc_gs))
 #pbmc_fb$DIMRED = as.character(pbmc_fb$DIMRED)
 
 
+mb_fb=fread('target/experiments/mouse_brain_fastball_fulldim_backup.txt')
+
 colnames(pbmc_fb)[5] = 'gridSize'
 
 pbmc_others = merge(pbmc_gs, pbmc_pcalsh, all=TRUE)
@@ -31,19 +33,83 @@ pbmc_all = merge(pbmc_others, pbmc_fb, all=TRUE)
 #pbmc_all$DIMRED = as.numeric(pbmc_all$DIMRED)
 
 ### make some plots
+
+
+
+pdf('~/Documents/bergerlab/6.890/mouse_brain_runtimes.pdf',8,3.6)
+mb_fb %>% 
+  ggplot(aes(x=occSquares, y=time))+
+  geom_line(aes(color=factor(DIMRED)))+
+  geom_line(data=mouse_brain, aes(x=occSquares, y=time, lty=method))+
+  scale_linetype_discrete(labels=c('Geometric Sketch','PC-Sketch'))+
+  coord_cartesian(xlim=c(0,7500))+
+  ggtitle('Mouse Brain Data')+
+  xlab('Sketch size (out of 690K)')+
+  ylab('Runtime (seconds)')+
+  guides(color=guide_legend(ncol=2))+
+  scale_color_discrete(name='Fastball VP-tree\nbuilding dimension')
+dev.off()
+
+
+p1 = pbmc_fb %>%
+  filter(DIMRED %in% c(2,3,5,10,20,100)) %>%
+  ggplot(aes(x=occSquares, y=max_min_dist))+
+  coord_cartesian(xlim=c(0,10000))+
+  geom_line(aes(color=factor(DIMRED)))+
+  geom_line(data=pbmc_others, aes(lty=method))+
+  xlab('Sketch size (out of 68K)')+
+  ylab('Hausdorff distance')+
+  scale_linetype_discrete(name='Other methods')+
+  scale_color_discrete(name='FastBall VP-tree \nbuilding dimension')+
+  ggtitle('PBMC data Hausdorff distances')
+
+pdf('~/Documents/bergerlab/6.890/pbmc_fastball_hausdorff.pdf',9,3)
 pbmc_fb %>%
   filter(DIMRED %in% c(2,3,5,10,20,100)) %>%
   ggplot(aes(x=occSquares, y=max_min_dist))+
   coord_cartesian(xlim=c(0,10000))+
   geom_line(aes(color=factor(DIMRED)))+
-  geom_line(data=pbmc_others, aes(lty=method))
+  geom_line(data=pbmc_others, aes(lty=method))+
+  xlab('Sketch size (out of 68K)')+
+  ylab('Hausdorff distance')+
+  scale_linetype_discrete(labels=c('Geometric Sketch','PC-Sketch'))+
+  scale_color_discrete(name='FastBall VP-tree \nbuilding dimension')+
+  ggtitle('PBMC data Hausdorff distances')+
+  guides(color=guide_legend(ncol=2))
+dev.off()
 
 pbmc_all %>%
   ggplot(aes(x=gridSize, y=log(occSquares)))+
   geom_line(aes(color=as.character(DIMRED)))
 
+
+
+p2 = pbmc_fb %>% filter(occSquares < 25000) %>% 
+  filter(DIMRED %in% c(2,3,5,10,20,100)) %>%
+  ggplot(aes(x=occSquares,y=time))+
+  geom_line(aes(color=factor(DIMRED)))+
+  geom_line(data=pbmc_others %>% group_by(occSquares, method) %>% summarize(time=mean(time)), aes(lty=method))+
+  coord_cartesian(ylim=c(0,500), xlim=c(0,20000))+
+  scale_linetype_discrete(name='Other methods',labels=c('Geometric Sketch','PC-Sketch'))+
+  scale_color_discrete(name='FastBall VP-tree \nbuilding dimension')+
+  ggtitle('PBMC Data Runtimes')+
+  xlab('Sketch size (out of 68K)')+
+  ylab('Runtime (seconds)')
+
+pdf('~/Documents/bergerlab/6.890/pbmc_fastball_runtimes.pdf', 8,3.6)
 pbmc_fb %>% filter(occSquares < 25000) %>% ggplot(aes(x=occSquares,y=time))+
   geom_line(aes(color=factor(DIMRED)))+
   geom_line(data=pbmc_others %>% group_by(occSquares, method) %>% summarize(time=mean(time)), aes(lty=method))+
-  coord_cartesian(ylim=c(0,500), xlim=c(0,20000))
+  coord_cartesian(ylim=c(0,500), xlim=c(0,20000))+
+  scale_linetype_discrete(labels=c('Geometric Sketch','PC-Sketch'))+
+  scale_color_discrete(name='FastBall VP-tree \nbuilding dimension')+
+  ggtitle('PBMC Data Runtimes')+
+  xlab('Sketch size (out of 68K)')+
+  ylab('Runtime (seconds)')+
+  guides(color=guide_legend(ncol=2))
+dev.off()
+
+pdf('~/Documents/bergerlab/6.890/pbmc_fastball_alltests.pdf', 8,5)
+grid.arrange(p2, p1, nrow=1)
+
 
