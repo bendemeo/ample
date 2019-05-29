@@ -1814,6 +1814,7 @@ class diverseLSH(LSH):
         self.batch = batch
         self.steps = steps
         self.centers = None
+        self.pcs = pcs
 
     def makeHash(self):
         # print('data at time of hashing:')
@@ -1830,8 +1831,8 @@ class diverseLSH(LSH):
         for i in range(self.numObs):
             centerDists = []
             for c in self.centers:
-                centerDists.append(np.linalg.norm(self.data[i, :pcs]
-                                                  - self.data[c, :pcs]))
+                centerDists.append(np.linalg.norm(self.data[i, :self.pcs]
+                                                  - self.data[c, :self.pcs]))
             hashes[i, 0] = self.centers[centerDists.index(min(centerDists))]
 
         self.hash = hashes
