@@ -214,7 +214,7 @@ if __name__ == '__main__':
     # downsampler.vizHash(file='293t_gsLSH_vizhash')
     downsampler = diverseLSH(X_dimred, numCenters = 2, batch=1000,pcs=4)
     for dimred in range(5,20):
-        for k in [2,3,5,10,20]:
+        for k in [2,3,5,10,20,50,100]:
 
             #print(downsampler)
             downsampler.pcs = dimred
