@@ -212,11 +212,12 @@ if __name__ == '__main__':
     # downsampler.makeHash()
     # downsampler.downsample(500)
     # downsampler.vizHash(file='293t_gsLSH_vizhash')
+    downsampler = diverseLSH(X_dimred, numCenters = 2, batch=1000,pcs=4)
     for dimred in range(5,20):
-        downsampler = diverseLSH(X_dimred, numCenters = 2, batch=1000,pcs=dimred)
-
         for k in [2,3,5,10,20]:
+
             #print(downsampler)
+            downsampler.pcs = dimred
             downsampler.numCenters=k
             downsampler.makeHash()
             downsampler.makeFinder()
