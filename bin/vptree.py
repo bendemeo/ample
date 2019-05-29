@@ -33,7 +33,7 @@ class VPTree:
         self.split = 0
 
 
-        if rawPoints = None:
+        if rawPoints is None:
             rawPoints = points
 
 
