@@ -97,13 +97,13 @@ if __name__ == '__main__':
 
     def euclidean(p1, p2):
         return np.sqrt(np.sum(np.power(p2 - p1, 2)))
-
+ss
     viz_genes = []
     genes = []
 
     np.savetxt('pbmc_dimred', X_dimred, delimiter = '\t')
     print('saved pbmc')
-    np.savetxt('pbmc_labels', np.reshape(labels,(len(labels),1)) delimiter='\t')
+    np.savetxt('pbmc_labels', np.reshape(labels,(len(labels),1)), delimiter='\t')
 
 
     # X_dimred = X_dimred[:,:5]
