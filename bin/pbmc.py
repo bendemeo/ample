@@ -100,10 +100,11 @@ if __name__ == '__main__':
     viz_genes = []
     genes = []
 
-    np.savetxt('pbmc_dimred', X_dimred, delimiter = '\t')
-    print('saved pbmc')
+    # np.savetxt('pbmc_dimred', X_dimred, delimiter = '\t')
+    # print('saved pbmc')
     print(labels[1:10])
-    np.savetxt('pbmc_labels', np.array(labels), delimiter='\t')
+    pd.DataFrame(labels).to_csv("pbmc_labels")
+    #np.savetxt('pbmc_labels', np.array(labels), delimiter='\t')
 
 
     # X_dimred = X_dimred[:,:5]
