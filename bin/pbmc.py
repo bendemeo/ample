@@ -127,7 +127,7 @@ if __name__ == '__main__':
 
     iter = 2
     #dimreds = [5,6,7,8,9]+np.arange(10, 100, 5).tolist()
-    dimreds=[2,3,100]
+    dimreds=[2,3,4,5,7,10,20]
 
 
 
@@ -147,8 +147,7 @@ if __name__ == '__main__':
         'dist_fn':[euclidean],
         'DIMRED':np.repeat(dimreds, len(radii)).tolist(),
         'maxSize':[25000],
-        'PCA':[True],
-        'DIMRED':[3]
+        'PCA':[True]
     }
 
     tests = ['time','max_min_dist',
