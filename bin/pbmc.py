@@ -97,7 +97,6 @@ if __name__ == '__main__':
 
     def euclidean(p1, p2):
         return np.sqrt(np.sum(np.power(p2 - p1, 2)))
-ss
     viz_genes = []
     genes = []
 
