@@ -51,9 +51,25 @@ def multi_gauss(N=1000, centers=1, intrinsic = 2, extrinsic=100, var = 1, shift_
     #test_gridSizes(result, sampler, 'pcaLSH', seeds=10, iter=iter)
 
 if __name__ == '__main__':
-    # N=5000
-    # gridSize=0.01
-    # X = multi_gauss(N, centers=50, intrinsic=2, extrinsic=100, var=1, shift_var=2)
+
+    #print(gauss)
+    def euclidean(p1, p2):
+        return np.sqrt(np.sum(np.power(p2 - p1, 2)))
+
+
+
+    N=5000
+    gridSize=0.1
+    X = multi_gauss(N, centers=1, intrinsic=2, extrinsic=2, var=1, shift_var=2)
+
+    sampler = fastBall(X, rad=0.5, dist_fn=euclidean, PCA=True, DIMRED=1)
+    sampler.downsample('auto')
+    sampler.vizSample(full=True)
+
+
+
+
+
     #
     # sampler = 'PCALSH'
     # filename = 'PCALSH_multigauss_hausdorff'
@@ -79,17 +95,17 @@ if __name__ == '__main__':
     # # X = multi_gauss(N, centers=50, intrinsic=2, extrinsic=100, var=1, shift_var=2)
     #
 
-    N=500
-    gridSize=0.01
-    X = multi_gauss(N, centers=50, intrinsic=2, extrinsic=100, var=1, shift_var=1)
-    X-=X.min(0)
-    X/=X.max()
-
-
-    sampler = bSampler(X, 0.02, backup_interval=10)
-    sampler.downsample(filename = 'testy')
-    print(sampler.sample)
-    sampler.vizSample(filename='testytest')
+    # N=500
+    # gridSize=0.01
+    # X = multi_gauss(N, centers=50, intrinsic=2, extrinsic=100, var=1, shift_var=1)
+    # X-=X.min(0)
+    # X/=X.max()
+    #
+    #
+    # sampler = bSampler(X, 0.02, backup_interval=10)
+    # sampler.downsample(filename = 'testy')
+    # print(sampler.sample)
+    # sampler.vizSample(filename='testytest')
 
 
     # sampler = 'gsLSH'

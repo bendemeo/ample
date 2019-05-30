@@ -162,51 +162,53 @@ if __name__ == '__main__':
     gauss -= gauss.min(0)
     gauss /= gauss.max()
 
+    #print(gauss)
     def euclidean(p1, p2):
         return np.sqrt(np.sum(np.power(p2 - p1, 2)))
 
+    # #
+    # sampler = fastBall(gauss, 0.05, euclidean, DIMRED=4)
+    # sampler.downsample()
+    # print(sampler.sample)
+    # sampler.vizSample(full=True)
     #
-    sampler = fastBall(gauss, 0.05, euclidean, DIMRED=4)
-    sampler.downsample()
-    print(sampler.sample)
-    sampler.vizSample(full=True)
     #
     #
-    #
-
-
-    #print(gauss)
-    t0 = time()
-    tree2=VPTree(gauss, euclidean)
-    t1 = time()
-    print('BUILD TREE: other method took {} seconds'.format(t1-t0))
-    #
+    # #print(gauss)
+    # t0 = time()
+    # tree2=VPTree(gauss, euclidean, PCA=True)
+    # t1 = time()
+    # tree2.add([0]*20,1308)
+    # print(tree2.get_nearest_neighbor([0.001]*20))
     # print(tree2)
-    # tree2.add([0,0,0],11111)
-    # tree2.add([100,100,100],2222)
-    # print(tree2)
-
-
-    t0 = time()
-    tree1 = vpTree(gauss)
-    t1 = time()
-    print('BUILD TREE: my method took {} seconds'.format(t1-t0))
-
-
+    # print('BUILD TREE: other method took {} seconds'.format(t1-t0))
+    # #
+    # # print(tree2)
+    # # tree2.add([0,0,0],11111)
+    # # tree2.add([100,100,100],2222)
+    # # print(tree2)
     #
-    t0 = time()
-    mine = tree1.NNSearch(gauss[10,:],rad=0.1, nearest=True)
-    t1 = time()
-    print('QUERY TREE: my method took {} seconds'.format(t1-t0))
-
-    t0 = time()
-    #theirs = tree2.get_nearest_neighbor(gauss[10,:])
-    theirs = tree2.get_nearest_neighbor(gauss[1000,:]+np.random.normal(20,0))
-    t1 = time()
-    print('QUERY TREE: their method took {} seconds'.format(t1-t0))
-
-    print(sorted(mine))
-    print(sorted(theirs))
+    #
+    # t0 = time()
+    # tree1 = vpTree(gauss)
+    # t1 = time()
+    # print('BUILD TREE: my method took {} seconds'.format(t1-t0))
+    #
+    #
+    # #
+    # t0 = time()
+    # mine = tree1.NNSearch(gauss[10,:],rad=0.1, nearest=True)
+    # t1 = time()
+    # print('QUERY TREE: my method took {} seconds'.format(t1-t0))
+    #
+    # t0 = time()
+    # #theirs = tree2.get_nearest_neighbor(gauss[10,:])
+    # theirs = tree2.get_nearest_neighbor(gauss[1000,:]+np.random.normal(20,0))
+    # t1 = time()
+    # print('QUERY TREE: their method took {} seconds'.format(t1-t0))
+    #
+    # print(sorted(mine))
+    # print(sorted(theirs))
 
 
 

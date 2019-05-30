@@ -37,14 +37,20 @@ class PCAFastBall(sampler):
 
 
 class fastBall(sampler):
-    def __init__(self, data, rad, dist_fn, DIMRED=5, maxSize=np.inf):
-        data_dimred = data[:,:DIMRED]
-        self.treeData = data_dimred
+    def __init__(self, data, rad, dist_fn, DIMRED=5, PCA=False, maxSize=np.inf):
+        if not PCA:
+            data_dimred = data[:,:DIMRED]
+            self.treeData = data_dimred
+        else:
+            data_dimred = data
+            self.treeData = data
 
         sampler.__init__(self,data)
         self.rad = rad
         self.dist_fn = dist_fn
         self.maxSize = maxSize
+        self.PCA=PCA
+        self.DIMRED = DIMRED
 
 
     def downsample(self, sampleSize='auto'):
@@ -54,8 +60,8 @@ class fastBall(sampler):
         available = list(range(self.numObs))
         lastBuild = 1 # how large it was when you last rebuilt tree
 
-        print(self.treeData)
-        print(self.data)
+        # print(self.treeData)
+        # print(self.data)
 
         while len(available) > 0:
             idx = np.random.choice(len(available))
@@ -63,7 +69,7 @@ class fastBall(sampler):
             nextPt = self.treeData[nextInd,:]
 
             if len(sampled) == 0: #first iteration; initialize tree
-                tree = VPTree([nextPt], self.dist_fn, [nextInd])
+                tree = VPTree([nextPt], self.dist_fn, [nextInd], PCA=self.PCA, DIMRED=self.DIMRED)
                 sampled.append(nextInd)
                 sampleData.append(nextPt)
             else:
@@ -92,7 +98,7 @@ class fastBall(sampler):
                     if len(sampled) > 2*lastBuild: #rebalance tree
                         lastBuild = len(sampled)
                         print('rebuilding tree of size {}'.format(len(sampled)))
-                        tree = VPTree(sampleData,self.dist_fn, sampled)
+                        tree = VPTree(sampleData,self.dist_fn, sampled, PCA=self.PCA, DIMRED=self.DIMRED)
                     else:
                         tree.add(nextPt, nextInd)
 

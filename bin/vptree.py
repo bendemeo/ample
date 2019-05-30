@@ -1,6 +1,6 @@
 """ This module contains an implementation of a Vantage Point-tree (VP-tree)."""
 import numpy as np
-
+from fbpca import pca
 
 
 
@@ -22,7 +22,7 @@ class VPTree:
         Minimum number of points in leaves (IGNORED).
     """
 
-    def __init__(self, points, dist_fn, inds=None, PCA=False, rawPoints=None, PC_dims=3):
+    def __init__(self, points, dist_fn, inds=None, PCA=False, DIMRED=3):
         self.left = None
         self.right = None
         self.left_min = np.inf
@@ -31,10 +31,12 @@ class VPTree:
         self.right_max = 0
         self.dist_fn = dist_fn
         self.split = 0
+        self.PCA = PCA
+        self.DIMRED = DIMRED
 
 
-        if rawPoints is None:
-            rawPoints = points
+        # if rawPoints is None:
+        #     rawPoints = points
 
 
 
@@ -45,6 +47,7 @@ class VPTree:
         if not len(points):
             raise ValueError('Points can not be empty.')
 
+        self.numFeatures = len(points[0])
         # Vantage point is point furthest from parent vp.
         vp_i = 0
         self.vp = points[vp_i]
@@ -52,19 +55,35 @@ class VPTree:
         points = np.delete(points, vp_i, axis=0)
         inds = np.delete(inds,vp_i)
 
+        if(PCA and DIMRED < len(points)):
+            #use local dimensionality to reduce
+
+            U,s,Vt = pca(points, k=DIMRED)
+            self.transformer = np.transpose(Vt[:DIMRED,:])
+            points_dimred = U[:,:DIMRED] * s[:DIMRED]
+            self.vp_dimred = np.matmul(self.vp, self.transformer)
+        else:
+            #just use plain points
+            self.transformer = np.identity(self.numFeatures)
+            points_dimred = points
+            self.vp_dimred = self.vp
+
+
         if len(points) == 0:
             return
 
+
+
         # Choose division boundary at median of distances.
-        distances = [self.dist_fn(self.vp, p) for p in points]
+        distances = [self.dist_fn(self.vp_dimred, p) for p in points_dimred]
         median = np.median(distances)
         self.split = median #for easier adding
 
         left_points = []
         right_points = []
-
         left_inds = []
         right_inds = []
+
         for point, distance, idx in zip(points, distances, inds):
             if distance >= self.split:
                 self.right_min = min(distance, self.right_min)
@@ -85,16 +104,16 @@ class VPTree:
                     left_points.append(point)
                     left_inds.append(idx)
 
-        if(PCA):
-            U,s,Vt = pca(points, k=DIMRED)
-            dimred = U[:,:DIMRED] * s[:DIMRED]
-            dimred -= dimred.min()
+
+            #dimred -= dimred.min()
 
         if len(left_points) > 0:
-            self.left = VPTree(points=left_points, dist_fn=self.dist_fn, inds=left_inds)
+            self.left = VPTree(points=left_points, dist_fn=self.dist_fn, inds=left_inds,
+                               PCA = self.PCA, DIMRED=self.DIMRED)
 
         if len(right_points) > 0:
-            self.right = VPTree(points=right_points, dist_fn=self.dist_fn, inds=right_inds)
+            self.right = VPTree(points=right_points, dist_fn=self.dist_fn, inds=right_inds,
+                                PCA=self.PCA, DIMRED=self.DIMRED)
 
     def _is_leaf(self):
         return (self.left is None) and (self.right is None)
@@ -102,15 +121,22 @@ class VPTree:
     def add(self, point, ind):
         ##implement: if leaf, add as right child. Otherwise, recurse.
         if self._is_leaf(): #add as right child
-            self.right = VPTree(points=[point], dist_fn = self.dist_fn, inds = [ind])
-
+            self.right = VPTree(points=[point], dist_fn = self.dist_fn, inds = [ind],
+                                PCA=self.PCA, DIMRED=self.DIMRED)
+            #print(self.right.transformer)
             ##make sure the newly added leaf always gets searched
             ##TODO make sense of this
             self.right_min = 0
             self.right_max = np.inf
 
         else:
-            distance = self.dist_fn(self.vp, point)
+            if(self.PCA):
+                point_dimred = np.matmul(point, self.transformer)
+            else:
+                point_dimred = point
+
+
+            distance = self.dist_fn(self.vp_dimred, point_dimred)
             if distance >= self.split: # belongs on right
                 #update min and max right distance
                 if distance < self.right_min:
@@ -122,7 +148,8 @@ class VPTree:
                 if self.right is not None:
                     self.right.add(point, ind)
                 else:
-                    self.right = VPTree(points=[point], dist_fn=self.dist_fn, inds=[ind])
+                    self.right = VPTree(points=[point], dist_fn=self.dist_fn, inds=[ind],
+                                        PCA=self.PCA, DIMRED=self.DIMRED)
                 # self.right_min = 0
                 # self.right_max = np.inf
             else: #belongs on left
@@ -136,7 +163,8 @@ class VPTree:
                 if self.left is not None:
                     self.left.add(point, ind)
                 else:
-                    self.left = VPTree(points=[point], dist_fn=self.dist_fn, inds=[ind])
+                    self.left = VPTree(points=[point], dist_fn=self.dist_fn, inds=[ind],
+                                       PCA=self.PCA, DIMRED=self.DIMRED)
 
 
     def get_nearest_neighbor(self, query):
@@ -181,9 +209,17 @@ class VPTree:
             if node is None or d0 > furthest_d:
                 continue
 
+            if(node.PCA):
+                #transform query to PCA universe
+                query_dimred = np.matmul(query, node.transformer)
+
+            else:
+                query_dimred = query
             n_visited += 1
 
-            d = self.dist_fn(query, node.vp)
+
+            d = self.dist_fn(query_dimred, node.vp_dimred)
+
             if d < furthest_d:
                 neighbors.append((d, node.ind))
                 furthest_d, _ = neighbors[-1]
