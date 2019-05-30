@@ -102,7 +102,9 @@ if __name__ == '__main__':
     genes = []
 
     np.savetxt('pbmc_dimred', X_dimred, delimiter = '\t')
-    np.savetxt('pbmc_labels', labels, delimiter='\t')
+    print('saved pbmc')
+    np.savetxt('pbmc_labels', np.reshape(labels,(len(labels),1)) delimiter='\t')
+
 
     # X_dimred = X_dimred[:,:5]
     # t0 = time()
