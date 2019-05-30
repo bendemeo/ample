@@ -102,7 +102,8 @@ if __name__ == '__main__':
 
     np.savetxt('pbmc_dimred', X_dimred, delimiter = '\t')
     print('saved pbmc')
-    np.savetxt('pbmc_labels', np.reshape(labels,(len(labels),1)), delimiter='\t')
+    print(labels[1:10])
+    np.savetxt('pbmc_labels', np.array(labels), delimiter='\t')
 
 
     # X_dimred = X_dimred[:,:5]
