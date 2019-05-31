@@ -55,7 +55,7 @@ class VPTree:
         points = np.delete(points, vp_i, axis=0)
         inds = np.delete(inds,vp_i)
 
-        if(PCA and DIMRED < len(points)):
+        if(PCA and DIMRED < len(points) and len(points) > 10):
             #use local dimensionality to reduce
 
             U,s,Vt = pca(points, k=DIMRED)
@@ -117,6 +117,19 @@ class VPTree:
 
     def _is_leaf(self):
         return (self.left is None) and (self.right is None)
+
+    def get_depth(self):
+        result = 0
+        if self._is_leaf():
+            result = 1
+        else:
+            childDepths = []
+            if self.left is not None:
+                childDepths.append(self.left.get_depth())
+            if self.right is not None:
+                childDepths.append(self.right.get_depth())
+            result = max(childDepths)+1
+        return(result)
 
     def add(self, point, ind):
         ##implement: if leaf, add as right child. Otherwise, recurse.
@@ -206,13 +219,12 @@ class VPTree:
         while len(nodes_to_visit) > 0:
             node, d0 = nodes_to_visit.pop(0)
 
-            if node is None or d0 > furthest_d:
+            if node is None or (d0 > furthest_d and not self.PCA):
                 continue
 
             if(node.PCA):
                 #transform query to PCA universe
                 query_dimred = np.matmul(query, node.transformer)
-
             else:
                 query_dimred = query
             n_visited += 1

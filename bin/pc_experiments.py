@@ -58,13 +58,25 @@ if __name__ == '__main__':
 
 
 
-    N=5000
+    N=10000
     gridSize=0.1
-    X = multi_gauss(N, centers=1, intrinsic=2, extrinsic=2, var=1, shift_var=2)
+    X = multi_gauss(N, centers=1, intrinsic=4, extrinsic=20, var=1, shift_var=2)
 
-    sampler = fastBall(X, rad=0.5, dist_fn=euclidean, PCA=True, DIMRED=1)
-    sampler.downsample('auto')
-    sampler.vizSample(full=True)
+    tree1 = VPTree(X, euclidean, PCA=False, DIMRED=4)
+    tree2 = VPTree(X, euclidean, PCA=True, DIMRED=4)
+    print(tree1.get_depth())
+    print(tree2.get_depth())
+
+    #check nearest-neighbor accuracy for both regimes
+    
+
+
+
+
+    #
+    # sampler = fastBall(X, rad=0.5, dist_fn=euclidean, PCA=True, DIMRED=1)
+    # sampler.downsample('auto')
+    # sampler.vizSample(full=True)
 
 
 

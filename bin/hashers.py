@@ -94,6 +94,7 @@ class fastBall(sampler):
                     if len(sampled) % 100 == 0:
                         print('sampled {}'.format(len(sampled)))
                         print('last visited {}'.format(tree.visited))
+                        print('tree depth is {}'.format(tree.get_depth()))
 
                     if len(sampled) > 2*lastBuild: #rebalance tree
                         lastBuild = len(sampled)
