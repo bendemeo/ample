@@ -133,7 +133,7 @@ if __name__ == '__main__':
 
     #radii=np.arange(1, 0.01, -0.01).tolist()
     testParams = {
-        'dist_fn':euclidean
+        'dist_fn':[euclidean]
     }
 
     tests = ['time','max_min_dist',
