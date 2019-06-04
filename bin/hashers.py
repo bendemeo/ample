@@ -18,8 +18,29 @@ from sklearn.metrics.pairwise import pairwise_distances
 from fbpca import pca
 from scanorama import *
 from vptree import *
+from fttree import *
 import pickle
 #import vptree
+
+
+class FTSampler(sampler):
+    def __init__(self, data, dist_fn=euclidean):
+        sampler.__init__(self, data)
+        self.dist_fn = dist_fn
+
+        print('building tree...')
+        T = FTTree(data, self.dist_fn)
+        print('traversing tree...')
+        T.traverse()
+        self.heap = T.nodeHeap
+
+    def downsample(self,sampleSize):
+        nodeHeap=deepcopy(self.heap)
+        sample = []
+        while(len(sample)< sampleSize):
+            sample.append(heappop(nodeHeap)[1])
+        self.sample = sample
+        return(sample)
 
 class PCAFastBall(sampler):
     def __init__(self, data, rad, dist_fn, maxSize=np.inf,DIMRED=3):

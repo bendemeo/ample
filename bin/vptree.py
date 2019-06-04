@@ -33,6 +33,7 @@ class VPTree:
         self.split = 0
         self.PCA = PCA
         self.DIMRED = DIMRED
+        self.active=True
 
 
         # if rawPoints is None:
@@ -180,7 +181,7 @@ class VPTree:
                                        PCA=self.PCA, DIMRED=self.DIMRED)
 
 
-    def get_nearest_neighbor(self, query):
+    def get_nearest_neighbor(self, query, remove=False, full=False):
         """ Get single nearest neighbor.
 
         Parameters
@@ -192,9 +193,9 @@ class VPTree:
         Any
             Single nearest neighbor.
         """
-        return self.get_n_nearest_neighbors(query, n_neighbors=1)[0]
+        return self.get_n_nearest_neighbors(query, n_neighbors=1, remove=remove, full=full)[0]
 
-    def get_n_nearest_neighbors(self, query, n_neighbors):
+    def get_n_nearest_neighbors(self, query, n_neighbors, remove=False, full=False):
         """ Get `n_neighbors` nearest neigbors to `query`
 
         Parameters
@@ -207,6 +208,8 @@ class VPTree:
         -------
         list
             List of `n_neighbors` nearest neighbors.
+            If full=True, returns entire node object
+            If full=False only returns indices
         """
         if not isinstance(n_neighbors, int) or n_neighbors < 1:
             raise ValueError('n_neighbors must be strictly positive integer')
@@ -232,9 +235,13 @@ class VPTree:
 
             d = self.dist_fn(query_dimred, node.vp_dimred)
 
-            if d < furthest_d:
-                neighbors.append((d, node.ind))
+            if d < furthest_d and node.active and d > 0.001: #don't include self
+                if(full):
+                    neighbors.append((d,node))
+                else:
+                    neighbors.append((d, node.ind))
                 furthest_d, _ = neighbors[-1]
+
 
             if node._is_leaf():
                 continue
@@ -255,7 +262,7 @@ class VPTree:
 
         self.visited = n_visited
 
-        return [n[1] for n in list(neighbors)] # just return indices
+        return [n[1] for n in list(neighbors)] # just return indices or node
 
     def get_all_in_range(self, query, max_distance):
         """ Find all neighbours within `max_distance`.

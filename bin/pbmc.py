@@ -10,6 +10,7 @@ from process import load_names
 from utils import *
 from LSH import *
 from hashers import *
+from fttree import *
 import sys
 import pickle
 
@@ -121,38 +122,22 @@ if __name__ == '__main__':
     # print('QUERY TREE: their method took {} seconds'.format(t1-t0))
 
     #
-    sampler = 'fastBall'
-    filename = 'pbmc_fastball_PCA_adaptive'
+
+    sampler = 'FTSampler'
+    filename = 'pbmc_ft'
     picklename = None
 
-    iter = 2
+    iter = 1
     #dimreds = [5,6,7,8,9]+np.arange(10, 100, 5).tolist()
-    dimreds=[2,3,4,5,7,10,20]
-
 
 
     #radii=np.arange(1, 0.01, -0.01).tolist()
-
-    sizes = np.arange(1, 30000, 500).tolist()
-    N=X_dimred.shape[0]
-    radii = np.arange(1, 0.7, -0.1).tolist()+np.arange(0.65, 0.35, -0.05).tolist()+np.arange(0.3, 0.1, -0.02).tolist()
-
-
-
-    [1-(math.log(s)/math.log(N)) for s in sizes]
-    print(radii)
-
     testParams = {
-        'rad':radii*len(dimreds),
-        'dist_fn':[euclidean],
-        'DIMRED':np.repeat(dimreds, len(radii)).tolist(),
-        'maxSize':[25000],
-        'PCA':[True]
+        'dist_fn':euclidean
     }
 
     tests = ['time','max_min_dist',
-              'cluster_counts',
-              'occSquares']
+              'cluster_counts']
 
 
     testResults = try_params(X_dimred, sampler,
@@ -160,7 +145,7 @@ if __name__ == '__main__':
                                   tests=tests,
                                   n_seeds=1,
                                   cell_labels=cell_labels,
-                                  Ns=['auto'],
+                                  Ns=np.arange(1,20000, 200),
                                   cluster_labels = labels,
                                   backup=filename+'_backup',
                                   picklename = picklename)
@@ -169,6 +154,57 @@ if __name__ == '__main__':
     #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
 
     testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+
+    #
+    #
+    # sampler = 'fastBall'
+    # filename = 'pbmc_fastball_PCA_adaptive'
+    # picklename = None
+    #
+    # iter = 3
+    # #dimreds = [5,6,7,8,9]+np.arange(10, 100, 5).tolist()
+    # dimreds=[2,3,4,5,7,10,20]
+    #
+    #
+    #
+    # #radii=np.arange(1, 0.01, -0.01).tolist()
+    #
+    # sizes = np.arange(1, 30000, 500).tolist()
+    # N=X_dimred.shape[0]
+    # radii = np.arange(1, 0.7, -0.1).tolist()+np.arange(0.65, 0.35, -0.05).tolist()+np.arange(0.3, 0.1, -0.02).tolist()
+    #
+    #
+    #
+    # [1-(math.log(s)/math.log(N)) for s in sizes]
+    # print(radii)
+    #
+    # testParams = {
+    #     'rad':radii*len(dimreds),
+    #     'dist_fn':[euclidean],
+    #     'DIMRED':np.repeat(dimreds, len(radii)).tolist(),
+    #     'maxSize':[25000],
+    #     'PCA':[True]
+    # }
+    #
+    # tests = ['time','max_min_dist',
+    #           'cluster_counts',
+    #           'occSquares']
+    #
+    #
+    # testResults = try_params(X_dimred, sampler,
+    #                               params=testParams,
+    #                               tests=tests,
+    #                               n_seeds=1,
+    #                               cell_labels=cell_labels,
+    #                               Ns=['auto'],
+    #                               cluster_labels = labels,
+    #                               backup=filename+'_backup',
+    #                               picklename = picklename)
+    #
+    # # with open("gsLSH_gridTest.file", "wb") as f:
+    # #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
+    #
+    # testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
     # filename = 'pbmc_gsLSH_subsample'
     # downsampler = gsLSH(X_dimred, opt_grid=True, target='N')

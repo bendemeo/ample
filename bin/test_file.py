@@ -13,6 +13,8 @@ from sklearn.metrics.pairwise import pairwise_distances
 from transformers import *
 from vp_tree import *
 from vptree import *
+from fttree import *
+from mcmc_sampler import *
 
 
 #from lsh_experiments import start_experiment
@@ -158,7 +160,7 @@ def get_cmap(n, name='hsv'):
 if __name__ == '__main__':
 
     np.random.seed()
-    gauss = gauss_test([5000,5000], 20, 2, [1,1])
+    gauss = gauss_test([1000], 2, 1, [1,1])
     gauss -= gauss.min(0)
     gauss /= gauss.max()
 
@@ -166,6 +168,37 @@ if __name__ == '__main__':
     def euclidean(p1, p2):
         return np.sqrt(np.sum(np.power(p2 - p1, 2)))
 
+
+    sampler = FTSampler(gauss,euclidean)
+    sampler.downsample(100)
+    sampler.vizSample(full=True, anno=True)
+    #
+    #
+    # T = FTTree(gauss)
+    # print(T)
+    # ordering = T.traverse()
+    # print(ordering)
+    # print(len(ordering))
+    # print(gauss.shape)
+    # print(T.ind)
+    # order = []
+    # while(len(ordering) > 0):
+    #     new = heappop(ordering)
+    #     print(new)
+    #     order.append(new[1])
+    # print(order)
+    #
+    #
+    #
+    # sampler = sampler(gauss)
+    # sampler.sample = order[:10]
+    # # sampler.sample = [T.ind, T.right.ind, T.left.right.ind, T.right.right.ind]
+    # # sampler.vizSample(full=True, anno=True)
+    # # sampler.sample = T.left.left_inds
+    # sampler.vizSample(full=True, anno=True)
+    # sampler = mcmcSampler(gauss, iters=1000)
+    # sampler.downsample(100)
+    # sampler.vizSample(full=True)
     # #
     # sampler = fastBall(gauss, 0.05, euclidean, DIMRED=4)
     # sampler.downsample()
