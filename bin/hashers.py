@@ -42,6 +42,17 @@ class FTSampler(sampler):
         self.sample = sample
         return(sample)
 
+class FTSampler_refined(FTSampler):
+    def downsample(self, sampleSize):
+        initSample = FTSampler.downsample(self, 2*sampleSize) #TODO make sure this doesn't break it
+        finalSample = FTraverse(self.data[initSample,:],
+                                max_out=sampleSize,inds=initSample, dist_fn=self.dist_fn)
+        self.sample = finalSample
+        return(finalSample)
+
+
+
+
 class PCAFastBall(sampler):
     def __init__(self, data, rad, dist_fn, maxSize=np.inf,DIMRED=3):
         sampler.__init__(self,data)

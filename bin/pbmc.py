@@ -123,8 +123,8 @@ if __name__ == '__main__':
 
     #
 
-    sampler = 'FTSampler'
-    filename = 'pbmc_ft'
+    sampler = 'FTSampler_refined'
+    filename = 'pbmc_ft_refined'
     picklename = None
 
     iter = 1

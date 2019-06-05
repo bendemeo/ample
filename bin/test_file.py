@@ -169,8 +169,18 @@ if __name__ == '__main__':
         return np.sqrt(np.sum(np.power(p2 - p1, 2)))
 
 
-    sampler = FTSampler(gauss,euclidean)
+    # sampler = sampler(gauss)
+    # sampler.sample=FTraverse(gauss,max_out=20)
+    # sampler.vizSample(full=True, anno=True)
+
+    #
+    sampler = FTSampler_refined(gauss,euclidean)
     sampler.downsample(100)
+    sampler.vizSample(full=True, anno=True)
+
+
+    sampler = FTSampler(gauss,euclidean)
+    sampler.downsample(200)
     sampler.vizSample(full=True, anno=True)
     #
     #

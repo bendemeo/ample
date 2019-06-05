@@ -8,6 +8,44 @@ def euclidean(p1, p2):
     return np.sqrt(np.sum(np.power(p2 - p1, 2)))
 
 
+def FTraverse(data, max_out=None, inds=None, dist_fn=euclidean):
+    if max_out is None:
+        max_out=data.shape[0]
+    if inds is None:
+        inds = list(range(data.shape[0]))
+
+    init = np.random.choice(data.shape[0])
+    pt_dists = [dist_fn(x,data[init,:]) for x in data]
+
+    max_dist = np.max(pt_dists)
+    max_pos = pt_dists.index(max_dist)
+    max_ind = inds[max_pos]
+
+    sample = [inds[init]]
+
+    while len(sample) < max_out:
+        max_dist=0
+        sample.append(max_ind)
+
+        newPt = data[max_pos,:]
+        for i,p in enumerate(data):
+            dist = dist_fn(p,newPt)
+            if dist < pt_dists[i]:
+                pt_dists[i] = dist
+
+            if pt_dists[i] > max_dist:
+                print('updating')
+                max_dist = pt_dists[i]
+                max_pos = i
+                max_ind = inds[i]
+
+    return(sample)
+
+
+
+
+
+
 class FTTree:
     def __init__(self, points, dist_fn=euclidean,  root=None, root_ind=None, inds=None, distances=None,max=None, max_idx=None):
         if inds is None:
