@@ -45,8 +45,12 @@ class FTSampler(sampler):
 class FTSampler_refined(FTSampler):
     def downsample(self, sampleSize):
         initSample = FTSampler.downsample(self, 2*sampleSize) #TODO make sure this doesn't break it
+
+        t0 = time()
         finalSample = FTraverse(self.data[initSample,:],
                                 max_out=sampleSize,inds=initSample, dist_fn=self.dist_fn)
+        t1 = time()
+        print('final traversal on {} points took {} seconds'.format(sampleSize, t1-t0))
         self.sample = finalSample
         return(finalSample)
 
