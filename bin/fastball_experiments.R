@@ -69,6 +69,11 @@ pbmc_all %>% filter( method=='Far traversal') %>% mutate(dimension = (log(N))/lo
 
 
 mb_fb=fread('target/experiments/mouse_brain_fastball_fulldim_backup.txt')
+mb_fb$N = mb_fb$occSquares
+mb_others = fread('target/experiments/mouse_brain_ft_backup.txt')
+
+mb_all %>% merge(mb_fb, mb_others, all=TRUE)
+
 
 colnames(pbmc_fb)[5] = 'gridSize'
 
@@ -159,7 +164,7 @@ dev.off()
 pdf('~/Documents/bergerlab/6.890/pbmc_fastball_alltests.pdf', 8,5)
 grid.arrange(p2, p1, nrow=1)
 
-pdf('~/Documents/bergerlab/pbmc_hausdorff_tests.pdf', 8,5)
+pdf('~/Documents/bergerlab/pbmc_hausdorff_tests.pdf', 5,4)
 pbmc_temp %>%
   filter(method %in% c('PC-Sketch','gs','Far traversal', 'fastball'), DIMRED %in% c(NA, 100)) %>%
   ggplot(aes(x=N, y=max_min_dist))+
@@ -167,6 +172,23 @@ pbmc_temp %>%
   geom_line(aes(color=method))+
   xlab('Sketch size (out of 68K)')+
   ylab('Hausdorff distance')+
-  scale_color_discrete(labels=c('FT-Tree Sampling','Ball sampling \n (very slow, 2-approx)',
-                                   'Geometric Sketching', 'PC-sketching'))
+  scale_color_discrete(labels=c('FT-Tree Sampling','Ball sampling \n(very slow, 2-approx)',
+                                   'Geometric Sketching', 'PC-sketching'))+
+  ggtitle('PBMC Hausdorff Distances')
+dev.off()
+
+pdf('~/Documents/bergerlab/pbmc_time_tests.pdf',5,4)
+pbmc_temp %>%
+  filter(method %in% c('PC-Sketch','gs','Far traversal', 'fastball'), DIMRED %in% c(NA, 100)) %>%
+  group_by(method,N) %>%
+  summarize(time=mean(time)) %>%
+  ggplot(aes(x=N, y=time))+
+  coord_cartesian(xlim=c(0,20000), ylim=c(0,250))+
+  geom_line(aes(color=method))+
+  xlab('Sketch size (out of 68K)')+
+  ylab('Hausdorff distance')+
+  scale_color_discrete(labels=c('FT-Tree Sampling','Ball sampling \n(very slow, 2-approx)',
+                                'Geometric Sketching', 'PC-sketching'))+
+  ggtitle('PBMC Runtimes')
+dev.off()
 

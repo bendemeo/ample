@@ -95,7 +95,7 @@ if __name__ == '__main__':
 
 
     sampler = 'FTSampler'
-    filename = 'mouse_brain_ft'
+    filename = 'mouse_brain_ft_haus'
     picklename = None
 
     iter = 1
@@ -107,7 +107,7 @@ if __name__ == '__main__':
         'dist_fn':[euclidean]
     }
 
-    tests = ['time',
+    tests = ['time', 'max_min_dist',
               'cluster_counts']
 
 
