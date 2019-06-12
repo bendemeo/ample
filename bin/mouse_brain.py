@@ -93,34 +93,22 @@ if __name__ == '__main__':
     X_dimred -= X_dimred.min(0)
     X_dimred /= X_dimred.max()
 
-    sampler = 'fastBall'
-    filename = 'mouse_brain_fastball_fulldim'
+
+    sampler = 'FTSampler'
+    filename = 'mouse_brain_ft'
     picklename = None
 
     iter = 1
     #dimreds = [5,6,7,8,9]+np.arange(10, 100, 5).tolist()
-    dimreds=[2,3,5,7,10,15,20,100]
-
 
 
     #radii=np.arange(1, 0.01, -0.01).tolist()
-
-    sizes = np.arange(1, 30000, 500).tolist()
-    N=X_dimred.shape[0]
-    radii = np.arange(1, 0.7, -0.1).tolist()+np.arange(0.65, 0.35, -0.05).tolist()+np.arange(0.3, 0.1, -0.02).tolist()
-
-    print(radii)
-
     testParams = {
-        'rad':radii*len(dimreds),
-        'dist_fn':[euclidean],
-        'DIMRED':np.repeat(dimreds, len(radii)).tolist(),
-        'maxSize':[10000]
+        'dist_fn':[euclidean]
     }
 
     tests = ['time',
-              'cluster_counts',
-              'occSquares']
+              'cluster_counts']
 
 
     testResults = try_params(X_dimred, sampler,
@@ -128,7 +116,7 @@ if __name__ == '__main__':
                                   tests=tests,
                                   n_seeds=1,
                                   cell_labels=cell_labels,
-                                  Ns=['auto'],
+                                  Ns=np.arange(1,20000, 200),
                                   cluster_labels = labels,
                                   backup=filename+'_backup',
                                   picklename = picklename)
@@ -137,6 +125,54 @@ if __name__ == '__main__':
     #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
 
     testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+
+
+
+    #
+    # sampler = 'fastBall'
+    # filename = 'mouse_brain_fastball_fulldim'
+    # picklename = None
+    #
+    # iter = 1
+    # #dimreds = [5,6,7,8,9]+np.arange(10, 100, 5).tolist()
+    # dimreds=[2,3,5,7,10,15,20,100]
+    #
+    #
+    #
+    # #radii=np.arange(1, 0.01, -0.01).tolist()
+    #
+    # sizes = np.arange(1, 30000, 500).tolist()
+    # N=X_dimred.shape[0]
+    # radii = np.arange(1, 0.7, -0.1).tolist()+np.arange(0.65, 0.35, -0.05).tolist()+np.arange(0.3, 0.1, -0.02).tolist()
+    #
+    # print(radii)
+    #
+    # testParams = {
+    #     'rad':radii*len(dimreds),
+    #     'dist_fn':[euclidean],
+    #     'DIMRED':np.repeat(dimreds, len(radii)).tolist(),
+    #     'maxSize':[10000]
+    # }
+    #
+    # tests = ['time',
+    #           'cluster_counts',
+    #           'occSquares']
+    #
+    #
+    # testResults = try_params(X_dimred, sampler,
+    #                               params=testParams,
+    #                               tests=tests,
+    #                               n_seeds=1,
+    #                               cell_labels=cell_labels,
+    #                               Ns=['auto'],
+    #                               cluster_labels = labels,
+    #                               backup=filename+'_backup',
+    #                               picklename = picklename)
+    #
+    # # with open("gsLSH_gridTest.file", "wb") as f:
+    # #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
+    #
+    # testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
 
 

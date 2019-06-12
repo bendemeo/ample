@@ -34,7 +34,7 @@ def FTraverse(data, max_out=None, inds=None, dist_fn=euclidean):
                 pt_dists[i] = dist
 
             if pt_dists[i] > max_dist:
-                #print('updating')
+                # print('updating')
                 max_dist = pt_dists[i]
                 max_pos = i
                 max_ind = inds[i]

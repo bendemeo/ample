@@ -34,18 +34,33 @@ pbmc_pcalsh$N = as.numeric(pbmc_pcalsh$occSquares)
 pbmc_ft = fread('target/experiments/pbmc_ft_backup.txt')
 pbmc_ft$method=rep('Far traversal',nrow(pbmc_ft))
 
+#read refined FT data
+pbmc_ft_refined = fread('target/experiments/pbmc_ft_refined_backup.txt')
+pbmc_ft_refined$method = rep('Refined far traversal',nrow(pbmc_ft_refined))
+
+
+
 
 pbmc_f = merge(pbmc_ft, pbmc_fb, all=TRUE)
 pbmc_others = merge(pbmc_gs, pbmc_pcalsh, all=TRUE)
 
-pbmc_all = merge(pbmc_f, pbmc_others, all=TRUE)
-
+pbmc_temp = merge(pbmc_f, pbmc_others, all=TRUE)
+pbmc_all = merge(pbmc_temp, pbmc_ft_refined, all=TRUE)
 # pbmc_fb = merge(pbmc_adaptive, pbmc_fb, all=TRUE)
 
 
 pbmc_all %>% filter(DIMRED %in% c(100, NA)) %>%
   ggplot(aes(x=N, y=max_min_dist))+
   geom_line(aes(color=method))
+
+pbmc_all %>% filter(time<300) %>% group_by(method, N, DIMRED, gridSize) %>% summarize(time=mean(time)) %>%
+  ggplot(aes(x=N, y=time))+
+  geom_line(aes(color=factor(DIMRED), lty=method))
+
+pbmc_all %>% filter( method=='Far traversal') %>% mutate(dimension = (log(N))/log((1/max_min_dist))) %>%
+  ggplot(aes(x=max_min_dist, y=dimension))+
+  geom_line()
+
 
 
 #pbmc_gs$DIMRED = rep('Geometric Sketching', nrow(pbmc_gs))
@@ -144,4 +159,14 @@ dev.off()
 pdf('~/Documents/bergerlab/6.890/pbmc_fastball_alltests.pdf', 8,5)
 grid.arrange(p2, p1, nrow=1)
 
+pdf('~/Documents/bergerlab/pbmc_hausdorff_tests.pdf', 8,5)
+pbmc_temp %>%
+  filter(method %in% c('PC-Sketch','gs','Far traversal', 'fastball'), DIMRED %in% c(NA, 100)) %>%
+  ggplot(aes(x=N, y=max_min_dist))+
+  coord_cartesian(xlim=c(0,10000))+
+  geom_line(aes(color=method))+
+  xlab('Sketch size (out of 68K)')+
+  ylab('Hausdorff distance')+
+  scale_color_discrete(labels=c('FT-Tree Sampling','Ball sampling \n (very slow, 2-approx)',
+                                   'Geometric Sketching', 'PC-sketching'))
 
