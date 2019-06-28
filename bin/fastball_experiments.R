@@ -70,9 +70,43 @@ pbmc_all %>% filter( method=='Far traversal') %>% mutate(dimension = (log(N))/lo
 
 mb_fb=fread('target/experiments/mouse_brain_fastball_fulldim_backup.txt')
 mb_fb$N = mb_fb$occSquares
-mb_others = fread('target/experiments/mouse_brain_ft_backup.txt')
 
-mb_all %>% merge(mb_fb, mb_others, all=TRUE)
+mb_pc = fread('target/experiments/mouse_brain_PCALSH_hausdorff_backup.txt')
+mb_pc$N = mb_pc$occSquares
+mb_pc$method = rep('PC-sketch', nrow(mb_pc))
+
+mb_ft = fread('target/experiments/mouse_brain_ft_haus_backup.txt')
+mb_ft$method = rep('FT-sketch',nrow(mb_ft))
+
+mb_gs = fread('target/experiments/mouse_brain_gsLSH_FINAL_1.txt')
+mb_gs$method = rep('Geometric sketching', nrow(mb_gs))
+mb_gs$N = mb_gs$occSquares
+
+
+mb_temp = merge(mb_pc, mb_gs, all=TRUE)
+mb_all = merge(data.frame(mb_temp),mb_ft,all=TRUE)
+
+
+mb_all %>% ggplot(aes(x=N, y=time, color=method)) +
+  geom_line()
+
+
+
+pdf('~/Desktop/mb_time.pdf', 6,4)
+mb_all %>% ggplot(aes(x=N, y=max_min_dist,color=method))+
+  geom_line()+
+  scale_color_discrete(labels=c('FT-Tree Sampling','Geometric Sketching','PC-sketching'))+
+  ggtitle('Mouse Brain data')
+dev.off()
+
+
+pdf('~/Desktop/mb_haus.pdf', 6,4)
+mb_all %>% ggplot(aes(x=N, y=max_min_dist,color=method))+
+  geom_line()+
+  scale_color_discrete(labels=c('FT-Tree Sampling','Geometric Sketching','PC-sketching'))+
+  ggtitle('Mouse Brain data')
+dev.off()
+
 
 
 colnames(pbmc_fb)[5] = 'gridSize'

@@ -174,8 +174,9 @@ if __name__ == '__main__':
     # sampler.vizSample(full=True, anno=True)
 
     #
-    sampler = FTSampler_refined(gauss,euclidean)
-    sampler.downsample(100)
+    sampler = FTSampler_exact(gauss)
+    sampler.downsample(10)
+    print(sampler.sample)
     sampler.vizSample(full=True, anno=True)
 
 

@@ -123,6 +123,24 @@ if __name__ == '__main__':
 
     #
 
+
+    sampler = FTSampler_exact(X_dimred)
+
+    for N in np.arange(1000,X_dimred.shape[0], 1000):
+        sampler.downsample(N)
+
+
+        order = print(sampler.sample, sep='\t')
+
+        file = open(r"target/experiments/pbmc_ft.txt", "w+")
+        file.write(order)
+
+
+
+
+
+
+
     sampler = 'FTSampler_refined'
     filename = 'pbmc_ft_refined'
     picklename = None
