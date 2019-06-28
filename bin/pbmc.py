@@ -134,6 +134,7 @@ if __name__ == '__main__':
 
         file = open(r"target/experiments/pbmc_ft.txt", "w+")
         file.write('\t'.join([str(x) for x in sampler.sample]))
+        file.close()
 
 
 
