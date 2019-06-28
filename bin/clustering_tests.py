@@ -18,5 +18,6 @@ import scanpy as sc
 ##PBMC##
 with open('target/experiments/pbmc_ft.txt', 'r') as f:
     order = f.readlines()[0].split('\t')
+    order = [int(x) for x in order]
 
 print(order)
