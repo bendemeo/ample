@@ -31,13 +31,13 @@ class FTSampler_exact(sampler):
         min_dists = [float('Inf')] * self.numObs
         self.min_dists = min_dists
 
-        avail_inds = range(self.numObs)
+        avail_inds = list(range(self.numObs))
         self.avail_inds = avail_inds
 
 
     def downsample(self, sampleSize):
         if len(self.ordering) == 0:
-            first = np.random.choice(range(len(self.avail_inds)))
+            first = np.random.choice(list(range(len(self.avail_inds))))
             first_ind = self.avail_inds[first]
             first_pt = self.data[first_ind,:]
 
