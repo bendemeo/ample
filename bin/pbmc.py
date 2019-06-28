@@ -15,7 +15,8 @@ import sys
 import pickle
 from sklearn.metrics import adjusted_rand_score
 from anndata import AnnData
-import scanpy as sc
+from scanpy.api.tl import louvain
+from scanpy.api.pp import neighbors
 
 
 NAMESPACE = 'pbmc_facs'
@@ -137,8 +138,8 @@ if __name__ == '__main__':
 
     full_sample = X_dimred[order,:]
     adata = AnnData(X=full_sample)
-    sc.pp.neighbors(adata, use_rep='X')
-    sc.tl.louvain(adata, resolution=1., key_added='louvain')
+    neighbors(adata, use_rep='X')
+    louvain(adata, resolution=1., key_added='louvain')
     louv_full = np.array(adata.obs['louvain'].tolist())
     print(louv_full)
 
@@ -146,8 +147,8 @@ if __name__ == '__main__':
     for size in range(10, len(order), 10):
         cur_sample = X_dimred[order[:size]]
         adata = AnnData(X=cur_sample)
-        sc.pp.neighbors(adata, use_rep='X')
-        sc.tl.louvain(adata, resolution=1., key_added='louvain')
+        neighbors(adata, use_rep='X')
+        louvain(adata, resolution=1., key_added='louvain')
 
         louv_current = np.array(adata.obs['louvain'].tolist())
         print(louv_current)
