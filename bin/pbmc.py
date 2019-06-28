@@ -126,7 +126,7 @@ if __name__ == '__main__':
 
     sampler = FTSampler_exact(X_dimred)
 
-    for N in np.arange(100,X_dimred.shape[0], 100):
+    for N in np.arange(10,X_dimred.shape[0], 100):
         sampler.downsample(N)
 
 
