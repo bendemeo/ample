@@ -13,6 +13,7 @@ from hashers import *
 from fttree import *
 import sys
 import pickle
+from sklearn.metrics import adjusted_rand_score
 
 
 NAMESPACE = 'pbmc_facs'
@@ -124,58 +125,87 @@ if __name__ == '__main__':
     #
 
 
-    sampler = FTSampler_exact(X_dimred)
-
-    for N in np.arange(10,X_dimred.shape[0], 100):
-        sampler.downsample(N)
 
 
-        order = print(sampler.sample, sep='\t')
+    with open('target/experiments/pbmc_ft.txt', 'r') as f:
+        order = f.readlines()[0].split('\t')
+        order = [int(x) for x in order]
 
-        file = open(r"target/experiments/pbmc_ft.txt", "w+")
-        file.write('\t'.join([str(x) for x in sampler.sample]))
-        file.close()
+    print(order)
 
-
-
-
-
-
-
-    sampler = 'FTSampler_refined'
-    filename = 'pbmc_ft_refined'
-    picklename = None
-
-    iter = 1
-    #dimreds = [5,6,7,8,9]+np.arange(10, 100, 5).tolist()
+    full_sample = X_dimred[order,:]
+    adata = AnnData(X=full_sample)
+    sc.pp.neighbors(adata, use_rep='X')
+    sc.tl.louvain(adata, resolution=1., key_added='louvain')
+    louv_full = np.array(adata.obs['louvain'].tolist())
+    print(louv_full)
 
 
-    #radii=np.arange(1, 0.01, -0.01).tolist()
-    testParams = {
-        'dist_fn':[euclidean]
-    }
+    for size in range(10, len(order), 10):
+        cur_sample = X_dimred[order[:size]]
+        adata = AnnData(X=cur_sample)
+        sc.pp.neighbors(adata, use_rep='X')
+        sc.tl.louvain(adata, resolution=1., key_added='louvain')
 
-    tests = ['time','max_min_dist',
-              'cluster_counts']
+        louv_current = np.array(adata.obs['louvain'].tolist())
+        print(louv_current)
+
+        rand_score = adjusted_rand_score(louv_full[:size], louv_current)
+        print(rand_score)
+
+    #
+    # sampler = FTSampler_exact(X_dimred)
+    #
+    # for N in np.arange(10,X_dimred.shape[0], 100):
+    #     sampler.downsample(N)
+    #
+    #
+    #     order = print(sampler.sample, sep='\t')
+    #
+    #     file = open(r"target/experiments/pbmc_ft.txt", "w+")
+    #     file.write('\t'.join([str(x) for x in sampler.sample]))
+    #     file.close()
 
 
-    testResults = try_params(X_dimred, sampler,
-                                  params=testParams,
-                                  tests=tests,
-                                  n_seeds=1,
-                                  cell_labels=cell_labels,
-                                  Ns=np.arange(1,20000, 200),
-                                  cluster_labels = labels,
-                                  backup=filename+'_backup',
-                                  picklename = picklename)
 
-    # with open("gsLSH_gridTest.file", "wb") as f:
-    #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
 
-    testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
 
     #
     #
+    # sampler = 'FTSampler_refined'
+    # filename = 'pbmc_ft_refined'
+    # picklename = None
+    #
+    # iter = 1
+    # #dimreds = [5,6,7,8,9]+np.arange(10, 100, 5).tolist()
+    #
+    #
+    # #radii=np.arange(1, 0.01, -0.01).tolist()
+    # testParams = {
+    #     'dist_fn':[euclidean]
+    # }
+    #
+    # tests = ['time','max_min_dist',
+    #           'cluster_counts']
+    #
+    #
+    # testResults = try_params(X_dimred, sampler,
+    #                               params=testParams,
+    #                               tests=tests,
+    #                               n_seeds=1,
+    #                               cell_labels=cell_labels,
+    #                               Ns=np.arange(1,20000, 200),
+    #                               cluster_labels = labels,
+    #                               backup=filename+'_backup',
+    #                               picklename = picklename)
+    #
+    # # with open("gsLSH_gridTest.file", "wb") as f:
+    # #     pickle.dump(gsLSH_gridTest, f, pickle.HIGHEST_PROTOCOL)
+    #
+    # testResults.to_csv('target/experiments/{}.txt.{}'.format(filename, iter), sep='\t')
+    #
+    # #
+    # #
     # sampler = 'fastBall'
     # filename = 'pbmc_fastball_PCA_adaptive'
     # picklename = None
