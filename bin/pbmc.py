@@ -14,6 +14,7 @@ from fttree import *
 import sys
 import pickle
 from sklearn.metrics import adjusted_rand_score
+from anndata import AnnData
 
 
 NAMESPACE = 'pbmc_facs'
