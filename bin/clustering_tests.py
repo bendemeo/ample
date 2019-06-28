@@ -16,7 +16,7 @@ import pickle
 import scanpy as sc
 
 ##PBMC##
-with open('target/experiments/pbmc_ft.txt' as f):
+with open('target/experiments/pbmc_ft.txt', 'r') as f:
     order = f.readLines().split('\t')
 
 print(order)
