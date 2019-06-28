@@ -161,7 +161,7 @@ if __name__ == '__main__':
     sampler = uniformSampler(X_dimred)
     print('Uniform stats')
     for size in range(10, len(order), 1000):
-        sampled_inds = np.random.choice(full_sample,size)
+        sampled_inds = np.random.choice(order,size)
         cur_sample = X_dimred[sampled_inds,:]
         adata = AnnData(X=cur_sample)
         neighbors(adata, use_rep='X')
