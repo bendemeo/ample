@@ -133,7 +133,7 @@ if __name__ == '__main__':
         order = print(sampler.sample, sep='\t')
 
         file = open(r"target/experiments/pbmc_ft.txt", "w+")
-        file.write('\t'.join(sampler.sample))
+        file.write('\t'.join([str(x) for x in sampler.sample]))
 
 
 
