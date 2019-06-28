@@ -54,6 +54,7 @@ class FTSampler_exact(sampler):
             next_pt = self.data[next_ind,:]
 
             self.ordering.append(next_ind)
+            print(len(self.ordering))
             del self.avail_inds[next_pos]
             del self.min_dists[next_pos]
 
