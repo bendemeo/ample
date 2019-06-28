@@ -144,7 +144,7 @@ if __name__ == '__main__':
     print(louv_full)
 
 
-    for size in range(10, len(order), 10):
+    for size in range(10, len(order), 1000):
         cur_sample = X_dimred[order[:size]]
         adata = AnnData(X=cur_sample)
         neighbors(adata, use_rep='X')
