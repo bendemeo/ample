@@ -15,6 +15,7 @@ import sys
 import pickle
 from sklearn.metrics import adjusted_rand_score
 from anndata import AnnData
+import scanpy as sc
 
 
 NAMESPACE = 'pbmc_facs'
