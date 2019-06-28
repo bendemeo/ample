@@ -17,6 +17,6 @@ import scanpy as sc
 
 ##PBMC##
 with open('target/experiments/pbmc_ft.txt', 'r') as f:
-    order = f.readlines().split('\t')
+    order = f.readlines().split('\t')[0]
 
 print(order)
