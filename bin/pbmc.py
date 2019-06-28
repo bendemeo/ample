@@ -144,7 +144,7 @@ if __name__ == '__main__':
     print(louv_full)
 
 
-    # 
+    #
     # for size in range(10, len(order), 1000):
     #     cur_sample = X_dimred[order[:size]]
     #     adata = AnnData(X=cur_sample)
@@ -161,8 +161,9 @@ if __name__ == '__main__':
     sampler = uniformSampler(X_dimred)
     print('Uniform stats')
     for size in range(10, len(order), 1000):
-        sampled_inds = np.random.choice(order,size)
-        cur_sample = X_dimred[sampled_inds,:]
+        sampled_inds = np.random.choice(list(range(len(order))))
+
+        cur_sample = X_dimred[order[sampled_inds],:]
         adata = AnnData(X=cur_sample)
         neighbors(adata, use_rep='X')
         louvain(adata, resolution=1., key_added='louvain')
