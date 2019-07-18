@@ -93,10 +93,10 @@ mb_all %>% ggplot(aes(x=N, y=time, color=method)) +
 
 
 pdf('~/Desktop/mb_time.pdf', 6,4)
-mb_all %>% ggplot(aes(x=N, y=max_min_dist,color=method))+
+mb_all %>% ggplot(aes(x=N, y=time,color=method))+
   geom_line()+
   scale_color_discrete(labels=c('FT-Tree Sampling','Geometric Sketching','PC-sketching'))+
-  ggtitle('Mouse Brain data')
+  ggtitle('Mouse Brain Runtimes')
 dev.off()
 
 
@@ -104,7 +104,7 @@ pdf('~/Desktop/mb_haus.pdf', 6,4)
 mb_all %>% ggplot(aes(x=N, y=max_min_dist,color=method))+
   geom_line()+
   scale_color_discrete(labels=c('FT-Tree Sampling','Geometric Sketching','PC-sketching'))+
-  ggtitle('Mouse Brain data')
+  ggtitle('Mouse Brain Hausdorff Distances')
 dev.off()
 
 

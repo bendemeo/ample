@@ -19,12 +19,15 @@ from fbpca import pca
 from scanorama import *
 from vptree import *
 from fttree import *
+from norms import *
 import pickle
 #import vptree
 
 
+
+
 class FTSampler_exact(sampler):
-    def __init__(self, data):
+    def __init__(self, data, distfunc=euclidean):
         sampler.__init__(self, data)
         self.ordering = []
 
@@ -33,6 +36,8 @@ class FTSampler_exact(sampler):
 
         avail_inds = list(range(self.numObs))
         self.avail_inds = avail_inds
+
+        self.distfunc = distfunc
 
 
     def downsample(self, sampleSize):
@@ -46,7 +51,10 @@ class FTSampler_exact(sampler):
             del self.avail_inds[first]
             del self.min_dists[first]
 
-            self.min_dists = [min(self.min_dists[pos], np.linalg.norm(self.data[ind,:]-first_pt)) for pos, ind in enumerate(self.avail_inds)]
+            self.min_dists = [min(self.min_dists[pos], self.distfunc(self.data[ind,:],first_pt)) for pos, ind in enumerate(self.avail_inds)]
+
+            self.closest = [0]*len(self.avail_inds)
+            self.ptrs = [0]
 
         while len(self.ordering) < sampleSize:
             next_pos = self.min_dists.index(max(self.min_dists))
@@ -54,15 +62,22 @@ class FTSampler_exact(sampler):
             next_pt = self.data[next_ind,:]
 
             self.ordering.append(next_ind)
+            self.ptrs.append(self.closest[next_pos])
+
+
             print(len(self.ordering))
             del self.avail_inds[next_pos]
+            del self.closest[next_pos]
             del self.min_dists[next_pos]
 
 
+            for pos, ind in enumerate(self.avail_inds):
+                cur_dist = self.distfunc(self.data[ind,:],next_pt)
+                if cur_dist < self.min_dists[pos]:
+                    self.closest[pos] = len(self.ordering) - 1
+                    self.min_dists[pos] = cur_dist
 
-            self.min_dists = [min(self.min_dists[pos], np.linalg.norm(self.data[ind,:]-next_pt)) for pos, ind in enumerate(self.avail_inds)]
-
-
+            # self.min_dists = [min(self.min_dists[pos], np.linalg.norm(self.data[ind,:]-next_pt)) for pos, ind in enumerate(self.avail_inds)]
         self.sample = self.ordering[:sampleSize]
 
         return(self.sample)

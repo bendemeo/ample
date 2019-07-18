@@ -17,6 +17,7 @@ from sklearn.metrics import adjusted_rand_score
 from anndata import AnnData
 from scanpy.api.tl import louvain
 from scanpy.api.pp import neighbors
+from norms import *
 
 
 NAMESPACE = 'pbmc_facs'
@@ -130,62 +131,62 @@ if __name__ == '__main__':
 
 
 
-    with open('target/experiments/pbmc_ft.txt', 'r') as f:
-        order = f.readlines()[0].split('\t')
-        order = [int(x) for x in order]
-
-    print(order)
-
-    full_sample = X_dimred[order,:]
-    adata = AnnData(X=full_sample)
-    neighbors(adata, use_rep='X')
-    louvain(adata, resolution=1., key_added='louvain')
-    louv_full = np.array(adata.obs['louvain'].tolist())
-    print(louv_full)
-
-
+    # with open('target/experiments/pbmc_ft.txt', 'r') as f:
+    #     order = f.readlines()[0].split('\t')
+    #     order = [int(x) for x in order]
     #
-    for size in range(10, 1000, 100):
-        cur_sample = X_dimred[order[:size]]
-        adata = AnnData(X=cur_sample)
-        neighbors(adata, use_rep='X')
-        louvain(adata, resolution=1., key_added='louvain')
-
-        louv_current = np.array(adata.obs['louvain'].tolist())
-        print(louv_current)
-
-        rand_score = adjusted_rand_score(louv_full[:size], louv_current)
-        print(rand_score)
-
-
-    sampler = uniformSampler(X_dimred)
-    print('Uniform stats')
-    for size in range(10, 1000, 100):
-        sampled_inds = np.random.choice(list(range(len(order))), size, replace=False)
-
-        cur_sample = X_dimred[[order[i] for i in sampled_inds],:]
-        adata = AnnData(X=cur_sample)
-        neighbors(adata, use_rep='X')
-        louvain(adata, resolution=1., key_added='louvain')
-
-        louv_current = np.array(adata.obs['louvain'].tolist())
-        print(louv_current)
-
-        rand_score = adjusted_rand_score(louv_full[sampled_inds], louv_current)
-        print(rand_score)
-
+    # print(order)
     #
-    # sampler = FTSampler_exact(X_dimred)
-    #
-    # for N in np.arange(10,X_dimred.shape[0], 100):
-    #     sampler.downsample(N)
+    # full_sample = X_dimred[order,:]
+    # adata = AnnData(X=full_sample)
+    # neighbors(adata, use_rep='X')
+    # louvain(adata, resolution=1., key_added='louvain')
+    # louv_full = np.array(adata.obs['louvain'].tolist())
+    # print(louv_full)
     #
     #
-    #     order = print(sampler.sample, sep='\t')
+    # #
+    # for size in range(10, 1000, 100):
+    #     cur_sample = X_dimred[order[:size]]
+    #     adata = AnnData(X=cur_sample)
+    #     neighbors(adata, use_rep='X')
+    #     louvain(adata, resolution=1., key_added='louvain')
     #
-    #     file = open(r"target/experiments/pbmc_ft.txt", "w+")
-    #     file.write('\t'.join([str(x) for x in sampler.sample]))
-    #     file.close()
+    #     louv_current = np.array(adata.obs['louvain'].tolist())
+    #     print(louv_current)
+    #
+    #     rand_score = adjusted_rand_score(louv_full[:size], louv_current)
+    #     print(rand_score)
+    #
+    #
+    # sampler = uniformSampler(X_dimred)
+    # print('Uniform stats')
+    # for size in range(10, 1000, 100):
+    #     sampled_inds = np.random.choice(list(range(len(order))), size, replace=False)
+    #
+    #     cur_sample = X_dimred[[order[i] for i in sampled_inds],:]
+    #     adata = AnnData(X=cur_sample)
+    #     neighbors(adata, use_rep='X')
+    #     louvain(adata, resolution=1., key_added='louvain')
+    #
+    #     louv_current = np.array(adata.obs['louvain'].tolist())
+    #     print(louv_current)
+    #
+    #     rand_score = adjusted_rand_score(louv_full[sampled_inds], louv_current)
+    #     print(rand_score)
+
+
+    sampler = FTSampler_exact(X_dimred, distfunc = trunc_euclidean(10))
+
+    for N in np.arange(10,X_dimred.shape[0], 100):
+        sampler.downsample(N)
+
+
+        order = print(sampler.sample, sep='\t')
+
+        file = open(r"target/experiments/pbmc_ft_trunc.txt", "w+")
+        file.write('\t'.join([str(x) for x in sampler.sample]))
+        file.close()
 
 
 
