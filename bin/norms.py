@@ -1,5 +1,5 @@
 import numpy as np
-
+from scipy.stats import pearsonr
 
 def euclidean(x1, x2):
     return(np.linalg.norm(np.array(x1)-np.array(x2)))
