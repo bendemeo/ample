@@ -83,6 +83,8 @@ class FTSampler_exact(sampler):
         return(self.sample)
 
 
+
+
 class FTSampler(sampler):
     def __init__(self, data, dist_fn=euclidean):
         sampler.__init__(self, data)

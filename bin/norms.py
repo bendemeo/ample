@@ -17,4 +17,6 @@ def top_diffs(k=1):
         topdiffs = nlargest(k, diffs)
         return(np.linalg.norm(topdiffs))
     return(F)
-    
+
+def neg_pearson(x,y): #negative pearson correlation
+    return(-1*((pearsonr(np.array(x),np.array(y))[0]+1)/2))
