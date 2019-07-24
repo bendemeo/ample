@@ -177,27 +177,27 @@ if __name__ == '__main__':
 
 
 
-
-    for N in np.arange(1000,10000,1000):
-        sampler = gsLSH(X_dimred, target=N)
-        sampler.downsample(N)
-
-        file = open(r"target/experiments/pbmc_gs_{}.txt".format(N), "w+")
-        file.write('\t'.join([str(x) for x in sampler.sample]))
-        file.close()
-
-
-    # sampler = FTSampler_exact(X_dimred, distfunc = neg_pearson)
     #
-    # for N in np.arange(10,X_dimred.shape[0], 100):
+    # for N in np.arange(1000,10000,1000):
+    #     sampler = gsLSH(X_dimred, target=N)
     #     sampler.downsample(N)
     #
-    #
-    #     order = print(sampler.sample, sep='\t')
-    #
-    #     file = open(r"target/experiments/pbmc_ft_pearson.txt", "w+")
+    #     file = open(r"target/experiments/pbmc_gs_{}.txt".format(N), "w+")
     #     file.write('\t'.join([str(x) for x in sampler.sample]))
     #     file.close()
+
+
+    sampler = FTSampler_exact(X_dimred, distfunc = euclidean, reset_time=30)
+
+    for N in np.arange(10,X_dimred.shape[0], 100):
+        sampler.downsample(N)
+
+
+        order = print(sampler.sample, sep='\t')
+
+        file = open(r"target/experiments/pbmc_ft_reset30.txt", "w+")
+        file.write('\t'.join([str(x) for x in sampler.sample]))
+        file.close()
 
 
 

@@ -27,7 +27,8 @@ import pickle
 
 
 class FTSampler_exact(sampler):
-    def __init__(self, data, distfunc=euclidean):
+    def __init__(self, data, distfunc=euclidean, reset_time=float('inf')):
+        self.reset_time = reset_time
         sampler.__init__(self, data)
         self.ordering = []
 
@@ -41,41 +42,48 @@ class FTSampler_exact(sampler):
 
 
     def downsample(self, sampleSize):
-        if len(self.ordering) == 0:
-            first = np.random.choice(list(range(len(self.avail_inds))))
-            first_ind = self.avail_inds[first]
-            first_pt = self.data[first_ind,:]
 
-
-            self.ordering.append(first_ind)
-            del self.avail_inds[first]
-            del self.min_dists[first]
-
-            self.min_dists = [min(self.min_dists[pos], self.distfunc(self.data[ind,:],first_pt)) for pos, ind in enumerate(self.avail_inds)]
-
-            self.closest = [0]*len(self.avail_inds)
-            self.ptrs = [0]
-
+        time_since_reset=0
         while len(self.ordering) < sampleSize:
-            next_pos = self.min_dists.index(max(self.min_dists))
-            next_ind = self.avail_inds[next_pos]
-            next_pt = self.data[next_ind,:]
 
-            self.ordering.append(next_ind)
-            self.ptrs.append(self.closest[next_pos])
-
-
-            print(len(self.ordering))
-            del self.avail_inds[next_pos]
-            del self.closest[next_pos]
-            del self.min_dists[next_pos]
+            if len(self.ordering) == 0 or (time_since_reset >= self.reset_time):
+                print('starting')
+                time_since_reset = 0
+                first = np.random.choice(list(range(len(self.avail_inds))))
+                first_ind = self.avail_inds[first]
+                first_pt = self.data[first_ind,:]
 
 
-            for pos, ind in enumerate(self.avail_inds):
-                cur_dist = self.distfunc(self.data[ind,:],next_pt)
-                if cur_dist < self.min_dists[pos]:
-                    self.closest[pos] = len(self.ordering) - 1
-                    self.min_dists[pos] = cur_dist
+                self.ordering.append(first_ind)
+                del self.avail_inds[first]
+                del self.min_dists[first]
+
+                self.min_dists = [min(self.min_dists[pos], self.distfunc(self.data[ind,:],first_pt)) for pos, ind in enumerate(self.avail_inds)]
+
+                self.closest = [0]*len(self.avail_inds)
+                self.ptrs = [0]
+            else:
+                next_pos = self.min_dists.index(max(self.min_dists))
+                next_ind = self.avail_inds[next_pos]
+                next_pt = self.data[next_ind,:]
+
+                self.ordering.append(next_ind)
+                self.ptrs.append(self.closest[next_pos])
+
+
+                print(len(self.ordering))
+                del self.avail_inds[next_pos]
+                del self.closest[next_pos]
+                del self.min_dists[next_pos]
+
+
+                for pos, ind in enumerate(self.avail_inds):
+                    cur_dist = self.distfunc(self.data[ind,:],next_pt)
+                    if cur_dist < self.min_dists[pos]:
+                        self.closest[pos] = len(self.ordering) - 1
+                        self.min_dists[pos] = cur_dist
+
+            time_since_reset += 1
 
             # self.min_dists = [min(self.min_dists[pos], np.linalg.norm(self.data[ind,:]-next_pt)) for pos, ind in enumerate(self.avail_inds)]
         self.sample = self.ordering[:sampleSize]
