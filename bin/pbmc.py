@@ -176,9 +176,10 @@ if __name__ == '__main__':
     #     print(rand_score)
 
 
-    sampler = gsLSH(X_dimred)
+
 
     for N in np.arange(1000,10000,1000):
+        sampler = gsLSH(X_dimred, target=N)
         sampler.downsample(N)
 
         file = open(r"target/experiments/pbmc_gs_{}.txt".format(N), "w+")
