@@ -62,6 +62,7 @@ class FTSampler_exact(sampler):
 
                 self.closest = [0]*len(self.avail_inds)
                 self.ptrs = [0]
+                self.vcells = [0] * self.data.shape[0]
             else:
                 next_pos = self.min_dists.index(max(self.min_dists))
                 next_ind = self.avail_inds[next_pos]
@@ -69,6 +70,9 @@ class FTSampler_exact(sampler):
 
                 self.ordering.append(next_ind)
                 self.ptrs.append(self.closest[next_pos])
+
+                #initialize voronoi cell with self
+                self.vcells[next_ind]= len(self.ordering)-1
 
 
                 print(len(self.ordering))
@@ -82,6 +86,9 @@ class FTSampler_exact(sampler):
                     if cur_dist < self.min_dists[pos]:
                         self.closest[pos] = len(self.ordering) - 1
                         self.min_dists[pos] = cur_dist
+
+                        #update voronoi cell with self
+                        self.vcells[ind] = len(self.ordering) - 1
 
             time_since_reset += 1
 
