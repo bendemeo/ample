@@ -43,6 +43,7 @@ def gs_gap(X, N, k='auto', seed=None, replace=False,
         grid_table = np.zeros((n_samples, n_features))
 
         for d in range(n_features):
+            print(X_ptp[d])
             if X_ptp[d] <= unit:
                 continue
 
